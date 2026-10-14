@@ -1,0 +1,36 @@
+// Fails if any file has an em dash or en dash, or if app code uses the banned words.
+// Tanmay's rule: no dashes anywhere; plain language in everything users read.
+import { readdir, readFile } from "node:fs/promises";
+import { extname, join } from "node:path";
+
+const DASH = /[\u2013\u2014]/;
+const BANNED = /\b(delve|delving|navigate|navigating|unlock|unlocks|unlocked|seamless|seamlessly|leverage|empower|empowering|holistic|elevate|tapestry)\b/i;
+const TEXT = new Set([".ts", ".tsx", ".mjs", ".js", ".css", ".md", ".json", ".html", ".svg", ".yml", ".yaml", ".txt"]);
+const SKIP_DIRS = new Set(["node_modules", ".next", "out", ".git", "artifacts", "test-results", "playwright-report", "public"]);
+const SKIP_FILES = new Set(["HANDOFF.md", "CLAUDE_CODE_KICKOFF_PROMPT.md", "pnpm-lock.yaml", "package.json"]);
+
+async function walk(dir) {
+  const out = [];
+  for (const e of await readdir(dir, { withFileTypes: true })) {
+    if (e.isDirectory()) { if (!SKIP_DIRS.has(e.name)) out.push(...(await walk(join(dir, e.name)))); }
+    else if (TEXT.has(extname(e.name)) && !SKIP_FILES.has(e.name)) out.push(join(dir, e.name));
+  }
+  return out;
+}
+
+const problems = [];
+for (const file of await walk(".")) {
+  const lines = (await readFile(file, "utf8")).split("\n");
+  lines.forEach((line, i) => {
+    if (DASH.test(line)) problems.push(`${file}:${i + 1} dash character`);
+    // Banned words matter in what users read: app code and content. Docs quote the list itself.
+    if (file.startsWith("src") && BANNED.test(line) && !/\bnavigate\(|useRouter|router\./.test(line)) problems.push(`${file}:${i + 1} banned word "${line.match(BANNED)[0]}"`);
+  });
+}
+
+if (problems.length) {
+  console.error(problems.join("\n"));
+  console.error(`\n${problems.length} copy problem(s).`);
+  process.exit(1);
+}
+console.log("Copy check passed: no dashes, no banned words.");

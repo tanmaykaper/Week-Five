@@ -1,0 +1,7 @@
+.next
+out
+pnpm-lock.yaml
+docs
+artifacts
+HANDOFF.md
+CLAUDE_CODE_KICKOFF_PROMPT.md

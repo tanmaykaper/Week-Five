@@ -37,3 +37,17 @@ One line each: the decision, then why. Newest at the bottom.
 30. **Hosting is GitHub Pages under `/week-five`.** Confirmed by Tanmay. Screen recording is his.
 31. **TypeScript pinned to 6.0.3.** 7.x is the native compiler without the JS API that Next's type check uses.
 32. **Primary actions use brand blue, not black.** Keeps the Man Matters family resemblance while the rest of the page stays monochrome.
+
+## Phase 1 (2026-10-14)
+33. **Hand-written service worker instead of Serwist.** `scripts/build-sw.mjs` precaches every exported file with a content hash. About 60 lines, no runtime dependency, and it does not care which bundler Next uses. Replaces decision 5.
+34. **No date-fns.** Three local calendar helpers replace it; `parse` and `format` were pulling about 15 KB of locale code into every page. Display dates use `Intl` through `toLocaleDateString`.
+35. **Zod through `zod/mini`.** Same validation, functional API, and it halves our own chunk (35 KB to 21 KB gzipped).
+36. **First-load JS is 202 to 207 KB gzipped**, of which about 171 KB is React 19 and the Next 16 runtime. Our code is 21 KB and icons about 14 KB. Inlining the dozen icons we use is a Phase 11 task if Lighthouse asks for it.
+37. **The store saves explicitly instead of using Zustand's persist middleware.** Switching between the real and demo namespaces is a plain read of another key, and every read goes through the versioned, validated loader.
+38. **Theme and mode get their own tiny keys** (`weekfive:theme`, `weekfive:mode`). The head script reads the theme before first paint without parsing the whole plan, and the theme is shared by real and demo data.
+39. **Route groups:** `(app)` has the header nav, check-in bar and phone tabs; `(flow)` (intro, start, onboarding, baseline) has only the wordmark, so nobody wanders off mid-setup.
+40. **Dev pages use a `.dev.tsx` extension** and are compiled only in development or with `NEXT_PUBLIC_DEV_PAGES=1`, so `/dev/qr` never ships.
+41. **Playwright drives the installed Google Chrome** (`channel: "chrome"`), so no browser download. Screenshots go to `artifacts/` and are not committed.
+42. **Serif display titles get typographic apostrophes automatically** (`curl()` in primitives). Straight quotes look clumsy in Instrument Serif; body text keeps plain ones.
+43. **`navigator.storage.persist()` is requested after the baseline photos, not on first load.** Firefox shows a prompt for it, and it means more once there are photos to protect.
+44. **References show exactly what HANDOFF gives.** No author initials or details were added from memory.

@@ -29,3 +29,23 @@
 **Answers from Tanmay:** name stays Week Five, GitHub Pages hosting, he records the video, Hinglish as planned.
 
 **Next step:** Phase 1, foundation.
+
+## 2026-10-14, Phase 1: foundation
+
+**Done**
+- Next.js 16.4 static export, TypeScript 6, Tailwind v4 with the v2 tokens in `src/app/globals.css`, Geist and Instrument Serif through `next/font`, theme script before first paint, light and dark.
+- Shell: sticky header with Today, Map, Mirror, Mates, You; phone tab bar under 768 px; floating check-in bar; footer with the privacy, medical and independence lines; skip link. Route groups `(app)` and `(flow)`.
+- Every route from the sitemap exists. Real now: `/` routing (intro, then setup, then Today), the intro's six beats as a readable list, `/start` reading and validating the pack QR, Today's greeting and day line, You (theme, sample-data switch), Your data (JSON export, two-step delete everything), About (full copy, predictions, sources, replay intro), 24 static week pages, 404. Others are honest placeholders naming their phase.
+- Storage: zod/mini schemas, versioned loader that backs up unreadable data instead of deleting it, explicit-save Zustand store with separate real and demo namespaces, IndexedDB photo store (photos, masks, projections).
+- Time: local calendar helpers, journey day, week, phase, photo windows, injectable clock for demo days.
+- Demo plumbing: three fictional personas with 24 weeks of generated check-ins and doses, "Demo, day 35" chip with the day jumper and persona picker.
+- PWA: manifest (scope respects the base path), icons rendered from the mark, offline service worker.
+- Tooling: `pnpm check`, Vitest (37 tests), Playwright on the installed Chrome (21 smoke tests across phone, tablet, desktop; 54 screenshots), copy checker for dashes and banned words, static server that mimics GitHub Pages. Sub-path build under `/week-five` verified.
+
+**Decisions:** 33 to 44.
+
+**Known issues**
+- First-load JS is 202 to 207 KB gzipped against a budget of about 200 KB; the React and Next floor is about 171 KB. Inlining icons in Phase 11 would bring it under.
+- Full-page screenshots show the fixed check-in bar mid-page; that is a screenshot artefact, not a layout bug.
+
+**Next step:** Phase 2, the scroll intro.

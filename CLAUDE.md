@@ -21,7 +21,7 @@
 - No real person's name, number, quote or photo anywhere. Demo people are fictional.
 
 ## Stack
-Next.js 16.4 (App Router, `output: "export"`, `basePath` from `NEXT_PUBLIC_BASE_PATH`, `/week-five` on GitHub Pages), TypeScript 6.0, Tailwind v4 with CSS-variable tokens, `motion`, GSAP + ScrollTrigger (intro only), Zustand (persisted), `idb`, `date-fns`, Zod, `qrcode` (dev page), `@phosphor-icons/react`, Serwist (`@serwist/build`, run after export). Fonts: Geist + Instrument Serif via `next/font`. Vitest + Playwright. pnpm 12, Node 26 via Homebrew.
+Next.js 16.4 (App Router, `output: "export"`, `basePath` from `NEXT_PUBLIC_BASE_PATH`, `/week-five` on GitHub Pages), TypeScript 6.0, Tailwind v4 with CSS-variable tokens, `motion`, GSAP + ScrollTrigger (intro only), Zustand (explicit save, real and demo namespaces), `idb`, `zod/mini`, `qrcode` (dev page), `@phosphor-icons/react`, a hand-written service worker (`scripts/build-sw.mjs`, run after export). No date-fns. Fonts: Geist + Instrument Serif via `next/font`. Vitest + Playwright. pnpm 12, Node 26 via Homebrew.
 
 ## Design in one breath
 A responsive website, not a phone mock. Minimal and document-like: space and hairlines, not boxes. Serif greeting, Geist for everything else, one blue accent, amber only for photo days, coral only for see-a-doctor. The ring and the 24-week strip carry the drop-and-ripple idea. Reference render: `docs/design-preview.html`. Spec: `docs/DESIGN_SYSTEM.md`.
@@ -29,8 +29,8 @@ A responsive website, not a phone mock. Minimal and document-like: space and hai
 ## Phases
 | # | Phase | Status |
 |---|---|---|
-| 0 | Design and build doc | Done (design v2 approved direction) |
-| 1 | Foundation | Not started |
+| 0 | Design and build doc | Done (design v2 after review) |
+| 1 | Foundation | Done, awaiting review |
 | 2 | Scroll intro | Not started |
 | 3 | QR entry and onboarding story | Not started |
 | 4 | Baseline capture | Not started |
@@ -42,6 +42,9 @@ A responsive website, not a phone mock. Minimal and document-like: space and hai
 | 10 | Profile, data and About | Not started |
 | 11 | Polish and hardening | Not started |
 | 12 | GitHub readiness | Not started |
+
+## Commands
+`pnpm dev` (localhost:3000), `pnpm check` (lint, types, unit tests, copy check, build), `pnpm e2e`, `PHASE=n pnpm screens` (after a build; writes `artifacts/screens/phase-n/`), `pnpm serve` (serves `out/` like GitHub Pages), `pnpm build:pages` (under `/week-five`).
 
 ## Where things are
 - `docs/BUILD_DOC.md` master spec. `docs/DESIGN_SYSTEM.md` tokens and motion. `docs/SCREENS.md` wireframes. `docs/CONTENT_BANK.md` all copy. `docs/DATA_MODEL.md` storage. `docs/DECISIONS.md`. `docs/PROGRESS_LOG.md`.

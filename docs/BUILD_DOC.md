@@ -307,7 +307,7 @@ flowchart LR
 - Static export: every route is prerendered as a shell. Device data only exists on the client, so data-driven parts are client components behind a hydration gate that renders skeletons until the store has rehydrated. The layout, fonts, tab bar and static copy stay server-rendered to keep client JS small.
 - Query parameters (`/start`) are read with `useSearchParams` inside a Suspense boundary, as static export requires.
 - `basePath` and `assetPrefix` come from `NEXT_PUBLIC_BASE_PATH` (empty locally, `/week-five` on GitHub Pages).
-- Service worker: Serwist `injectManifest` runs as a post-build script over `out/`, precaching every exported file. Fonts are self-hosted by `next/font`, so offline works fully.
+- Service worker: `scripts/build-sw.mjs` runs after `next build` and writes `out/sw.js`, precaching every exported file under a content-hash version. Fonts are self-hosted by `next/font`, so offline works fully.
 - The intro is its own route and the only place GSAP is imported, keeping it out of every other bundle.
 
 ### Folder structure
@@ -410,7 +410,7 @@ Two predictions Mosaic can test with its own order data:
 | Projection read as a promise | Trust and medical-claim risk | Modest strength, single typical case, permanent label, copy about time |
 | Medical over-reach in copy | Safety, credibility | Phrasing "commonly", "for many people", red-flag rules, disclaimer, references |
 | Intro jank on mid-range Android | First impression | Transforms and opacity only, pinned section, one ScrollTrigger timeline, reduced-motion path, tested with 4x throttle |
-| Next 16 static export quirks (query params, dynamic routes, service worker with Turbopack) | Build failures | Suspense around `useSearchParams`, `generateStaticParams`, service worker built after export rather than through a bundler plugin |
+| Next 16 static export quirks (query params, dynamic routes, service worker with Turbopack) | Build failures | Suspense around `useSearchParams`, `generateStaticParams`, service worker built after export rather than through a bundler plugin (done in Phase 1) |
 | Demo data leaking into real data | Confusing state for a reviewer and a real user | Separate storage namespaces, unit test that demo writes never touch `weekfive:v1` |
 | Copy drifting into banned dashes or vocabulary | Fails Tanmay's rule | `scripts/grep-dashes.mjs` in `pnpm check` |
 | Bundle size creep | Lighthouse below 90 | GSAP only on `/intro`, `qrcode` only on `/dev/qr`, motion's `LazyMotion`, check `next build` output each phase |

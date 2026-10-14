@@ -9,7 +9,9 @@ Everything is stored in the user's own browser. Nothing is sent anywhere. The ap
 | Profile, routine, check-ins, doses, letter, intercepts, settings, insight history | localStorage | `weekfive:v1` (one JSON document) | Small, synchronous, read on first paint so Home renders without a flash |
 | Photos (JPEG blobs), worry-area masks (PNG alpha), projections | IndexedDB | database `weekfive`, stores `photos`, `masks`, `projections` | Blobs are too big for localStorage, IDB stores them natively |
 | Demo mode data | localStorage `weekfive-demo:v1` and IndexedDB `weekfive-demo` | separate namespace | Demo can never overwrite or mix with real data, and "leave demo" is a clean switch |
-| Intro seen flag, theme | inside `settings` in the main document | | Read before hydration by an inline script to avoid a theme flash |
+| Intro seen flag | inside `settings` in the main document | | Per namespace |
+| Theme (`system`, `light`, `dark`) | localStorage | `weekfive:theme` | Read by an inline head script before first paint; shared by real and demo |
+| Active namespace (`real` or `demo`) | localStorage | `weekfive:mode` | Survives reloads, so a reviewer stays in demo |
 
 On first run the app calls `navigator.storage.persist()` so the browser is less likely to evict data. See the risk list in BUILD_DOC for Safari's 7-day eviction rule.
 
@@ -91,7 +93,6 @@ interface Mask { photoId: string; blob: Blob }            // IndexedDB "masks", 
 interface Projection { id: string; photoId: string; createdAt: ISODateTime; provider: "local-sim" | "remote"; strength: number; blob: Blob }
 
 interface Settings {
-  theme: "system" | "dark" | "light";
   lang: "en" | "hinglish";
   notifications: boolean;
   introSeen: boolean;
@@ -114,7 +115,7 @@ interface AppState {
   settings: Settings;
 }
 
-interface DemoState extends AppState { demo: { dayOverride: number; persona: "steady" | "worried" | "monsoon-quick-commerce" } }
+// In the demo namespace AppState also carries: demo: { day: number; persona: "steady" | "worried" | "monsoon-quick-commerce" }
 ```
 
 ## Derived values (never stored, always computed)
@@ -130,7 +131,7 @@ interface DemoState extends AppState { demo: { dayOverride: number; persona: "st
 | Streak | `streak(doses, routine, now)` | Consecutive days with every slot done |
 | Monthly photo due | `photoDue(photos, day)` | Weeks 4, 8, 12, 16, 20, 24, window opens 2 days before and stays open 5 days after |
 
-`now` always comes from `clock.now()`. In demo mode the clock returns `startDate + dayOverride - 1` at the real time of day, so every derived value follows the jumper.
+`now` always comes from `clock.now()`. In demo mode the clock returns `startDate + demo.day - 1` at the real time of day, so every derived value follows the jumper.
 
 ## Versioning and migrations
 

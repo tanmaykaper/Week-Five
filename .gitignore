@@ -6,3 +6,7 @@ test-results/
 playwright-report/
 *.log
 .env*.local
+artifacts/
+next-env.d.ts
+*.tsbuildinfo
+certificates/
