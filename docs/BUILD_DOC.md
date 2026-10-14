@@ -62,12 +62,14 @@ Idea: inoculation. Same five facts, framed for whether they were briefed before.
 
 ### F5. Baseline capture (`/baseline`)
 Idea: loss aversion makes the pillow vivid and growth invisible; a photo makes the baseline as vivid as the loss.
-- Three views in order: crown, hairline and temples, parting. Each has an SVG ghost outline and a short instruction.
-- Live lighting meter from a 64x48 downscaled frame's mean luminance, sampled every 250 ms: too dark (< 70), good (70 to 190), too bright (> 190). Copy prompts "move closer to a window".
-- "Same spot, same time of day" shown before the first shot and remembered for monthly retakes (we store the hour and remind them).
-- Camera through `getUserMedia({ video: { facingMode: "environment" } })`. If denied, unavailable or on an insecure origin, fall back to `<input type="file" accept="image/*" capture="environment">` with the same guidance.
-- Photos re-encoded through canvas (strips EXIF, longest side 1600 px) and saved to IndexedDB. Retake and delete per photo.
-- Optional area painter: soft brush on the hairline or crown photo, saved as a PNG mask, used by the projection. Undo, clear, brush size.
+- Intro, then three views in order: crown, hairline and temples, parting. Each has an SVG ghost outline over the camera and a short instruction. Then an optional area painter, then a close.
+- The viewfinder is a round lens at the centre of the user's 24 rings (design v3). What it shows is what is kept: the centred square of the frame.
+- Live lighting meter from a 64x48 copy of the middle of the frame, mean luminance every 250 ms: too dark (< 70), good (70 to 190), too bright (> 190). The reading is saved with the photo.
+- "Same spot, same time of day" is said before the first shot; the hour of the first kept photo is stored (`settings.photoHour`) and the close says when and at what time the next photos are due.
+- Camera through `getUserMedia` with `facingMode` as a preference: front camera for the hairline, back camera for crown and parting, switchable. A 3 second timer (on by default for crown and parting, cancellable). If denied, unavailable or on an insecure origin, "Choose a photo" opens `<input type="file" accept="image/*" capture>` with the same guidance.
+- Photos re-encoded through canvas (strips EXIF, centred square, at most 1600 px, never mirrored) and saved to IndexedDB as week 0. A retake replaces the old photo with its mask. Retake and delete (two taps) per photo on the close.
+- Optional area painter: soft brush on any of the three photos (opens on the one matching the setup worry), saved as a 512 px PNG mask. Undo, clear, brush size, and "Mark the middle for me" as the keyboard path.
+- After all three: `navigator.storage.persist()` and an install nudge.
 
 ### F6. Home dashboard (`/home`)
 Idea: goal-gradient (Kivetz et al. 2006). Show the distance covered, not just the distance left.

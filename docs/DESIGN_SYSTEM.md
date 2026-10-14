@@ -21,6 +21,7 @@ Treatment is one small drop a day, and nothing visible happens for a while. In v
 - **The rings.** The camera climbs and the ripple freezes into 24 rings, one per week: the map. The shed window (weeks 3 to 8) is a dashed, tinted band. Photo weeks carry an amber dot. "You are here" is the one accent ring. Weeks that fall in the user's monsoon have rain falling on them.
 - **Other drops** land around yours: the people who started the same week.
 - **Setup is the map being drawn.** Each answer changes the water: the city puts rain on the right weeks, the start date lights your week, the briefing lights the weeks each card is about.
+- **Day one is the middle of the map.** The camera for the baseline photos is a round lens set exactly at the centre of the rings, seen from straight above; weeks 5 to 24 spread out around it. Keeping a photo drops it into the water and its ripple runs out across all 24 weeks.
 
 ## Principles
 
@@ -101,6 +102,13 @@ The sans line fits one line on desktop (copy is written to about 24 characters);
 | Ring label | 12 px ring marker plus text on a ground-coloured pill; positioned every frame by the engine; spread round the rings so they never stack; fewer on phones |
 | Live line | A ring marker and one sentence saying what the answer just did to the map |
 | Plan summary | Tone-stepped rows (no lines), key left, value right, tabular figures |
+| Lens | Round, `min(62dvh, 40vw, 600px)` on wide screens, `min(100vw minus gutters, 40dvh, 520px)` on phones. White glass at 74 percent with a 6 px white rim and the screen's one shadow (it floats). Holds the live camera (mirrored for the front camera), the still, or the photo being painted |
+| Ghost outline | Single-weight line drawings of the three views (`HeadGhost`). Over the camera: white 1.8 px over a 3.6 px ink edge at 40 percent, so it reads on any picture. On its own: ink at 50 percent. The eyebrow guide is dashed |
+| Shutter | Phones: 78 px ring in action blue with a 60 px disc, centred in a camera-app row (choose a photo left, timer right). Wide screens: a 60 px pill with the disc on the left and "Take crown photo". While the timer runs the disc becomes a stop square |
+| Tool | Phones: 52 px white circle, icon only (the name is still in the button). Wide screens: 44 px pill with icon and text. Pressed (timer on) fills ink |
+| Light meter | 88 by 6 px track; the 70 to 190 stretch tinted amber; a 14 px amber marker that fills when the light is good. The sentence beside it does the telling |
+| Photo disc | 64 px on the intro (drawing or photo, "Saved" under the name); 84 to 128 px on the close, as rows with Retake and Delete beside them on phones |
+| Brush size | 44 px circles with a dot sized to the brush; selected fills ink |
 
 ## The pool (3D)
 
@@ -109,7 +117,8 @@ The sans line fits one line on desktop (copy is written to about 24 characters);
 - **Water:** one plane with a custom shader. No geometry for ripples: the drop's ripple, the cohort's ripples, the frozen week rings, the shed band, the photo dots, the rain and the idle swell are all slopes and lines computed per pixel, so it costs the same at any detail.
 - **Dropper and drop:** lathe geometry. Glass and drop use transmission; liquid is clipped by a world-space plane so its surface stays level whichever way the dropper points.
 - **State:** two plain objects, `rig` (camera) and `state` (dropper, drop, ripple, map, week, rain, focus, labels). GSAP scrubs them in the intro; pages glide between named poses with `usePoolPose`; the engine draws only when something changed or the water is meant to move.
-- **Budget:** pixel ratio capped at 1.5; transforms and one draw per frame; measured 60 fps average and a 16.8 ms p95 frame with the CPU slowed 4x, on phone and desktop sizes.
+- **Budget:** pixel ratio capped at 1.5; transforms and one draw per frame; measured 60 fps average and a 16.8 ms p95 frame with the CPU slowed 4x, on phone and desktop sizes. The live lens (camera, light meter and pool together) measured 60 fps and a 16.7 ms p95 the same way.
+- **Helpers added in Phase 4:** `lensRig()` aims the camera straight down with the rings' centre under an element on the page; `setOffset()` keeps it there while the page scrolls; `splash()` drops a ripple from the centre on its own clock; `reframe()` changes the framing on resize without stopping a glide.
 
 ## Motion
 
@@ -126,6 +135,10 @@ The sans line fits one line on desktop (copy is written to about 24 characters);
 | Setup question change | 220 ms out (up), 640 ms in (rise, 80 ms stagger); camera glides 1.1 to 1.2 s | Each answer visibly moves you through the pool |
 | Rings entrance on welcome | 1.9 s from the centre out | The plan spreads like the ripple it is |
 | Pick feedback | Ring spreads from the tick, 520 ms | The drop lands; a visual stand-in for a haptic |
+| Into the lens | Camera glides to straight above the rings, 1.3 s; lens fades and scales in from 0.94, 900 ms | You look down into the middle of your own map |
+| Timer | Each second: the numeral in the serif scales in from 1.18, a ring closes on the lens from 1.12 | The count is felt without reading it |
+| Shutter | A white flash, 420 ms | The photo was taken |
+| Keep | The still sinks (to 0.82, fading, 680 ms, `--ease-swell`) while `splash()` sends a ripple across the rings (about 2.5 s) | The photo lands like a drop on day one |
 
 Reduced motion: the intro becomes a calm sequence that cuts between the same 3D poses every 4 s with Pause, Next and Skip; the water stops moving; setup cuts between questions; everything renders at rest.
 
@@ -139,4 +152,4 @@ Reduced motion: the intro becomes a calm sequence that cuts between the same 3D 
 ## Imagery
 
 - No stock photography, no product shots, no Man Matters marks. The dropper is generic and built in code.
-- The pool is the only illustration in the flow. Head placeholders for demo and empty states stay single-weight line drawings (Phase 4).
+- The pool is the only illustration in the flow. Head placeholders are the single-weight ghost drawings (`src/components/heads/HeadGhost.tsx`): crown from above with its whorl, hairline face on with the eyebrow line, parting from above with the parting. They stand in for any photo not taken yet.

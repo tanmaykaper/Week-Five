@@ -1,13 +1,14 @@
 // Phase screenshots: every touched screen at phone, tablet and desktop, light and dark.
 // Saved to artifacts/screens/ (git-ignored). Run: pnpm build && pnpm screens
 import { expect, test } from "@playwright/test";
-import { seedDemo, seedFresh } from "./helpers";
+import { seedDemo, seedFresh, seedPlan } from "./helpers";
 
 const PHASE = process.env.PHASE ?? "1";
-const ROUTES: { slug: string; path: string; demo: boolean; intro?: boolean }[] = [
+const ROUTES: { slug: string; path: string; demo: boolean; intro?: boolean; plan?: boolean }[] = [
   { slug: "intro", path: "/start/", demo: false, intro: true },
   { slug: "start-qr", path: "/start/?sku=WF-SOL-60&reg=2026-10-01&batch=B1", demo: false },
   { slug: "onboarding", path: "/onboarding/?sku=WF-SOL-60&reg=2026-10-01", demo: false },
+  { slug: "baseline", path: "/baseline/", demo: false, plan: true },
   { slug: "home", path: "/home/", demo: true },
   { slug: "map", path: "/map/", demo: true },
   { slug: "week-5", path: "/map/week/5/", demo: true },
@@ -22,7 +23,7 @@ for (const theme of ["light", "dark"] as const) {
     test(`${theme} ${r.slug}`, async ({ page }, info) => {
       const errors: string[] = [];
       page.on("pageerror", (e) => errors.push(e.message));
-      await (r.demo ? seedDemo(page, theme) : seedFresh(page, theme, { introSeen: !r.intro }));
+      await (r.plan ? seedPlan(page) : r.demo ? seedDemo(page, theme) : seedFresh(page, theme, { introSeen: !r.intro }));
       await page.goto(r.path);
       await page.waitForLoadState("networkidle");
       await page.evaluate(() => document.fonts.ready);

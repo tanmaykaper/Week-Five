@@ -93,3 +93,23 @@ One line each: the decision, then why. Newest at the bottom.
 78. **A blank name stays blank in the profile**; greetings already say "you".
 79. **The briefing is a step inside /onboarding (`?step=briefing`)**, with swipe, buttons and arrow keys, and lights up the weeks each card is about. It ends on /baseline (Phase 4).
 80. **The dev QR page renders real codes with `qrcode`** (a dev dependency, never in production bundles) for every fictional pack, with an editable purchase date and batch.
+
+## Phase 4 (2026-10-14)
+81. **The viewfinder is a round lens at the centre of the rings.** Day one is the middle of the map, so the camera looks straight down on the pool and is scaled so the lens covers weeks 1 to 4; weeks 5 to 24 spread out round it. Its one bold moment: keeping a photo drops it into the water.
+82. **Photos are the centred square of the frame**, at most 1600 px, JPEG at 0.9. What the round lens shows is what is kept, and every month compares the same shape whatever phone or camera took it.
+83. **Front camera for the hairline, back camera with a 3 s timer for crown and parting.** You can watch yourself for the hairline; nobody can see a screen above their head. Both are switchable and the timer can be cancelled.
+84. **Stored photos are never mirrored.** The front camera preview is mirrored like a mirror, but comparisons have to stay true month to month whichever camera is used.
+85. **"Choose a photo", never "upload".** Nothing is uploaded anywhere, and the copy must not suggest otherwise. The camera-denied line now says "pick photos from your gallery".
+86. **The light meter reads the middle 80 percent of the square** (the edges are usually the room), at 64 by 48, every 250 ms. Thresholds stay 70 and 190; a still outside them gets a gentle retake suggestion, never a block.
+87. **Keeping a photo is a drop.** The still sinks and `engine.splash()` sends a ripple across all 24 rings on its own clock, so camera glides never cut it short. Nothing moves under reduced motion.
+88. **`engine.reframe()` for resizes.** The resize handler from Phase 3 used `set()`, which cancelled the entrance glide whenever the first resize callback landed after it, leaving a screen with no rings. Reframing now moves only the framing and lets the glide finish.
+89. **`engine.setOffset()` pins the rings to the lens** while the page scrolls or reflows, without touching the camera rig or a running glide.
+90. **One baseline per view.** A retake replaces the older week-0 photo along with its mask and projections (`keepPhoto`).
+91. **Masks are 512 px PNGs whose alpha is the area**, one per photo; painting nothing deletes the mask. "Mark the middle for me" is the keyboard path, since a brush needs a pointer.
+92. **The painter opens on the worry from setup**: hairline to the hairline photo, crown to the crown, seeing my scalp to the parting, anything else to the crown.
+93. **Next photos are the first photo week at least 14 days after the baseline**, at the hour it was taken (`settings.photoHour`, an optional field, so the schema stays version 1).
+94. **`navigator.storage.persist()` is asked for once all three are kept** (decision 43), and the close carries the install nudge: the browser's own prompt when it offers one, the iPhone steps otherwise. AppRuntime catches the prompt at boot.
+95. **Deleting a photo takes a second tap** ("Delete it") within five seconds. No modal; retaking is one tap away.
+96. **The baseline screens reuse setup's HUD, field styles and transitions** (`onboarding.css`), so the flow reads as one story from the first question to the last photo.
+97. **Demo mode can use /baseline on its own photo database**, so a reviewer can try the camera without touching real data. Demo head drawings for Today and the mirror come in Phase 5.
+98. **Capture screenshots use an abstract drawn head as Chrome's fake camera** (`artifacts/tools/fake-head-video.mjs`). It is not a person and never ships.

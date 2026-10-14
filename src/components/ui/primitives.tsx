@@ -87,6 +87,7 @@ export function Pair({
   className = "",
   style,
   id,
+  tabIndex,
 }: {
   title: string;
   turn?: string;
@@ -94,9 +95,11 @@ export function Pair({
   className?: string;
   style?: React.CSSProperties;
   id?: string;
+  /** -1 lets a flow move focus to the headline when the screen changes. */
+  tabIndex?: number;
 }) {
   return (
-    <As id={id} className={`pair ${className}`} style={style}>
+    <As id={id} className={`pair ${className}`} style={style} tabIndex={tabIndex}>
       <span>{curl(title)}</span>
       {turn ? (
         <>

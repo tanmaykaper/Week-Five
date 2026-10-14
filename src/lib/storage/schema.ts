@@ -78,6 +78,8 @@ export const settingsSchema = z.object({
   lang: z.enum(["en", "hinglish"]),
   notifications: z.boolean(),
   introSeen: z.boolean(),
+  /** Hour (0 to 23) the day-one photos were taken, so monthly retakes can match the light. */
+  photoHour: z.optional(z.int().check(z.gte(0), z.lte(23))),
   reorder: z.object({ snoozedUntil: z.optional(isoDate), lastShownAt: z.optional(isoDateTime) }),
 });
 

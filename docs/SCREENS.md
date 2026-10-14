@@ -65,29 +65,48 @@ Then the question in two voices, the answers, and Continue (plus Skip where allo
 - Finish: "Your plan / is ready." with a five-row summary, then the briefing.
 - Briefing (`?step=briefing`): title, lead, one card at a time (sans title, body, which weeks light up), dots, ( < ) [ Next ]. Last: [ Got it. Take my day-one photos. ]
 
-## `/baseline`
-Phone
+## `/baseline` (v3)
+Always light, on the pool. Captures: `artifacts/v3/baseline3/` (run `node artifacts/tools/v3-baseline.mjs <dir> <base> <desk|tab|phone> <fake-head.mjpeg>`).
+
+Intro, open layout (words left on wide screens, at the bottom on phones; the rings with the photo-day dots behind):
 ```
-+------------------------------+
-| (Back)   Crown   1 of 3      |
-| +--------------------------+ |
-| |                          | |
-| |      .-''''''-.          | |  live camera
-| |     /  ghost   \         | |  SVG outline
-| |    |  outline   |        | |
-| |     \          /         | |
-| |      '-......-'          | |
-| +--------------------------+ |
-|  Light: (o) Good light       |
-|  Hold the phone above your   |
-|  head, camera facing down.   |
-|                              |
-|         (  shutter  )        |
-|  ( Upload instead )          |
-+------------------------------+
+( < )  0 of 3  Day-one photos                 --- --- ---
+Three photos, two minutes.
+Your day one, on the record.                  (serif)
+Same spot, same time of day, every month...
+(crown)   (hairline)   (parting)              drawings, or the photo + Saved
+[ Open the camera ]  ( I'll do it later )
+(lock) Photos stay on this phone. Nothing is sent anywhere.
+                                   o Photos every four weeks   (label on the dots)
 ```
-Painter step: photo full width, brush size pills, ( Undo ) ( Clear ) [ Done ] ( Skip ).
-Desktop: camera frame left (max 640), instructions and the three-step list right.
+
+Capture, wide screens: words left, the lens right with the rings spreading out round it.
+```
+( < )  1 of 3  Crown                                   === --- ---
+Your crown, from above.                    .-~~~~~~~-.
+The bit you never see yourself.          /  camera    \     ) ) ) weeks 5 to 24
+Hold the phone above your head...       |   ghost      |
+[==o====] Good light.                    \            /
+[ (o) Take crown photo ] ( Choose a photo ) ( Timer, 3 s )  '-.____.-'
+Timer on. Three seconds to get the phone into place.
+```
+Phones: the lens on top, words under it, then the camera-app row `(gallery)  ((o))  (timer)`. Review swaps the row for `( Retake ) [ Keep ]`. No camera: the ghost on white glass, the reason, `[ Choose a photo ]`.
+
+Painter (optional): the photo in the lens, `( Crown ) ( Hairline ) ( Parting )`, `Brush (s)(m)(l)`, `( Undo ) ( Clear ) ( Mark the middle for me )`, `[ Done ] ( Skip )`.
+
+Close, open layout:
+```
+( < )  All set  Day one                       === === ===
+Day one, recorded.
+See you in week 4.                             (serif)
+Next photos around 4 November, at about 9 pm. Same spot, same light.
+(photo) Crown     ( Retake ) ( Delete )        rows on phones, three across on wide screens
+(photo) Hairline  ( Retake ) ( Delete )
+(photo) Parting   ( Retake ) ( Delete )
+[ Go to Today ]  ( Mark the area you watch )
+{ (phone) Add Week Five to your home screen... ( Add to home screen ) }
+                                o Week 4, next photos      (label on its ring, lit)
+```
 
 ## `/home` (nav label: Today)
 Rendered in full in `docs/design-preview.html`. Order is the same at every width; only the columns change.

@@ -74,8 +74,8 @@ export function usePoolPose(make: ((aspect: number) => Pose) | null, key: string
     return poolController.onResize(() => {
       if (!makeRef.current) return;
       const pose = makeRef.current(pool.aspect);
-      // Only the framing changes on resize; keep the scene where it is.
-      pool.set({
+      // Only the framing changes on resize; keep the scene where it is, and any glide going.
+      pool.reframe({
         camX: pose.camX,
         camY: pose.camY,
         camZ: pose.camZ,

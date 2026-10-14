@@ -1,4 +1,5 @@
 import type { PoolState, Rig } from "./engine";
+import { ringRadius } from "./geometry";
 
 /**
  * Camera framings and scene states, by name. Framings are written for a landscape
@@ -127,3 +128,33 @@ export const SETUP_FRAMES = {
 } satisfies Record<string, Framing>;
 
 export type SetupFrame = keyof typeof SETUP_FRAMES;
+
+/** Baseline photos: a view along the photo-day dots, then the map with week 4 picked out. */
+export const BASELINE_FRAMES = {
+  intro: step([1.6, 5.8, 6.2], [0.45, 0, -0.5], { shift: [0.27, 0.1], phoneShift: [-0.08, -0.25], phoneZoom: 1.55 }),
+  done: step([0.3, 10.6, 4.2], [0, 0, -0.2], { fov: 34, phoneShift: [-0.12, -0.27], phoneZoom: 1.45 }),
+} satisfies Record<string, Framing>;
+
+/** The lens's rim sits between weeks 4 and 5: the rings from week 5 out show around it. */
+const LENS_EDGE = ringRadius(4.5);
+
+/**
+ * Looking straight down on the rings, with their centre under a round element on the page
+ * (the camera lens), scaled so the lens covers the first four weeks. `cy` is measured as
+ * if the page were not scrolled; the scroll is applied separately as an offset.
+ */
+export function lensRig(cx: number, cy: number, radius: number, width: number, height: number): Rig {
+  const fov = 30;
+  const dist = (height * LENS_EDGE) / (Math.max(40, radius) * 2 * Math.tan((fov * Math.PI) / 360));
+  return {
+    camX: 0,
+    camY: dist,
+    camZ: dist * 0.06,
+    tx: 0,
+    ty: 0,
+    tz: 0,
+    fov,
+    shiftX: cx / width - 0.5,
+    shiftY: cy / height - 0.5,
+  };
+}

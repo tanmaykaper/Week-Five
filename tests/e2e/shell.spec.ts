@@ -51,7 +51,7 @@ test("theme choice persists across reloads", async ({ page }) => {
 
 test("no page scrolls sideways", async ({ page }) => {
   await seedDemo(page);
-  for (const path of ["/home/", "/map/", "/map/week/5/", "/profile/", "/profile/data/", "/about/", "/start/"]) {
+  for (const path of ["/home/", "/map/", "/map/week/5/", "/profile/", "/profile/data/", "/about/", "/start/", "/baseline/"]) {
     await page.goto(path);
     await page.waitForLoadState("networkidle");
     expect(await horizontalOverflow(page), path).toBeLessThanOrEqual(0);

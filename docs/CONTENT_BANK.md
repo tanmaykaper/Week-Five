@@ -83,17 +83,31 @@ Finish: **Got it. Take my day-one photos.**
 Header: **A quick reminder.** "You heard this at the start. It's easy to forget by week five."
 Cards 2, 4 and 5 from above.
 
-## Baseline capture
+## Baseline capture (v3)
 
-- Intro: **Three photos, two minutes.** "Same spot, same time of day, every month. A window in daylight is perfect. Bathroom light is not."
-- Crown: "Hold the phone above your head, camera facing down. Line the top of your head up with the outline." Shutter: **Take crown photo**
-- Hairline and temples: "Face the camera, hair pushed back, eyebrows on the line."
-- Parting: "Tilt your head down. Part your hair where you normally would."
-- Light meter: Too dark: "Too dark. Move closer to a window." Good: "Good light." Too bright: "Too bright. Step out of direct sun."
-- After each: **Keep** / **Retake**. Saved: "Photo saved. It stays on this phone."
-- Painter intro: **Show us the area you're watching.** "Paint over it with your finger. We use this for the projection, nothing else." Buttons: **Undo**, **Clear**, **Done**, **Skip**.
-- Done: **Day one, recorded.** "Next photos in week four. We'll remind you."
-- Install nudge (after baseline): "Add Week Five to your home screen. It keeps your photos safer on this phone."
+Every screen is a headline in two voices, as in setup: what to do in the sans, why in the serif. Source: `src/content/baseline.ts`.
+
+| Screen | Sans | Serif turn | Body |
+|---|---|---|---|
+| Intro (chapter "Day-one photos") | Three photos, two minutes. | Your day one, on the record. | "Same spot, same time of day, every month. A window in daylight is perfect. Bathroom light is not." |
+| Crown | Your crown, from above. | The bit you never see yourself. | "Hold the phone above your head, camera facing down. Line the top of your head up with the outline." |
+| Hairline and temples | Your hairline, face on. | The one everybody else sees. | "Face the camera, hair pushed back, eyebrows on the line." |
+| Parting | Your parting, head down. | The easiest place to see density. | "Tilt your head down. Part your hair where you normally would." |
+| Painter (chapter "Your area", optional) | Show us the area you watch. | Only for the projection, nothing else. | "Paint over it with your finger. Rough is fine." (pointer: "with the pointer") |
+| Close | Day one, recorded. | See you in week {w}. | "Next photos around {date}, at about {time}. Same spot, same light." |
+| Close, a photo missing | Day one, nearly recorded. | Take the rest when you can. | same |
+
+- Intro buttons: **Open the camera** (or **Carry on with the {view}**), **I'll do it later**. Line: "Photos stay on this phone. Nothing is sent anywhere." Saved views show "Saved".
+- Shutters: **Take crown photo**, **Take hairline photo**, **Take parting photo**. While the timer runs: **Cancel the timer**. Screen reader: "Taking the photo in {n}".
+- Tools: **Choose a photo** (never "upload": nothing is uploaded), **Timer, 3 s** ("Timer on. Three seconds to get the phone into place."), **Switch camera**. Camera starting: "Opening the camera".
+- Light meter: "Checking the light", "Too dark. Move closer to a window.", "Good light.", "Too bright. Step out of direct sun."
+- Review: **Keep** / **Retake**. "Sharp, and the outline roughly lined up? Keep it." Dark still: "This one is dark. A retake by a window will compare better." Bright still: "This one is bright. Out of direct sun will compare better." A saved photo met again: "Already saved. Keep it, or take it again." From the gallery: "We keep the middle square, the same every month."
+- Saved (screen reader): "Photo saved. It stays on this phone."
+- Errors: "No camera access. You can still pick photos from your gallery." / "This browser can't open the camera. Choose a photo instead." / "We couldn't read that photo. Try another one." / "We couldn't save that photo. Your phone may be low on space."
+- Painter: **Brush** (Small, Medium, Large), **Undo**, **Clear**, **Mark the middle for me**, **Done**, **Skip**. Empty: "Nothing painted yet. Skip if you'd rather not."
+- Close: **Go to Today**, **Mark the area you watch** (or **Change the marked area**). Per photo: **Retake**, **Delete** then **Delete it** (second tap), or **Take {view} photo** when missing. "Photo deleted."
+- Install nudge: "Add Week Five to your home screen. It keeps your photos safer on this phone." Button **Add to home screen** when the browser offers it; on iPhone: "On iPhone: Share, then Add to Home Screen."
+- Ring labels: "Photos every four weeks" (intro), "Week {w}, next photos" (close).
 
 ## Home
 
@@ -367,8 +381,8 @@ Any red flag replaces the response with the matching red-flag card.
 ## Errors and empties
 | Case | Copy |
 |---|---|
-| Camera denied | "No camera access. You can still upload photos from your gallery." |
-| Camera unavailable | "This browser can't open the camera. Upload a photo instead." |
+| Camera denied | "No camera access. You can still pick photos from your gallery." |
+| Camera unavailable | "This browser can't open the camera. Choose a photo instead." |
 | Storage blocked | "This browser isn't saving anything right now. Open in a normal tab to keep your plan." |
 | Storage low | "Your phone is low on space for photos. Export a copy, then delete extra shots." |
 | Data unreadable | "We couldn't read your saved data. A copy is kept on this phone. You can export it from Profile, Data." |

@@ -84,18 +84,19 @@ interface Photo {               // IndexedDB "photos"
   view: View;
   week: number;                 // 0 for baseline, then 4, 8, 12, 16, 20, 24 (or any week for extra shots)
   takenAt: ISODateTime;
-  blob: Blob;                   // JPEG, longest side 1600px, EXIF stripped by re-encoding through canvas
+  blob: Blob;                   // JPEG, the centred square of the frame, at most 1600px, EXIF stripped by re-encoding through canvas, never mirrored
   width: number; height: number;
   luminance: number;            // 0 to 255 mean, recorded so comparisons can warn about lighting
 }
 
-interface Mask { photoId: string; blob: Blob }            // IndexedDB "masks", PNG with alpha = painted area
+interface Mask { photoId: string; blob: Blob }            // IndexedDB "masks", 512px PNG with alpha = painted area; one per photo
 interface Projection { id: string; photoId: string; createdAt: ISODateTime; provider: "local-sim" | "remote"; strength: number; blob: Blob }
 
 interface Settings {
   lang: "en" | "hinglish";
   notifications: boolean;
   introSeen: boolean;
+  photoHour?: number;           // 0 to 23, the hour the day-one photos were taken, so monthly retakes match the light
   reorder: { snoozedUntil?: ISODate; lastShownAt?: ISODateTime };
 }
 

@@ -91,3 +91,27 @@
 - First-load JS for the flow screens grows by the Three.js chunk (lazy, after first paint). App pages are unchanged.
 
 **Next step:** Tanmay reviews v3 and Phase 3. On "go", Phase 4: baseline capture.
+
+## 2026-10-14, Phase 4: day-one photos
+
+**Done**
+- The lens: a round viewfinder set at the exact centre of the user's 24 rings, seen from straight above, scaled so it covers weeks 1 to 4 and weeks 5 to 24 spread out round it. It stays pinned to the rings while the page scrolls or reflows.
+- Intro ("Three photos, two minutes."), then crown, hairline and parting, each with a two-voice headline, a ghost line drawing over the camera, a live light meter and a camera-app shutter row on phones. Front camera for the hairline, back camera with a 3 s timer (serif countdown, closing ring, cancellable) for crown and parting. Switch camera when there are two.
+- Review with Keep and Retake. Keeping a photo sinks the still into the lens while a ripple runs out across all 24 rings (`engine.splash()`).
+- No camera (denied, missing, insecure origin): the drawing on white glass, the reason, and "Choose a photo" (the gallery, or the phone's camera app). Never called "upload".
+- Photos: centred square, at most 1600 px, never mirrored, EXIF dropped by re-encoding, saved to IndexedDB as week 0 with their light reading. One per view; a retake replaces the old photo and its mask.
+- Optional painter: soft brush on any of the three photos (opens on the setup worry), three sizes, Undo, Clear, "Mark the middle for me" for keyboards; saved as a 512 px PNG mask.
+- Close: "Day one, recorded. See you in week 4." with the date and hour of the next photos, the three photos with Retake and two-tap Delete, the marked area, Go to Today, and the install nudge (browser prompt or iPhone steps). The rings light the next photo week. A return visit opens here.
+- The hour of the first photo is stored (`settings.photoHour`); `onboarding.baselineDoneAt` and `navigator.storage.persist()` once all three are kept.
+- Pool engine: `lensRig`, `setOffset`, `splash`, and `reframe`, which fixes a Phase 3 bug where a resize could cancel a screen's entrance and leave it without rings.
+
+**Checks:** `pnpm check` passes (lint, types, 74 unit tests, copy check, build). 68 end-to-end tests pass across phone, tablet and desktop (1 skipped by design), including the full camera path with Chrome's fake camera, the gallery path with camera access denied, delete and retake from the close, the cancelled timer and no sideways scroll. The live lens holds 60 fps, p95 16.7 ms, with the CPU slowed 4x on phone and desktop. Looked at every moment at 1440, 1024 and 390 with real frames (`artifacts/v3/baseline-final/`), plus the no-camera screen.
+
+**Decisions:** 81 to 98.
+
+**Known issues**
+- Demo personas have no photos yet, so a reviewer in demo mode sees the intro on /baseline. Demo head drawings for Today and the mirror come with Phase 5.
+- Photos from the gallery keep the middle square; there is no crop adjuster.
+- The week-4 reminder itself (banner, .ics, notification) is Phase 8; the close already says when.
+
+**Next step:** Tanmay reviews Phase 4. On "go", Phase 5: Today (the home dashboard) moves to v3.

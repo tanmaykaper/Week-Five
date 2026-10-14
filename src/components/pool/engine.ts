@@ -94,6 +94,8 @@ export interface Label {
 const GROUND = "#f1f4f7";
 
 const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+/** For things that spread and slow down, like a ripple. */
+export const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
 
 const VERT = /* glsl */ `
 varying vec3 vWorld;
@@ -288,8 +290,19 @@ export class PoolEngine {
   private raf = 0;
   private lastSig = "";
   private started = performance.now();
-  private tween: { from: Record<string, number>; to: Record<string, number>; start: number; ms: number; done?: () => void } | null =
-    null;
+  private tween: {
+    from: Record<string, number>;
+    to: Record<string, number>;
+    start: number;
+    ms: number;
+    curve: (t: number) => number;
+    done?: () => void;
+  } | null = null;
+  /** Extra screen shift on top of the rig, outside any tween (keeps the scene pinned to an element while the page scrolls). */
+  private offX = 0;
+  private offY = 0;
+  /** When a free-running ripple from the centre started (0 for none). See splash(). */
+  private splashAt = 0;
   private width = 1;
   private height = 1;
   private reduced: boolean;
@@ -487,7 +500,7 @@ export class PoolEngine {
   }
 
   /** Ease the camera and the scene to a pose. Interrupts any tween already running. */
-  to(pose: Partial<Rig & PoolState>, ms = 1100): Promise<void> {
+  to(pose: Partial<Rig & PoolState>, ms = 1100, curve: (t: number) => number = ease): Promise<void> {
     const from: Record<string, number> = {};
     const target: Record<string, number> = {};
     const all = { ...this.rig, ...this.state } as Record<string, number>;
@@ -503,14 +516,30 @@ export class PoolEngine {
       return Promise.resolve();
     }
     return new Promise((resolve) => {
-      this.tween = { from, to: target, start: performance.now(), ms, done: resolve };
+      this.tween = { from, to: target, start: performance.now(), ms, curve, done: resolve };
     });
   }
 
-  /** Set values immediately. */
+  /** Set values immediately. Stops any tween. */
   set(pose: Partial<Rig & PoolState>) {
     this.tween = null;
     this.apply(pose as Record<string, number>);
+  }
+
+  /**
+   * Set values immediately without stopping a tween: keys the tween is moving land on
+   * the new value at once, everything else carries on. For re-framing on resize.
+   */
+  reframe(pose: Partial<Rig & PoolState>) {
+    const values = pose as Record<string, number>;
+    if (this.tween) {
+      for (const [k, v] of Object.entries(values)) {
+        if (typeof v !== "number" || !(k in this.tween.to)) continue;
+        this.tween.from[k] = v;
+        this.tween.to[k] = v;
+      }
+    }
+    this.apply(values);
   }
 
   private apply(values: Record<string, number>) {
@@ -519,6 +548,21 @@ export class PoolEngine {
       if (k in this.rig) (this.rig as unknown as Record<string, number>)[k] = v;
       else if (k in this.state) (this.state as unknown as Record<string, number>)[k] = v;
     }
+  }
+
+  /** Shift the whole picture on screen, as a fraction of the viewport, without touching the rig or a running tween. */
+  setOffset(x: number, y: number) {
+    this.offX = x;
+    this.offY = y;
+  }
+
+  /**
+   * Drops something into the middle of the rings: a ripple that runs out across all 24
+   * weeks on its own clock, so camera glides never interrupt it. Nothing under reduced motion.
+   */
+  splash() {
+    if (this.reduced) return;
+    this.splashAt = performance.now();
   }
 
   /** Lay HTML labels over points on the water. They are positioned every frame. */
@@ -546,7 +590,7 @@ export class PoolEngine {
 
     if (this.tween) {
       const t = Math.min(1, (now - this.tween.start) / this.tween.ms);
-      const e = ease(t);
+      const e = this.tween.curve(t);
       const values: Record<string, number> = {};
       for (const k of Object.keys(this.tween.to)) values[k] = this.tween.from[k]! + (this.tween.to[k]! - this.tween.from[k]!) * e;
       this.apply(values);
@@ -558,8 +602,8 @@ export class PoolEngine {
     }
 
     const s = this.state;
-    const moving = !this.reduced && (s.idle > 0 || (s.seasonTo > 0 && s.map > 0));
-    const sig = `${Object.values(this.rig).join()}|${Object.values(s).join()}|${this.width}x${this.height}`;
+    const moving = !this.reduced && (s.idle > 0 || (s.seasonTo > 0 && s.map > 0) || this.splashAt > 0);
+    const sig = `${Object.values(this.rig).join()}|${Object.values(s).join()}|${this.width}x${this.height}|${this.offX},${this.offY}`;
     if (!moving && sig === this.lastSig) return;
     this.lastSig = sig;
     this.draw(now);
@@ -574,7 +618,14 @@ export class PoolEngine {
     this.camera.aspect = this.aspect;
     this.camera.position.set(rig.camX, rig.camY, rig.camZ);
     this.camera.lookAt(rig.tx, rig.ty, rig.tz);
-    this.camera.setViewOffset(this.width, this.height, -rig.shiftX * this.width, -rig.shiftY * this.height, this.width, this.height);
+    this.camera.setViewOffset(
+      this.width,
+      this.height,
+      -(rig.shiftX + this.offX) * this.width,
+      -(rig.shiftY + this.offY) * this.height,
+      this.width,
+      this.height,
+    );
     this.camera.updateProjectionMatrix();
 
     // Dropper.
@@ -617,7 +668,14 @@ export class PoolEngine {
     const u = this.water.material.uniforms;
     u.uCam!.value.copy(this.camera.position);
     u.uTime!.value = time;
-    u.uRipple!.value = s.ripple;
+    let ripple = s.ripple;
+    if (this.splashAt) {
+      // Starts just outside the drop's landing, spreads at about two units a second, gone by the outer ring.
+      const age = 0.3 + ((now - this.splashAt) / 1000) * 1.25;
+      if (age > 4.6) this.splashAt = 0;
+      else ripple = Math.max(ripple, age);
+    }
+    u.uRipple!.value = ripple;
     u.uMap!.value = s.map;
     u.uWeek!.value = s.week;
     u.uShed!.value = s.shed;

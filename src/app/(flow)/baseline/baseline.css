@@ -1,0 +1,689 @@
+/* Day-one photos. The lens is a round window on the water at the centre of the rings
+   (the pool's camera is aimed so they spread out around it). Words on the left on wide
+   screens; on phones the lens sits on top and the shutter in reach of the thumb. */
+
+.bl {
+  min-height: calc(100dvh - var(--header-h));
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  padding-bottom: calc(20px + env(safe-area-inset-bottom));
+}
+.bl-ticks {
+  max-width: 120px;
+}
+
+/* ---------- layout ---------- */
+.bl-stage {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  padding-top: 8px;
+}
+.bl-lens-wrap {
+  order: -1;
+  display: grid;
+  place-items: center;
+}
+.bl-words {
+  display: grid;
+  align-content: start;
+  min-width: 0;
+  max-width: 580px;
+}
+/* Intro and close: open screens over the pool, words at the bottom on phones. */
+.bl-open {
+  justify-content: flex-end;
+  padding-top: clamp(150px, 34dvh, 320px);
+}
+@media (min-width: 960px) {
+  .bl-stage {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+    align-items: center;
+    gap: clamp(32px, 4vw, 72px);
+    padding-block: 8px 40px;
+  }
+  .bl-lens-wrap {
+    order: 0;
+  }
+  .bl-open {
+    grid-template-columns: minmax(0, 600px);
+    justify-content: start;
+    align-content: center;
+    padding-top: 0;
+    padding-bottom: calc(var(--header-h) - 8px);
+  }
+}
+
+/* ---------- words ---------- */
+.bl-how {
+  margin-top: 16px;
+  max-width: 40ch;
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  color: var(--text-2);
+}
+.bl-lead {
+  margin-top: 20px;
+  max-width: 44ch;
+  font-size: var(--t-lead);
+  line-height: 1.6;
+  color: var(--text-2);
+}
+.bl-status {
+  margin-top: 16px;
+  min-height: 26px;
+}
+.bl-note {
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--ink);
+}
+.bl-fine {
+  margin-top: 12px;
+  font-size: 0.875rem;
+  color: var(--text-2);
+}
+.bl-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 28px;
+}
+.bl-privacy {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 22px;
+  font-size: 0.875rem;
+  color: var(--text-2);
+}
+.bl-privacy svg {
+  flex: none;
+  color: var(--ink);
+}
+@media (max-width: 959px) {
+  .bl-actions > :first-child {
+    flex: 1;
+  }
+}
+
+/* ---------- the lens ---------- */
+.bl-lens {
+  --d: min(calc(100vw - 2 * var(--gutter)), 40dvh, 520px);
+  position: relative;
+  width: min(var(--d), 100%);
+  aspect-ratio: 1;
+  border-radius: 50%;
+}
+@media (min-width: 960px) {
+  .bl-lens {
+    --d: min(62dvh, 40vw, 600px);
+  }
+}
+.bl-lens-glass {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.74);
+  /* A glass rim, and the one shadow on this screen: the lens floats on the water. */
+  box-shadow:
+    0 0 0 6px rgba(255, 255, 255, 0.55),
+    0 0 0 7px rgba(15, 30, 51, 0.06),
+    0 40px 80px -40px rgba(15, 30, 51, 0.45);
+  isolation: isolate;
+}
+.bl-video,
+.bl-still {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.bl-still {
+  border-radius: 50%;
+}
+.bl-video {
+  opacity: 0;
+  transition: opacity 400ms var(--ease-settle);
+}
+.bl-lens[data-live] .bl-video {
+  opacity: 1;
+}
+.bl-video[data-mirrored] {
+  transform: scaleX(-1);
+}
+.bl-ghost {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.bl-paint {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  cursor: crosshair;
+  opacity: 0.9;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .bl-lens-glass {
+    animation: bl-lens-in 900ms var(--ease-settle) both;
+  }
+  .bl-still {
+    animation: bl-fade 320ms var(--ease-settle) both;
+  }
+  /* Keeping a photo: the still sinks into the water as its ripple spreads. */
+  .bl-stage[data-phase="saving"] .bl-still {
+    animation: bl-sink 680ms var(--ease-swell) forwards;
+  }
+}
+@keyframes bl-lens-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+}
+@keyframes bl-fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes bl-sink {
+  to {
+    opacity: 0;
+    transform: scale(0.82);
+  }
+}
+
+/* The ghost outline: white over the camera with a dark edge so it reads on any picture;
+   ink on its own. Guides (the eyebrow line) are dashed. */
+.head-ghost path {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.head-ghost-line path {
+  stroke: var(--ink);
+  stroke-opacity: 0.5;
+  stroke-width: 1.4;
+}
+.head-ghost-guide path {
+  stroke: var(--accent);
+  stroke-width: 1.4;
+  stroke-dasharray: 5 6;
+}
+.head-ghost[data-tone="video"] .head-ghost-under path {
+  stroke: rgba(15, 30, 51, 0.4);
+  stroke-width: 3.6;
+}
+.head-ghost[data-tone="video"] .head-ghost-line path {
+  stroke: #fff;
+  stroke-opacity: 0.92;
+  stroke-width: 1.8;
+}
+.head-ghost[data-tone="video"] .head-ghost-guide path {
+  stroke: #fff;
+  stroke-width: 1.8;
+}
+
+/* The timer: a numeral in the serif, and a ring closing on the lens each second. */
+.bl-count {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: calc(var(--d) * 0.42);
+  line-height: 1;
+  color: #fff;
+  text-shadow: 0 2px 30px rgba(15, 30, 51, 0.45);
+  pointer-events: none;
+}
+.bl-count-ring {
+  position: absolute;
+  inset: -18px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 2px var(--accent);
+  opacity: 0;
+  pointer-events: none;
+}
+.bl-flash {
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  opacity: 0;
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .bl-count {
+    animation: bl-count 1000ms var(--ease-settle) both;
+  }
+  .bl-count-ring {
+    animation: bl-close 1000ms var(--ease-swell) both;
+  }
+  .bl-flash {
+    animation: bl-flash 420ms var(--ease-settle) both;
+  }
+}
+@keyframes bl-count {
+  from {
+    opacity: 0;
+    transform: scale(1.18);
+  }
+  60% {
+    opacity: 1;
+  }
+}
+@keyframes bl-close {
+  from {
+    opacity: 0.9;
+    transform: scale(1.12);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+}
+@keyframes bl-flash {
+  from {
+    opacity: 0.8;
+  }
+}
+
+/* ---------- light meter ---------- */
+.bl-meter {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.9375rem;
+  line-height: 1.45;
+  color: var(--ink);
+}
+.bl-meter-track {
+  position: relative;
+  flex: none;
+  width: 88px;
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(15, 30, 51, 0.1);
+}
+/* 70 to 190 of 0 to 255: the stretch the photos should be taken in. */
+.bl-meter-good {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 27.45%;
+  width: 47.06%;
+  border-radius: 3px;
+  background: rgba(201, 138, 18, 0.42);
+}
+.bl-meter-pos {
+  position: absolute;
+  inset: 0;
+  transition: transform 300ms var(--ease-settle);
+}
+.bl-meter-dot {
+  position: absolute;
+  left: -7px;
+  top: -4px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: inset 0 0 0 3px #c98a12;
+}
+.bl-meter[data-status="good"] .bl-meter-dot {
+  background: #c98a12;
+  box-shadow: 0 0 0 3px #fff;
+}
+.bl-meter[data-status="reading"] .bl-meter-dot {
+  opacity: 0.35;
+}
+
+/* ---------- controls ---------- */
+.bl-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 22px;
+}
+.bl-controls:not(.bl-shoot) > :last-child {
+  flex: 1;
+}
+@media (min-width: 960px) {
+  .bl-controls:not(.bl-shoot) > :last-child {
+    flex: none;
+  }
+}
+
+/* Phones: a camera app's row, shutter in the middle of the thumb's reach. */
+.bl-shoot {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 18px;
+}
+.bl-shoot > .bl-tool:first-child {
+  justify-self: end;
+}
+.bl-shoot > .bl-tool:nth-child(3),
+.bl-shoot > .bl-tool:nth-child(4) {
+  grid-row: 1;
+  grid-column: 3;
+  justify-self: start;
+}
+.bl-shoot > .bl-tool:nth-child(4) {
+  margin-left: 62px;
+}
+
+.bl-tool {
+  display: inline-grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.82);
+  color: var(--ink);
+  transition:
+    background-color 220ms var(--ease-settle),
+    color 220ms var(--ease-settle),
+    transform 140ms var(--ease-settle);
+}
+.bl-tool:hover {
+  background: #fff;
+}
+.bl-tool:active {
+  transform: scale(0.95);
+}
+.bl-tool[aria-pressed="true"] {
+  background: var(--ink);
+  color: #fff;
+}
+.bl-tool:disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+.bl-tool-text {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.bl-shutter {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 78px;
+  height: 78px;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 3px var(--action);
+  background: rgba(255, 255, 255, 0.86);
+}
+.bl-shutter-disc {
+  width: 60px;
+  height: 60px;
+  border-radius: 999px;
+  background: var(--action);
+  transition:
+    transform 160ms var(--ease-settle),
+    border-radius 260ms var(--ease-settle),
+    width 260ms var(--ease-settle),
+    height 260ms var(--ease-settle);
+}
+.bl-shutter:active .bl-shutter-disc {
+  transform: scale(0.88);
+}
+/* While the timer runs, the shutter becomes a stop button. */
+.bl-shutter[data-counting] .bl-shutter-disc {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+}
+.bl-shutter:disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+.bl-shutter-text {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (min-width: 960px) {
+  .bl-shoot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+  }
+  .bl-shoot > .bl-tool {
+    margin-left: 0 !important;
+  }
+  .bl-shutter {
+    order: -1;
+    width: auto;
+    height: 60px;
+    display: inline-flex;
+    gap: 14px;
+    padding: 0 26px 0 6px;
+    margin-right: 6px;
+    background: var(--action);
+    color: var(--on-action);
+    box-shadow: none;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    transition: background-color 200ms var(--ease-settle);
+  }
+  .bl-shutter:hover {
+    background: var(--action-hover);
+  }
+  .bl-shutter-disc {
+    width: 48px;
+    height: 48px;
+    background: transparent;
+    box-shadow:
+      inset 0 0 0 2.5px #fff,
+      inset 0 0 0 7px var(--action),
+      inset 0 0 0 24px #fff;
+  }
+  .bl-shutter[data-counting] .bl-shutter-disc {
+    width: 48px;
+    height: 48px;
+    border-radius: 999px;
+    box-shadow:
+      inset 0 0 0 2.5px #fff,
+      inset 0 0 0 15px var(--action),
+      inset 0 0 0 24px #fff;
+  }
+  .bl-shutter-text {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip: auto;
+  }
+  .bl-tool {
+    display: inline-flex;
+    gap: 8px;
+    width: auto;
+    height: 44px;
+    padding: 0 16px;
+    font-size: 0.9375rem;
+    font-weight: 500;
+  }
+  .bl-tool-text {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip: auto;
+  }
+}
+
+/* ---------- the three views ---------- */
+.bl-views {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 26px;
+  max-width: 460px;
+}
+.bl-views > li {
+  display: grid;
+  justify-items: start;
+  align-content: start;
+  gap: 10px;
+}
+.bl-disc {
+  position: relative;
+  display: block;
+  width: 64px;
+  height: 64px;
+  overflow: hidden;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.5);
+}
+.bl-disc[data-size="lg"] {
+  width: clamp(84px, 24vw, 128px);
+  height: clamp(84px, 24vw, 128px);
+}
+.bl-disc img,
+.bl-disc svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.bl-view-name {
+  display: grid;
+  gap: 2px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.3;
+}
+.bl-view-done {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--accent);
+  font-size: 0.8125rem;
+}
+.bl-views-done {
+  max-width: 520px;
+}
+/* Phones: the close lists the three photos as rows, actions beside each. */
+@media (max-width: 639px) {
+  .bl-views-done {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+    margin-top: 22px;
+  }
+  .bl-views-done > li {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 14px;
+  }
+  .bl-views-done .bl-disc[data-size="lg"] {
+    width: 60px;
+    height: 60px;
+  }
+  .bl-views-done .bl-view-actions {
+    flex-wrap: nowrap;
+  }
+}
+.bl-view-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.bl-mini {
+  min-height: 44px;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: rgba(15, 30, 51, 0.06);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  transition: background-color 200ms var(--ease-settle);
+}
+.bl-mini:hover {
+  background: rgba(15, 30, 51, 0.11);
+}
+.bl-mini[data-danger] {
+  color: var(--alert);
+}
+.bl-mini[data-strong] {
+  background: var(--action);
+  color: var(--on-action);
+  text-align: left;
+  line-height: 1.25;
+  padding-block: 6px;
+}
+
+.bl-install {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 28px;
+  padding: 14px 16px 14px 18px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.72);
+  font-size: 0.9375rem;
+  line-height: 1.45;
+  max-width: 560px;
+}
+.bl-install svg {
+  flex: none;
+  color: var(--accent);
+}
+
+/* ---------- painter ---------- */
+.bl-tools {
+  display: grid;
+  gap: 14px;
+  margin-top: 20px;
+}
+.bl-sizes {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.bl-sizes > span {
+  margin-right: 4px;
+}
+.bl-size {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.82);
+  transition: background-color 200ms var(--ease-settle);
+}
+.bl-size i {
+  display: block;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0.6;
+}
+.bl-size[aria-checked="true"] {
+  background: var(--ink);
+}
+.bl-size[aria-checked="true"] i {
+  background: #fff;
+  opacity: 1;
+}

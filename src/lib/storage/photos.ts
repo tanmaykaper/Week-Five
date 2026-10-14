@@ -109,3 +109,24 @@ export async function photoBytes(mode: Mode): Promise<number> {
   const photos = await listPhotos(mode);
   return photos.reduce((sum, p) => sum + p.blob.size, 0);
 }
+
+/** The kept day-one photo for each view (week 0). If a view somehow has two, the newest wins. */
+export async function baselinePhotos(mode: Mode): Promise<Partial<Record<View, PhotoRecord>>> {
+  const out: Partial<Record<View, PhotoRecord>> = {};
+  for (const p of await listPhotos(mode)) if (p.week === 0) out[p.view] = p;
+  return out;
+}
+
+/**
+ * Saves a photo as the one for its view and week, removing any earlier photo for the same
+ * view and week (a retake), along with that photo's mask and projections.
+ */
+export async function keepPhoto(mode: Mode, photo: PhotoRecord): Promise<void> {
+  const older = (await listPhotos(mode)).filter((p) => p.view === photo.view && p.week === photo.week && p.id !== photo.id);
+  for (const p of older) await deletePhoto(mode, p.id);
+  await putPhoto(mode, photo);
+}
+
+export async function deleteMask(mode: Mode, photoId: string): Promise<void> {
+  await (await photoDb(mode)).delete("masks", photoId);
+}
