@@ -82,11 +82,11 @@ Idea: goal-gradient (Kivetz et al. 2006). Show the distance covered, not just th
 - Bottom capsule "How is your scalp today?" opens the quick check-in sheet.
 - Skeletons for every card while IndexedDB loads. Empty states for no photos, no check-ins, no pack scanned.
 - Demo, day 35: the screen visibly reframes the shed using their baseline, the map and their letter (definition of done).
-- Layout: one column at phone widths, 2 columns at 768, 3 at 1200+.
+- Layout: a document, not a card grid. One column on phones; from 960 px a 7 + 5 hero (greeting and insight beside the ring), then the 24-week strip, a three-up row (routine, day one and now, supply) divided by hairlines, then mates and the projection teaser. See `design-preview.html`.
 
-### F7. Journey map (`/journey`, `/journey/week/[n]`)
+### F7. The map (`/map`, `/map/week/[n]`)
 Idea: expectation confirmation (Oliver 1980). Tell them what normal looks like before it happens.
-- 24 weeks as a vertical track on phones and a horizontal track on desktop. Phases labelled, "You are here" marker, monthly photo dots, the letter's week marked.
+- 24 weeks as the same strip used on Today (compact on phones, labelled on desktop), plus a week-by-week list. Phases labelled, "You are here" marker, monthly photo dots, the letter's week marked.
 - Season overlay band where the shed window overlaps the user's monsoon, with its own explanation.
 - Each week page (static params 1 to 24): what commonly happens, what to do this week, what is not a reason to worry, when to see a doctor, references.
 
@@ -111,7 +111,7 @@ Idea: pre-commitment against present bias (O'Donoghue and Rabin 1999).
 
 ### F11. Wait, before you stop (`/pause`)
 Idea: put evidence next to the feeling, then respect the decision.
-- Reachable from Home, Journey and Profile ("I'm thinking of stopping").
+- Reachable from Today, Map and You ("Thinking of stopping?").
 - Shows, in order: their day-one photo, where they are on the map, their letter, a neutral fact box ("Most people who feel this way are in weeks 3 to 7"), then three equal options: keep going, pause with a restart date, talk to a doctor.
 - No guilt copy, no countdown, no hidden option. Choice is logged locally as an intercept.
 - Pause sets a restart date, adds it to the .ics and adjusts insight cards ("Restarting can bring a second, smaller shed").
@@ -184,8 +184,8 @@ Accounts, cloud sync, analytics SDKs, servers, any AI diagnosis of photos, any m
 /home                  Dashboard
 /mirror                Photo timeline, compare slider, retake
 /mirror/projection     Thinking mode and the typical-outcome illustration
-/journey               24-week map, season overlay, letter
-/journey/week/[n]      What to expect in week n (1 to 24, static)
+/map               24-week map, season overlay, letter
+/map/week/[n]      What to expect in week n (1 to 24, static)
 /checkin               Full-page check-in (the capsule opens the same form as a sheet)
 /pause                 Wait, before you stop
 /mates                 Demo community feed
@@ -320,9 +320,9 @@ week-five/
   src/
     app/             one folder per route, layout.tsx, globals.css
     components/
-      ui/            Button, Pill, Card, Glass, Sheet, Slider, Segmented, Ring, Orb, Capsule, Skeleton
-      shell/         AppShell, TabBar, Rail, DemoChip, Banner
-      features/      home/, onboarding/, baseline/, mirror/, journey/, checkin/, pause/, mates/, reorder/, profile/, intro/
+      ui/            Button, Link, Tag, Panel, Sheet, Popover, Slider, Segmented, Ring, WeekStrip, CheckinBar, Skeleton
+      shell/         SiteHeader, TabBar, DemoChip, Banner, Footer
+      features/      today/, onboarding/, baseline/, mirror/, map/, checkin/, pause/, mates/, reorder/, profile/, intro/
     lib/
       time/          clock.ts, journey.ts
       season.ts  timeline.ts  insights.ts  runway.ts  routine.ts  ics.ts  rng.ts  params.ts

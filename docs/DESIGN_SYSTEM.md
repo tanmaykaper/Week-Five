@@ -1,176 +1,136 @@
-# Design system
+# Design system (v2, 14 October 2026)
 
-## The idea: the drop and the ripple
+v1 drew the app as a phone mockup with glow, glass and boxed cards everywhere. Tanmay rejected it as ugly and unresponsive. v2 is a responsive website first: calm, minimal, mostly type and space. `docs/design-preview.html` is the reference render of Home.
 
-Treatment is one small drop a day, and nothing happens for a while. Then it spreads. The whole interface comes from that:
+## The idea: the drop and the ripple, drawn quietly
 
-- The intro ends with a single drop that falls, hits the surface and becomes a ripple that opens the app.
-- The Home progress ring is that ripple, frozen at today: the arc is how far it has spread toward week 24.
-- The shed window is drawn on the ring from day one as a hatched band, so it's on the map before it arrives (forewarning made visible).
-- The orb behind the ring is the drop. It breathes slowly, and only there.
-- Check-ins feel like dropping something into water: the capsule sends, a small ripple confirms.
+Treatment is one small drop a day, and nothing visible happens for a while. Then it spreads.
 
-Boldness goes in one place, the ring and orb. Everything around it stays quiet: hairlines, plain type, no decorative gradients on cards.
+- The intro ends with a single drop that falls and becomes a ripple that opens the app.
+- The progress ring on Today is that ripple frozen at today. Three faint concentric hairlines around it are the only decoration on the page.
+- The shed window is drawn on the ring and on the 24-week strip from day one as a hatched band, so it is on the map before it arrives.
+- Check-ins send with a small ripple from the send button.
+
+Boldness goes in one place: the serif greeting and the ring beside it. Everything else is hairlines, plain type and space.
+
+## Principles
+
+1. **A document, not a dashboard.** Sections are separated by space and 1 px hairlines, not by boxes. At most one bordered panel per screen, and only when it holds something different in kind (the projection teaser, a red-flag card).
+2. **Space does the grouping.** Big gaps between sections (64 to 112 px), tight gaps inside them (8 to 24 px).
+3. **One accent.** Man Matters blue for actions and "you are here". Amber only for photo days and today. Coral only for see-a-doctor. Nothing else gets colour.
+4. **Serif for people, sans for the app.** The greeting, the "Thinking of stopping?" moment and the user's own letter are set in Instrument Serif. Everything the app says is Geist.
+5. **Flat.** No gradients, no glow, no glass except the sticky header blur. One very soft shadow, used only on things that float (check-in bar, popovers, sheets).
+6. **Website at every width.** Top navigation from 768 px up. On phones the same content stacks into one column with a bottom tab bar for thumb reach. Never a phone frame, never horizontal scroll.
 
 ## Colour
 
-Anchored on the Man Matters palette read from manmatters.com (primary blue about `#22548A`, deep navy `#143461`, pale blue `#D0DEF1`), extended for an app with a dark hero theme. Names describe the role, not the hue.
+Cool near-white and deep navy ink, anchored on manmatters.com (primary blue about `#22548A`, deep navy `#143461`, pale blue `#D0DEF1`). Pastel tags are washed-out tints, never large fills.
 
-### Primitives
-| Token | Hex | Use |
+| Token | Light | Dark | Use |
+|---|---|---|---|
+| `--bg` | `#FBFCFD` | `#0B121C` | Page |
+| `--surface` | `#FFFFFF` | `#101925` | Floating bar, popovers, the one bordered panel |
+| `--sunk` | `#F3F5F8` | `#0E1621` | Photo wells, avatar circles, hover fills |
+| `--line` | `#E6EAF0` | `rgba(255,255,255,0.08)` | Hairlines |
+| `--line-strong` | `#D5DCE5` | `rgba(255,255,255,0.14)` | Quiet button borders, ticks |
+| `--ink` | `#0F1E33` | `#E9EEF5` | Headings, body |
+| `--text-2` | `#556275` | `#9AA8BA` | Secondary text |
+| `--text-3` | `#626E7E` | `#8391A5` | Captions, metadata |
+| `--accent` | `#22548A` | `#7DB0EE` | Links, ring, you-are-here |
+| `--action` | `#22548A` | `#2C66A6` | Primary button fill (white text) |
+| `--track` | `#E9EDF2` | `rgba(255,255,255,0.08)` | Empty ring and strip |
+| `--hatch` | `rgba(34,84,138,0.42)` | `rgba(125,176,238,0.45)` | Shed window hatching |
+| `--today-bg` / `--today` | `#FBF3DB` / `#7A5200` | `#2B2926` / `#F2B661` | Photo days, today |
+| `--alert-bg` / `--alert` | `#FDEBEC` / `#9F2F2D` | `#2B2329` / `#F28B76` | Red flags only |
+| `--ok-bg` / `--ok` | `#EDF3EC` / `#346538` | `#1B2D2F` / `#7CD4A6` | Positive deltas |
+| `--info-bg` / `--info` | `#E8F0FA` / `#22548A` | `#1B2839` / `#7DB0EE` | Neutral notices |
+
+### Measured contrast (WCAG 2.2)
+| Pair | Light (bg / surface / sunk) | Dark (bg / surface / sunk) |
 |---|---|---|
-| `--navy-950` | `#08111F` | Dark ground |
-| `--navy-900` | `#0F1B2E` | Dark card surface |
-| `--navy-850` | `#15243B` | Dark raised surface, sheets |
-| `--navy-800` | `#143461` | Brand deep navy, dark glow source |
-| `--blue-600` | `#22548A` | Brand blue, primary action |
-| `--blue-500` | `#2C66A6` | Action hover and pressed |
-| `--blue-400` | `#5B9BE6` | Glow, ring, links on dark |
-| `--blue-100` | `#D0DEF1` | Brand pale blue, light washes |
-| `--mist-50` | `#EEF3FA` | Light ground |
-| `--amber-400` | `#F2B661` | Today and milestones on dark |
-| `--amber-700` | `#8A5A0F` | Today and milestones on light |
-| `--coral-400` | `#F28B76` | Red flags on dark |
-| `--coral-700` | `#B23F2A` | Red flags on light |
-| `--mint-400` | `#7CD4A6` | Positive deltas on dark |
-| `--mint-700` | `#1F7A4C` | Positive deltas on light |
+| `--ink` | 16.31 / 16.75 / 15.33 | 16.12 / 15.17 / 15.59 |
+| `--text-2` | 6.03 / 6.19 / 5.67 | 7.77 / 7.31 / 7.52 |
+| `--text-3` | 5.05 / 5.18 / 4.75 | 5.87 / 5.52 / 5.68 |
+| `--accent` | 7.56 / 7.77 / 7.11 | 8.34 / 7.84 / 8.06 |
+| White on `--action` | 7.77 | 5.90 |
+| Tags (text on its tint) | today 6.24, alert 6.26, ok 6.08, info 6.76 | today 8.04, alert 6.35, ok 8.08, info 6.61 |
 
-### Semantic tokens
-| Token | Dark | Light |
-|---|---|---|
-| `--bg` | `#08111F` | `#EEF3FA` |
-| `--bg-glow` | radial `#143461` at 55 percent opacity | iridescent wash: `#D0DEF1`, `#E6E0F5`, `#DDF0EA` radials |
-| `--surface` | `#0F1B2E` | `rgba(255,255,255,0.62)` + blur 24 px (`#F8FAFD` solid fallback) |
-| `--surface-raised` | `#15243B` | `#FFFFFF` |
-| `--hairline` | `rgba(255,255,255,0.08)` | `rgba(14,31,56,0.08)` |
-| `--hairline-strong` | `rgba(255,255,255,0.14)` | `rgba(14,31,56,0.14)` |
-| `--text` | `#EAF0F8` | `#0E1F38` |
-| `--text-2` | `#A3B3C9` | `#46566E` |
-| `--text-3` | `#7E91AB` | `#5F6F86` |
-| `--action` | `#22548A` | `#22548A` |
-| `--action-text` | `#FFFFFF` | `#FFFFFF` |
-| `--accent` | `#5B9BE6` | `#22548A` |
-| `--today` | `#F2B661` | `#8A5A0F` |
-| `--alert` | `#F28B76` | `#B23F2A` |
-| `--positive` | `#7CD4A6` | `#1F7A4C` |
-| `--focus` | `#5B9BE6` 2 px + 2 px offset | `#22548A` 2 px + 2 px offset |
-| `--selection` | `rgba(91,155,230,0.35)` | `rgba(34,84,138,0.20)` |
-
-Coral is used for red-flag states only. Amber only for "today" and milestones. If either shows up anywhere else, it's a bug.
-
-### Contrast checks (WCAG 2.2, measured)
-| Pair | Dark: bg / surface / raised | Light: bg / surface / raised |
-|---|---|---|
-| `--text` | 16.50 / 15.06 / 13.60 | 14.81 / 15.79 / 16.51 |
-| `--text-2` | 8.87 / 8.10 / 7.31 | 6.69 / 7.13 / 7.46 |
-| `--text-3` (small labels only) | 5.88 / 5.36 / 4.84 | 4.59 / 4.89 / 5.12 |
-| `--accent` | 6.55 / 5.98 / 5.40 | 6.97 / 7.43 / 7.77 |
-| `--today` | 10.48 / 9.57 / 8.64 | 5.31 / 5.66 / 5.92 |
-| `--alert` | 7.86 / 7.18 / 6.48 | 5.18 / 5.52 / 5.77 |
-| `--positive` | 10.65 / 9.72 / 8.78 | 4.77 / 5.09 / 5.32 |
-| White on `--action` | 7.77 | 7.77 |
-| White on `--blue-500` hover | 5.90 | 5.90 |
-
-Every text pair passes AA (4.5:1). Light glass surfaces are checked against their solid fallback; the blur layer is never allowed to drop below `rgba(255,255,255,0.55)` so contrast holds over the wash.
+All pass AA for body text.
 
 ## Typography
 
-| Role | Family | Why |
+| Role | Family | Notes |
 |---|---|---|
-| Everything in the app's voice | **Manrope** (variable, 200 to 800) | Geometric and calm like MiSans, with a real 200 weight for big numerals and tabular figures built in |
-| The user's own words (the letter, its reveal) | **Instrument Serif**, italic | Your words look different from the app's words. The change of voice is the point |
+| Display (greeting, a few moments of human voice, the letter) | **Instrument Serif** 400, italic for the letter | Tight tracking, line-height 1 |
+| Everything else | **Geist** variable 200 to 700 | 200 for big numerals, 400 body, 500 UI, 600 titles |
 
-Both are self-hosted through `next/font`. No other families.
+Both self-hosted through `next/font`. Phosphor icons (regular, fill for the active tab, bold for checkmarks).
 
-### Scale (major third, 1.25, fluid between 360 and 1440 px)
-| Token | Size | Line height | Weight | Tracking | Use |
-|---|---|---|---|---|---|
-| `--t-numeral` | `clamp(4rem, 3.2rem + 4vw, 6.5rem)` | 0.9 | 200 | -0.04em | Ring percent, day count |
-| `--t-display` | `clamp(2.25rem, 1.9rem + 1.8vw, 3.5rem)` | 1.02 | 300 | -0.03em | Greeting, intro beats |
-| `--t-h1` | `clamp(1.75rem, 1.55rem + 1vw, 2.4rem)` | 1.1 | 600 | -0.02em | Screen titles, onboarding questions |
-| `--t-h2` | `1.375rem` | 1.2 | 600 | -0.015em | Card titles |
-| `--t-h3` | `1.125rem` | 1.3 | 600 | -0.01em | Sub-heads |
-| `--t-body` | `1rem` | 1.5 | 450 | 0 | Body |
-| `--t-small` | `0.875rem` | 1.45 | 500 | 0 | Secondary text, why-we-ask |
-| `--t-micro` | `0.75rem` | 1.35 | 600 | 0.01em | Pills, axis labels (sentence case, never all caps) |
-| `--t-letter` | `clamp(1.5rem, 1.3rem + 1vw, 2rem)` | 1.3 | 400 italic | 0 | The letter |
+| Token | Size | Line height | Weight | Use |
+|---|---|---|---|---|
+| `--t-display` | `clamp(2.75rem, 1.7rem + 4.2vw, 5rem)` | 1 | Serif 400, -0.02em | Greeting |
+| `--t-numeral` | `clamp(3.5rem, 2.8rem + 2.6vw, 5rem)` | 0.9 | Geist 200, -0.05em | Ring percent, days left |
+| `--t-statement` | `clamp(1.25rem, 1.12rem + 0.55vw, 1.5rem)` | 1.45 | Geist 400, -0.01em | The insight sentence |
+| `--t-lead` | `clamp(1.0625rem, 1rem + 0.3vw, 1.1875rem)` | 1.6 | 400 | Day line under the greeting |
+| `--t-title` | `1.125rem` | 1.3 | 600, -0.01em | Section titles |
+| `--t-body` | `1rem` | 1.6 | 400 | Body |
+| `--t-small` | `0.875rem` | 1.5 | 400 to 500 | Secondary |
+| `--t-micro` | `0.8125rem` | 1.4 | 500 | Captions, phase labels |
 
-Rules: `text-wrap: balance` on headings, `pretty` on body. `font-variant-numeric: tabular-nums` on every number that changes or lines up. Body measure 34 to 64 characters. No all-caps labels, no tracked-out eyebrows, no monospace data labels, no arrows appended to button text.
+Rules: headings `text-wrap: balance`, body `pretty`, `tabular-nums` on every changing number, sentence case everywhere, no all-caps labels, no eyebrow labels unless they carry information (the date above the greeting does), no arrows in button text, measure 36 to 64 characters.
 
-## Space, grid, radius, elevation
+## Layout
 
-- **Spacing** (8 px grid, 4 for hairline nudges): `--s-1` 4, `--s-2` 8, `--s-3` 12, `--s-4` 16, `--s-5` 24, `--s-6` 32, `--s-7` 40, `--s-8` 48, `--s-9` 64, `--s-10` 80.
-- **Gutters**: 16 px side gutter at 360 to 430, 24 at 768, 32 at 1200+. Plus `env(safe-area-inset-*)`.
-- **Grid**: phone 1 column; 768 to 1199 two columns with a 72 px left icon rail; 1200+ three columns, content max 1180 px, rail 88 px.
-- **Radius** by hierarchy, not one value everywhere: `--r-hero` 28 (ring card, sheets), `--r-card` 20 (bento tiles), `--r-inner` 12 (photos and inputs inside cards), `--r-pill` 999 (pills, capsule, tab indicator).
-- **Elevation**: dark theme uses no drop shadows; depth comes from surface steps and hairlines, plus a 1 px top inner highlight `inset 0 1px 0 rgba(255,255,255,0.04)`. Light theme glass: `0 1px 0 rgba(255,255,255,0.8) inset, 0 10px 30px -12px rgba(20,52,97,0.18)`. Sheets get one deeper level.
-- **Glass recipe (light)**: `background: rgba(255,255,255,0.62); backdrop-filter: blur(24px) saturate(140%); border: 1px solid rgba(255,255,255,0.7)`. Fallback without `backdrop-filter`: `#F8FAFD`. Dark theme uses glass only for the capsule and sheets: `rgba(21,36,59,0.72)` + blur 20 px.
-
-## Motion
-
-Two speeds. UI motion answers a tap and is short. Story motion (intro, letter reveal, projection) is slow and happens rarely.
-
-### Eases
-| Name | Value | Use |
-|---|---|---|
-| `--ease-settle` | `cubic-bezier(0.22, 1, 0.36, 1)` | Things arriving and settling: sheets, cards, page enters |
-| `--ease-swell` | `cubic-bezier(0.65, 0, 0.35, 1)` | Story moments: ring draw, ripple, letter unfold |
-| `--ease-fall` | `cubic-bezier(0.55, 0, 1, 0.45)` | The drop falling, and nothing else |
-
-### Springs (motion package)
-| Name | Config | Use |
-|---|---|---|
-| `press` | stiffness 600, damping 40 | Tap feedback, scale to 0.97 |
-| `ui` | stiffness 380, damping 34 | Sheets, segmented controls, tab indicator |
-| `calm` | stiffness 160, damping 26, no overshoot (critically damped) | Red-flag and doctor cards. Serious content never bounces |
-
-### Durations
-`--d-instant` 120 ms (colour, focus), `--d-fast` 180 ms (press, toggle), `--d-ui` 280 ms (sheets, page enter), `--d-slow` 350 ms (card expand), `--d-story` 900 ms (ring draw, letter unfold), `--d-ripple` 1200 ms (intro reveal).
-
-### Stagger
-Home on first paint: ring first, then greeting, then cards at 50 ms steps, max 6 items. Once per session; returning to Home within the session does not replay it.
-
-### Choreography with a reason for each
-| Motion | Why it exists |
-|---|---|
-| Ring draws from 0 to today on first Home paint | Makes distance travelled feel earned (goal-gradient) |
-| Orb breathes on a 10 s cycle | A calm, living centre; it slows to the 4-in 6-out pace in the night card |
-| Card to detail shared-element transition | Shows where the detail came from, keeps place |
-| Capsule ripple on send | Confirms the check-in landed |
-| Onboarding step slide | One question replaces another, spatially forward |
-| Letter unfolds | Marks it as a moment, not just another card |
-| Projection thinking sequence | Honest pacing; signals work is being done on the device |
-
-Under `prefers-reduced-motion: reduce`: every transition becomes a 120 ms opacity cross-fade or nothing, the ring renders at its final value, the orb is still, the intro uses its auto-advance path, parallax is off.
+- **Container:** max 1200 px content, gutters `clamp(20px, 4vw, 48px)`.
+- **Header:** sticky, 64 px, hairline bottom, background blur. Wordmark left, nav (Today, Map, Mirror, Mates, You) from 768 px, demo chip and theme toggle right. Active nav item: ink colour and a 2 px underline on the header's bottom edge.
+- **Phones (under 768):** header keeps the wordmark and demo chip; a bottom tab bar (64 px plus safe area) carries the five destinations. The check-in bar floats 12 px above the tabs.
+- **Grid:** 12 columns from 960 px. Hero is 7 + 5 (text and ring). The three-up row is 1 : 1.25 : 1 with vertical hairlines. The two-up row is 7 + 5.
+- **Vertical rhythm:** section gap `clamp(64px, 7vw, 112px)`. Inside sections: 8, 12, 16, 20, 24, 32, 40 px.
+- **Radius:** 6 small controls, 8 buttons and photo wells, 12 panels, 16 the floating check-in bar. Pills only for small tags.
+- **Breakpoints:** 360, 390, 430 (phones), 640 (ring grows to 360 px, strip gets full labels), 768 (top nav), 900 (multi-column rows), 960 (two-column hero), 1200+.
 
 ## Components
 
-| Component | Notes |
+| Component | Spec |
 |---|---|
-| `AppShell` | Bottom tab bar on phones, left rail at 768+. Main landmark, skip link |
-| `TabBar` / `Rail` | Home, Mirror, Journey, Mates, Profile. Lucide icons at 1.75 stroke, label always visible, pill indicator |
-| `Card` | Surface, hairline, `--r-card`. Variants: `hero` (`--r-hero`), `quiet` (no surface, hairline only), `alert` (coral hairline, no glow) |
-| `Glass` | Light-theme surface recipe, dark-theme capsule and sheets |
-| `Ring` | SVG, 24 week ticks, progress arc, milestone dots (amber when done), shed window hatch, "you are here" notch. `role="img"` with a text label |
-| `Orb` | Radial gradient drop behind the ring; CSS-only animation |
-| `Capsule` | Floating input bar above the tab bar, 56 px tall, opens check-in sheet |
-| `Sheet` | Bottom sheet on phones, side panel at 1200+. Focus trap, Escape closes, drag handle |
-| `Pill` | Status and delta tags. Tones: neutral, today, positive, alert |
-| `Slider` | Five labelled steps, words not numbers, keyboard arrows |
-| `Segmented` | Theme, language |
-| `CompareSlider` | Before and after, drag and arrow keys, ghost toggle |
-| `PhotoTile` | Fixed aspect, `--r-inner`, width and height set |
-| `Skeleton` | Shimmer off under reduced motion |
-| `Banner` | Due reminders, storage warnings |
-| `DemoChip` | Floating "Demo, day 35" chip, opens the day jumper |
+| Button, primary | Brand blue fill, white text, 44 px, radius 8, press scales to 0.98 |
+| Button, quiet | Transparent, `--line-strong` border, ink text |
+| Link | `--text-2`, underline in `--line-strong`, underline goes ink on hover |
+| Tag | 24 px, radius 999, tinted background, 12 px text, sentence case |
+| Ring | 280 px on phones, 360 px from 640. 3 px track and arc, 24 ticks, milestone dots (amber when done), hatched shed band outside the arc, a ringed marker for today, three faint ripple hairlines |
+| Week strip | 24 cells, 44 px tall (36 on phones), gap 4 (2 on phones). Done weeks in ink, this week in accent, future in track, shed window hatched, photo days as dots under cells, current week number in an accent box. Phase labels above from 900 px |
+| Row list | Items separated by hairlines, 60 px minimum height |
+| Checkbox (routine) | 32 px square, radius 8, fills with action blue and a bold check |
+| Photo well | 4:5, `--sunk`, hairline, radius 8, caption below |
+| Panel | One per screen at most: `--surface`, hairline, radius 12, 28 px padding |
+| Check-in bar | Fixed, centred, max 560 px, 56 px tall, radius 16, `--surface`, soft float shadow, drop icon, send button 40 px |
+| Popover / sheet | `--surface`, hairline, radius 12, float shadow. Sheets become a right-side panel from 1024 px |
+| Demo chip | Hairline chip "Demo, day 34" with an amber dot, opens the day jumper popover |
+| Red-flag card | `--alert-bg` panel, `--alert` title, no motion beyond a fade |
 
-## Iconography
-Lucide only, 1.75 px stroke, 20 or 24 px, `currentColor`. Custom SVG for the app mark (a drop over one ripple ring), the dropper, the ghost outlines and the demo silhouettes. Emoji are allowed only in the mates nudge picker.
+## Motion
 
-## Illustration rules
-- Head ghost outlines and demo silhouettes are single-weight line drawings in `--text-3`, no faces, no skin tones, no hair textures pretending to be photos.
-- No stock photos, no Man Matters product shots, no logos.
-- The projection is the only place we draw hair, and it's always labelled.
+Quiet. One orchestrated moment per screen, and motion that answers taps.
 
-## Breakpoints
-360, 390, 430 (phones, must all be tested), 768 (tablet, rail appears), 1200 (three columns). Never horizontal scroll. Tap targets at least 44 px.
+| Ease | Value | Use |
+|---|---|---|
+| `--ease-settle` | `cubic-bezier(0.22, 1, 0.36, 1)` | Reveals, popovers, sheets, hover and press |
+| `--ease-swell` | `cubic-bezier(0.65, 0, 0.35, 1)` | Ring draw, letter unfold, intro ripple |
+| `--ease-fall` | `cubic-bezier(0.55, 0, 1, 0.45)` | The intro drop only |
+
+| Moment | Duration | Why |
+|---|---|---|
+| Today entrance: date, greeting, day line, ring, insight at 90 ms steps; ring draws from 0 to today | 700 ms reveal, 1000 ms ring | Distance travelled feels earned (goal-gradient) |
+| Section reveals on scroll: 12 px rise and fade, once | 700 ms | Content arrives as you reach it, never all at once |
+| Press feedback: scale 0.98 | 120 ms | Physical confirmation |
+| Check-in send: ripple from the button | 800 ms | The drop lands |
+| Popover and sheet open | 180 to 280 ms | Shows where it came from |
+| Intro scroll story | scrubbed | See SCREENS |
+
+`prefers-reduced-motion: reduce` turns all of it off: content renders at rest, the ring shows its final value, the intro becomes an auto-advancing sequence.
+
+## Imagery
+
+- No stock photography, no product shots, no Man Matters marks.
+- Head placeholders (demo and empty states) are a single-weight line drawing of a crown whorl, identical for day 1 and day 34, because nothing visible should have changed by then.
+- The projection is the only place hair is drawn as an outcome, and it is always labelled.

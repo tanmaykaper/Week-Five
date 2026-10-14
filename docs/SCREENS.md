@@ -1,19 +1,27 @@
 # Screens
 
-Low-fidelity wireframes, phone (390 wide) and desktop (1440 wide). Phone layouts also hold at 360 and 430. Tablet (768) uses the desktop rail with the phone's content column widened to two columns where noted.
+Low-fidelity wireframes, phone (390 wide) and desktop (1440 wide). v2 (14 October 2026): every route is a responsive web page. No phone frames. Phone layouts also hold at 360 and 430; tablet (768 to 959) uses the top nav with single-column content that goes two-up where noted. `docs/design-preview.html` renders Today at full fidelity.
 
-Legend: `[ Button ]` primary, `( Button )` secondary, `{ ... }` card, `~~~` hatched shed window, `*` amber milestone, `o` you are here, `|tab|` bottom tab bar, `R` desktop icon rail.
+Legend: `[ Button ]` primary, `( Button )` quiet, `{ ... }` the one bordered panel, `----` hairline, `~~~` hatched shed window, `*` amber photo day, `o` you are here, `|tabs|` phone bottom tab bar.
 
-Shared desktop frame (every in-app route):
+Shared frame, 768 px and up:
 ```
-+----+--------------------------------------------------------------+
-| R  |  content, max 1180, 32 px gutters                            |
-| H  |                                                              |
-| M  |                                                              |
-| J  |                                                              |
-| Mt |                                                              |
-| P  |                                                              |
-+----+--------------------------------------------------------------+
++--------------------------------------------------------------------------+
+| (drop) Week Five   Today  Map  Mirror  Mates  You     (o Demo, day 34) (moon)|  sticky, 64 px, blur
++--------------------------------------------------------------------------+
+|        content, max 1200, gutters clamp(20, 4vw, 48)                      |
+|                                                                          |
+|                 ( drop  How is your scalp today?          [^] )           |  floating check-in bar
++--------------------------------------------------------------------------+
+```
+Shared frame, under 768 px:
+```
++------------------------------+
+| (drop) Week Five  (o Demo 34)|
+|  content, one column, 20 gutters
+| ( How is your scalp today? ^)|
+| Today  Map  Mirror Mates  You|  bottom tabs
++------------------------------+
 ```
 
 ## `/` redirect
@@ -125,8 +133,43 @@ Phone
 Painter step: photo full width, brush size pills, ( Undo ) ( Clear ) [ Done ] ( Skip ).
 Desktop: camera frame left (max 640), instructions and the three-step list right.
 
-## `/home`
-Phone
+## `/home` (nav label: Today)
+Rendered in full in `docs/design-preview.html`. Order is the same at every width; only the columns change.
+
+Desktop (1440)
+```
+  Tuesday, 14 October
+  Evening, Arjun.                                   .---------.  ) ) )
+  Day 34 of 168. Week 5, the part                  /   20%     \   ripple
+  everyone finds hardest.                          |  week 5    |  hairlines
+  ---------------------------------------          \ o~~~~     /
+  This is the shed window. If more hair              '-------'
+  is coming out right now, that is the       of the way to a fair verdict
+  pattern most people describe.
+  [ Compare with day one ]  Why am I seeing this?
+
+  Your 24 weeks                                              Open the map
+  Quiet | Shed window       | Settling | First fine hairs | Long middle |Judge
+  [#][#][~][~][o][~][~][~][ ][ ][ ][ ][ ][ ][ ][ ][ ][ ][ ][ ][ ][ ][ ][ ]
+            *           *           *           *           *           *
+  ------------------------------------------------------------------------
+  Routine        6 days | Day one and now     Mirror | Supply   Solution 60
+  Morning 8:00     [x]  | [ photo ]  [ photo ]       | 9 days left
+  Evening 21:30    [ ]  | Day 1      Day 34          | ======------
+  General guidance...   |                            | ( Reorder on Man Matters )
+  ------------------------------------------------------------------------
+  People who started when you did   Demo   { What week 24 can look like    }
+  (D)(K)(R)(S)(+8)                         { ...                           }
+  Dev from Pune took their week 4...  Nudge{ ( See the illustration )      }
+  12 people in your start week...          { An illustration, not a promise}
+  ------------------------------------------------------------------------
+  Thinking of stopping?                                   ( Before you stop )
+  ------------------------------------------------------------------------
+  Your details and photos stay on this device. Not medical advice. ...
+```
+The reorder block is replaced by "Supply is fine for now" when the sequencing rule hides it.
+
+Phone (old v1 sketch below kept only for card order)
 ```
 +------------------------------+
 | Evening, Arjun.        (av)  |
@@ -223,7 +266,7 @@ then
 ```
 Desktop: thinking orb centred; result as side by side images with the label beneath, never overlapping the image.
 
-## `/journey`
+## `/map` (nav label: Map)
 Phone (vertical track)
 ```
 +------------------------------+
@@ -244,9 +287,9 @@ Phone (vertical track)
 | I'm thinking of stopping     |
 +------------------------------+
 ```
-Desktop: horizontal track across the full width, 24 columns, phases as labelled bands above, season band below, week detail panel opens on the right.
+Desktop: the same 24-cell strip as Today at full width with phase labels, then the week list below as a two-column table (week, what commonly happens). Season overlap is a hatched band under the strip with its own one-line explanation.
 
-## `/journey/week/[n]`
+## `/map/week/[n]`
 Phone
 ```
 +------------------------------+
@@ -327,7 +370,7 @@ Phone
 | [    Invite a friend     ]   |
 +------------------------------+
 ```
-Desktop: feed column left (7 cols), production panel and invite right (5 cols).
+Desktop: feed column left (7 cols, hairline rows), production notes as the one panel on the right (5 cols).
 
 ## `/reorder`
 Phone
@@ -373,7 +416,7 @@ Phone
 | I'm thinking of stopping     |
 +------------------------------+
 ```
-Desktop: two columns of grouped settings.
+Desktop: settings as hairline rows in a 760 px column, grouped under plain titles.
 
 ## `/profile/data`
 ```

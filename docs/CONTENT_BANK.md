@@ -102,13 +102,14 @@ Cards 2, 4 and 5 from above.
   - beyond: "past six months"
 - Ring centre: "{pct}%" with caption "of the way to a fair verdict".
 - Ring label (screen reader): "Day {d} of 168. {pct} percent of the way to week 24. Shed window is days 15 to 56."
-- Today card: title **Today**. Slots "Morning, {time}" and "Evening, {time}". Done state "Done". Streak "{n} days in a row" (no streak at 0, no shaming when it breaks).
-- Mirror card: **Day one and now.** Empty: "No photos yet. Two minutes, and future you will thank you." Button **Take photos**.
+- Routine block: title **Routine**. Slots "Morning, {time}" and "Evening, {time}". Done state "Done". Streak "{n} days in a row" (no streak at 0, no shaming when it breaks).
+- Mirror block: **Day one and now.** Empty: "No photos yet. Two minutes, and future you will thank you." Button **Take photos**.
 - Projection card: **What week 24 can look like.** "An illustration of a typical outcome, not a promise."
 - Reorder card: **About {n} days left.** "Your {product} runs out around {date}." Button **Reorder on Man Matters**. Snooze **Remind me in 3 days**.
 - Mates strip: "{n} people in your start week are on week {w} today." Pill: **Demo community**.
 - Capsule placeholder: **How is your scalp today?**
-- Stopping link: **I'm thinking of stopping**
+- Stopping section: **Thinking of stopping?** "Look at three things first: your day-one photo, where you are on the map, and the note you wrote." Button: **Before you stop**
+- Navigation: **Today**, **Map**, **Mirror**, **Mates**, **You**
 
 ## Insight cards (48)
 

@@ -4,696 +4,606 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Week Five design preview</title>
-<meta name="description" content="Throwaway preview of the Week Five tokens, type, ring, cards and capsule in both themes.">
+<meta name="description" content="The Week Five home screen as a responsive website, in both themes, with a day jumper.">
+<script>
+  try { const t = localStorage.getItem('wf-preview-theme'); if (t === 'dark' || t === 'light') document.documentElement.dataset.theme = t; } catch (e) {}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@200..800&display=swap" rel="stylesheet">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2308111F'/%3E%3Cpath d='M16 5c-3 4.5-6 7.6-6 11.2a6 6 0 0 0 12 0C22 12.6 19 9.5 16 5z' fill='%235B9BE6'/%3E%3Cellipse cx='16' cy='26' rx='9' ry='2' fill='none' stroke='%235B9BE6' stroke-width='1.4'/%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@200..700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@phosphor-icons/web@2.1.2"></script>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230F1E33'/%3E%3Cpath d='M16 6c-2.8 4.2-5.6 7.1-5.6 10.4a5.6 5.6 0 0 0 11.2 0C21.6 13.1 18.8 10.2 16 6z' fill='%23fff'/%3E%3Cpath d='M7 25.5h18' stroke='%237DB0EE' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E">
 <style>
-/* ---------- tokens ---------- */
-:root, [data-theme="dark"] {
-  --bg: #08111F;
-  --surface: #0F1B2E;
-  --surface-raised: #15243B;
-  --hairline: rgba(255,255,255,0.08);
-  --hairline-strong: rgba(255,255,255,0.14);
-  --text: #EAF0F8;
-  --text-2: #A3B3C9;
-  --text-3: #7E91AB;
-  --action: #22548A;
-  --action-hover: #2C66A6;
-  --action-text: #FFFFFF;
-  --accent: #5B9BE6;
-  --today: #F2B661;
-  --alert: #F28B76;
-  --positive: #7CD4A6;
-  --selection: rgba(91,155,230,0.35);
-  --card-bg: var(--surface);
-  --card-border: var(--hairline);
-  --card-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
-  --glass-bg: rgba(21,36,59,0.72);
-  --glass-border: rgba(255,255,255,0.10);
-  --wash:
-    radial-gradient(60% 40% at 50% 12%, rgba(20,52,97,0.55), transparent 70%),
-    radial-gradient(50% 30% at 85% 90%, rgba(20,52,97,0.25), transparent 70%);
-  --orb-core: rgba(91,155,230,0.55);
-  --orb-edge: rgba(34,84,138,0);
-  --track: rgba(255,255,255,0.07);
-  --tick: rgba(255,255,255,0.18);
-  --hatch: rgba(91,155,230,0.75);
-  color-scheme: dark;
-}
-[data-theme="light"] {
-  --bg: #EEF3FA;
-  --surface: #F8FAFD;
-  --surface-raised: #FFFFFF;
-  --hairline: rgba(14,31,56,0.08);
-  --hairline-strong: rgba(14,31,56,0.14);
-  --text: #0E1F38;
-  --text-2: #46566E;
-  --text-3: #5F6F86;
-  --action: #22548A;
-  --action-hover: #2C66A6;
-  --action-text: #FFFFFF;
+/* ============ tokens ============ */
+:root {
+  --bg: #FBFCFD;
+  --surface: #FFFFFF;
+  --sunk: #F3F5F8;
+  --line: #E6EAF0;
+  --line-strong: #D5DCE5;
+  --ink: #0F1E33;
+  --text-2: #556275;
+  --text-3: #626E7E;
   --accent: #22548A;
-  --today: #8A5A0F;
-  --alert: #B23F2A;
-  --positive: #1F7A4C;
-  --selection: rgba(34,84,138,0.20);
-  --card-bg: rgba(255,255,255,0.62);
-  --card-border: rgba(255,255,255,0.75);
-  --card-shadow: inset 0 1px 0 rgba(255,255,255,0.8), 0 10px 30px -12px rgba(20,52,97,0.18);
-  --glass-bg: rgba(255,255,255,0.66);
-  --glass-border: rgba(255,255,255,0.8);
-  --wash:
-    radial-gradient(55% 35% at 20% 8%, #D0DEF1, transparent 70%),
-    radial-gradient(45% 30% at 90% 30%, #E6E0F5, transparent 70%),
-    radial-gradient(50% 35% at 30% 75%, #DDF0EA, transparent 70%),
-    radial-gradient(40% 30% at 85% 95%, #D0DEF1, transparent 70%);
-  --orb-core: rgba(91,155,230,0.45);
-  --orb-edge: rgba(208,222,241,0);
-  --track: rgba(14,31,56,0.08);
-  --tick: rgba(14,31,56,0.22);
-  --hatch: rgba(34,84,138,0.65);
+  --action: #22548A;
+  --action-hover: #1B4572;
+  --on-action: #FFFFFF;
+  --track: #E9EDF2;
+  --hatch: rgba(34, 84, 138, 0.42);
+  --ripple: rgba(15, 30, 51, 0.07);
+  --today-bg: #FBF3DB;  --today: #7A5200;  --today-dot: #C98A12;
+  --alert-bg: #FDEBEC;  --alert: #9F2F2D;
+  --ok-bg: #EDF3EC;     --ok: #346538;
+  --info-bg: #E8F0FA;   --info: #22548A;
+  --shadow-float: 0 1px 2px rgba(15, 30, 51, 0.04), 0 12px 32px -12px rgba(15, 30, 51, 0.10);
+  --selection: rgba(34, 84, 138, 0.16);
   color-scheme: light;
 }
-@media (prefers-color-scheme: light) {
-  :root:not([data-theme]) {
-    --bg: #EEF3FA; --surface: #F8FAFD; --surface-raised: #FFFFFF;
-    --hairline: rgba(14,31,56,0.08); --hairline-strong: rgba(14,31,56,0.14);
-    --text: #0E1F38; --text-2: #46566E; --text-3: #5F6F86;
-    --accent: #22548A; --today: #8A5A0F; --alert: #B23F2A; --positive: #1F7A4C;
-    --selection: rgba(34,84,138,0.20);
-    --card-bg: #F8FAFD; --card-border: rgba(14,31,56,0.08);
-    --card-shadow: 0 10px 30px -12px rgba(20,52,97,0.18);
-    --track: rgba(14,31,56,0.08); --tick: rgba(14,31,56,0.22); --hatch: rgba(34,84,138,0.65);
-    --wash: radial-gradient(55% 35% at 20% 8%, #D0DEF1, transparent 70%), radial-gradient(45% 30% at 90% 30%, #E6E0F5, transparent 70%);
-    color-scheme: light;
+:root[data-theme="dark"] {
+  --bg: #0B121C;
+  --surface: #101925;
+  --sunk: #0E1621;
+  --line: rgba(255, 255, 255, 0.08);
+  --line-strong: rgba(255, 255, 255, 0.14);
+  --ink: #E9EEF5;
+  --text-2: #9AA8BA;
+  --text-3: #8391A5;
+  --accent: #7DB0EE;
+  --action: #2C66A6;
+  --action-hover: #3573B7;
+  --on-action: #FFFFFF;
+  --track: rgba(255, 255, 255, 0.08);
+  --hatch: rgba(125, 176, 238, 0.45);
+  --ripple: rgba(255, 255, 255, 0.05);
+  --today-bg: #2B2926;  --today: #F2B661;  --today-dot: #F2B661;
+  --alert-bg: #2B2329;  --alert: #F28B76;
+  --ok-bg: #1B2D2F;     --ok: #7CD4A6;
+  --info-bg: #1B2839;   --info: #7DB0EE;
+  --shadow-float: 0 1px 2px rgba(0, 0, 0, 0.3), 0 16px 40px -16px rgba(0, 0, 0, 0.6);
+  --selection: rgba(125, 176, 238, 0.28);
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0B121C; --surface: #101925; --sunk: #0E1621;
+    --line: rgba(255, 255, 255, 0.08); --line-strong: rgba(255, 255, 255, 0.14);
+    --ink: #E9EEF5; --text-2: #9AA8BA; --text-3: #8391A5;
+    --accent: #7DB0EE; --action: #2C66A6; --action-hover: #3573B7;
+    --track: rgba(255, 255, 255, 0.08); --hatch: rgba(125, 176, 238, 0.45); --ripple: rgba(255, 255, 255, 0.05);
+    --today-bg: #2B2926; --today: #F2B661; --today-dot: #F2B661;
+    --alert-bg: #2B2329; --alert: #F28B76; --ok-bg: #1B2D2F; --ok: #7CD4A6; --info-bg: #1B2839; --info: #7DB0EE;
+    --shadow-float: 0 1px 2px rgba(0, 0, 0, 0.3), 0 16px 40px -16px rgba(0, 0, 0, 0.6);
+    --selection: rgba(125, 176, 238, 0.28);
+    color-scheme: dark;
   }
 }
-
 :root {
-  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
-  --font-serif: "Instrument Serif", ui-serif, Georgia, serif;
-  --t-numeral: clamp(4rem, 3.2rem + 4vw, 6.5rem);
-  --t-display: clamp(2.25rem, 1.9rem + 1.8vw, 3.5rem);
-  --t-h1: clamp(1.75rem, 1.55rem + 1vw, 2.4rem);
-  --t-h2: 1.375rem;
-  --t-h3: 1.125rem;
+  --sans: "Geist", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --serif: "Instrument Serif", ui-serif, Georgia, serif;
+  --t-display: clamp(2.75rem, 1.7rem + 4.2vw, 5rem);
+  --t-numeral: clamp(3.5rem, 2.8rem + 2.6vw, 5rem);
+  --t-statement: clamp(1.25rem, 1.12rem + 0.55vw, 1.5rem);
+  --t-lead: clamp(1.0625rem, 1rem + 0.3vw, 1.1875rem);
+  --t-title: 1.125rem;
   --t-body: 1rem;
   --t-small: 0.875rem;
-  --t-micro: 0.75rem;
-  --t-letter: clamp(1.5rem, 1.3rem + 1vw, 2rem);
-  --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 24px; --s-6: 32px; --s-7: 40px; --s-8: 48px; --s-9: 64px; --s-10: 80px;
-  --r-hero: 28px; --r-card: 20px; --r-inner: 12px; --r-pill: 999px;
+  --t-micro: 0.8125rem;
+  --gutter: clamp(20px, 4vw, 48px);
+  --section: clamp(64px, 7vw, 112px);
+  --max: 1200px;
+  --r-sm: 6px; --r-md: 8px; --r-lg: 12px; --r-xl: 16px;
   --ease-settle: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-swell: cubic-bezier(0.65, 0, 0.35, 1);
   --ease-fall: cubic-bezier(0.55, 0, 1, 0.45);
-  --d-instant: 120ms; --d-fast: 180ms; --d-ui: 280ms; --d-slow: 350ms; --d-story: 900ms; --d-ripple: 1200ms;
+  --header-h: 64px;
 }
 
-/* ---------- base ---------- */
+/* ============ base ============ */
 *, *::before, *::after { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; }
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: calc(var(--header-h) + 16px); }
 body {
-  margin: 0;
-  font-family: var(--font-sans);
-  font-size: var(--t-body);
-  line-height: 1.5;
-  font-weight: 450;
-  color: var(--text);
-  background: var(--bg);
-  background-image: var(--wash);
-  background-attachment: fixed;
-  -webkit-font-smoothing: antialiased;
+  margin: 0; background: var(--bg); color: var(--ink);
+  font: 400 var(--t-body)/1.6 var(--sans);
+  -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip;
+  transition: background-color 200ms var(--ease-settle), color 200ms var(--ease-settle);
 }
 ::selection { background: var(--selection); }
-h1, h2, h3, h4 { margin: 0; text-wrap: balance; }
+h1, h2, h3 { margin: 0; font-weight: 600; text-wrap: balance; }
 p { margin: 0; text-wrap: pretty; }
-button { font: inherit; color: inherit; }
-:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+a { color: inherit; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: var(--r-sm); }
 .num { font-variant-numeric: tabular-nums; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.wrap { width: 100%; max-width: calc(var(--max) + var(--gutter) * 2); margin: 0 auto; padding-inline: var(--gutter); }
+.skip { position: absolute; left: 12px; top: -48px; z-index: 50; background: var(--ink); color: var(--bg); padding: 10px 14px; border-radius: var(--r-md); text-decoration: none; font-weight: 500; }
+.skip:focus { top: 12px; }
 
-.page { max-width: 1240px; margin: 0 auto; padding: var(--s-6) var(--s-4) var(--s-10); }
-@media (min-width: 768px) { .page { padding: var(--s-8) var(--s-5) var(--s-10); } }
-@media (min-width: 1200px) { .page { padding-inline: var(--s-6); } }
+/* ============ header ============ */
+.top { position: sticky; top: 0; z-index: 20; height: var(--header-h); background: color-mix(in srgb, var(--bg) 86%, transparent); -webkit-backdrop-filter: blur(14px) saturate(140%); backdrop-filter: blur(14px) saturate(140%); border-bottom: 1px solid var(--line); }
+.top .wrap { height: 100%; display: flex; align-items: center; gap: 32px; }
+.brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; font-weight: 600; letter-spacing: -0.01em; font-size: 1.0625rem; }
+.brand svg { width: 26px; height: 26px; }
+.nav { display: none; gap: 4px; margin-left: 8px; }
+.nav a { position: relative; text-decoration: none; color: var(--text-2); font-weight: 500; font-size: 0.9375rem; padding: 8px 12px; border-radius: var(--r-md); transition: color 160ms var(--ease-settle), background-color 160ms var(--ease-settle); }
+.nav a:hover { color: var(--ink); background: var(--sunk); }
+.nav a[aria-current="page"] { color: var(--ink); }
+.nav a[aria-current="page"]::after { content: ""; position: absolute; left: 12px; right: 12px; bottom: -13px; height: 2px; background: var(--ink); border-radius: 2px; }
+.tools { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.chip { display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 12px; border-radius: var(--r-md); border: 1px solid var(--line-strong); font-size: var(--t-small); font-weight: 500; color: var(--text-2); transition: border-color 160ms var(--ease-settle), color 160ms var(--ease-settle); }
+.chip:hover { color: var(--ink); border-color: var(--text-3); }
+.chip .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--today-dot); }
+.icon-btn { width: 36px; height: 36px; display: grid; place-items: center; border-radius: var(--r-md); color: var(--text-2); transition: background-color 160ms var(--ease-settle), color 160ms var(--ease-settle); }
+.icon-btn:hover { background: var(--sunk); color: var(--ink); }
+.icon-btn i { font-size: 20px; }
+@media (min-width: 768px) { .nav { display: flex; } }
 
-.masthead { display: flex; flex-wrap: wrap; gap: var(--s-4); align-items: flex-end; justify-content: space-between; margin-bottom: var(--s-7); }
-.brand { display: flex; gap: var(--s-3); align-items: center; }
-.brand h1 { font-size: var(--t-h1); font-weight: 600; letter-spacing: -0.02em; line-height: 1.1; }
-.brand p { color: var(--text-2); font-size: var(--t-small); max-width: 46ch; margin-top: var(--s-1); }
-.mark { width: 44px; height: 44px; flex: none; }
+/* demo popover */
+.pop { position: absolute; right: var(--gutter); top: calc(var(--header-h) - 4px); width: min(340px, calc(100vw - 32px)); background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); box-shadow: var(--shadow-float); padding: 20px; opacity: 0; transform: translateY(-4px); pointer-events: none; visibility: hidden; transition: opacity 180ms var(--ease-settle), transform 180ms var(--ease-settle), visibility 0s linear 180ms; }
+.pop[data-open="true"] { opacity: 1; transform: none; pointer-events: auto; visibility: visible; transition-delay: 0s; }
+.pop h2 { font-size: var(--t-small); font-weight: 600; }
+.pop p { font-size: var(--t-small); color: var(--text-2); margin-top: 4px; }
+.pop input[type="range"] { width: 100%; margin: 16px 0 4px; accent-color: var(--accent); height: 28px; }
+.picks { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.picks button { height: 32px; min-width: 44px; padding: 0 10px; border-radius: var(--r-sm); border: 1px solid var(--line-strong); font-size: var(--t-micro); font-weight: 500; color: var(--text-2); }
+.picks button[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
 
-.controls { display: flex; flex-wrap: wrap; gap: var(--s-3); align-items: center; }
-.seg { display: inline-flex; padding: 3px; border-radius: var(--r-pill); background: var(--surface); border: 1px solid var(--hairline); }
-.seg button { border: 0; background: transparent; padding: 8px 14px; min-height: 36px; border-radius: var(--r-pill); font-size: var(--t-small); font-weight: 600; color: var(--text-2); cursor: pointer; transition: background var(--d-fast) var(--ease-settle), color var(--d-fast) var(--ease-settle); }
-.seg button[aria-pressed="true"] { background: var(--action); color: var(--action-text); }
-
-.dayctl { display: flex; align-items: center; gap: var(--s-3); padding: 8px 16px; border-radius: var(--r-pill); background: var(--surface); border: 1px solid var(--hairline); font-size: var(--t-small); font-weight: 600; color: var(--text-2); }
-.dayctl output { color: var(--text); min-width: 3.5ch; }
-.dayctl input { width: 160px; accent-color: var(--accent); }
-
-.section { margin-top: var(--s-10); }
-.section > h2 { font-size: var(--t-h2); font-weight: 600; letter-spacing: -0.015em; }
-.section > p.lede { color: var(--text-2); margin-top: var(--s-2); max-width: 62ch; }
-
-/* ---------- phones ---------- */
-.phones { display: grid; gap: var(--s-6); grid-template-columns: 1fr; justify-items: center; }
-@media (min-width: 900px) { .phones { grid-template-columns: 1fr 1fr; } }
-.phone-wrap { width: 100%; max-width: 390px; }
-.phone-cap { font-size: var(--t-small); color: var(--text-2); margin-bottom: var(--s-3); font-weight: 600; }
-.phone {
-  position: relative;
-  width: 100%;
-  height: 844px;
-  border-radius: 44px;
-  overflow: hidden;
-  background: var(--bg);
-  background-image: var(--wash);
-  color: var(--text);
-  border: 1px solid var(--hairline-strong);
-  box-shadow: 0 30px 80px -40px rgba(8,17,31,0.55);
-  isolation: isolate;
+/* ============ hero ============ */
+main { padding-bottom: 160px; }
+.hero { position: relative; display: grid; gap: 40px; padding-top: clamp(40px, 6vw, 88px); grid-template-columns: minmax(0, 1fr); grid-template-areas: "hello" "ring" "note"; }
+@media (min-width: 960px) {
+  .hero { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); column-gap: clamp(40px, 6vw, 96px); row-gap: 48px; grid-template-areas: "hello ring" "note ring"; align-items: start; }
 }
-.phone-scroll { position: absolute; inset: 0; overflow-y: auto; padding: 54px 16px 168px; scrollbar-width: none; }
-.phone-scroll::-webkit-scrollbar { display: none; }
-.statusbar { position: absolute; top: 0; left: 0; right: 0; height: 44px; background: color-mix(in srgb, var(--bg) 78%, transparent); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); display: flex; justify-content: space-between; align-items: center; padding: 0 28px; font-size: 14px; font-weight: 700; z-index: 3; color: var(--text); }
-.statusbar span:last-child { letter-spacing: 1px; }
-
-/* greeting */
-.hello { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--s-3); margin-bottom: var(--s-5); }
-.hello h3 { font-size: clamp(2rem, 1.8rem + 1vw, 2.4rem); font-weight: 300; letter-spacing: -0.03em; line-height: 1.02; }
-.hello h3 .name { color: var(--text-2); }
-.hello p { color: var(--text-2); font-size: var(--t-small); margin-top: var(--s-2); font-weight: 500; }
-.avatar { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--surface-raised); border: 1px solid var(--hairline); font-weight: 700; font-size: 15px; color: var(--text-2); flex: none; }
-
-/* cards */
-.card { background: var(--card-bg); border: 1px solid var(--card-border); box-shadow: var(--card-shadow); border-radius: var(--r-card); padding: var(--s-4); }
-[data-theme="light"] .card { -webkit-backdrop-filter: blur(24px) saturate(140%); backdrop-filter: blur(24px) saturate(140%); }
-.card + .card, .card + .stack, .stack + .card { margin-top: var(--s-3); }
-.card.hero { border-radius: var(--r-hero); padding: var(--s-5) var(--s-4) var(--s-4); }
-.card h4 { font-size: var(--t-h3); font-weight: 600; letter-spacing: -0.01em; line-height: 1.3; }
-.card .sub { color: var(--text-2); font-size: var(--t-small); }
-.row { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); }
-.stack { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-3); }
-
-/* ring */
-.ring-box { position: relative; width: 236px; height: 236px; margin: 0 auto; }
-.ring-box svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
-.orb { position: absolute; inset: 46px; border-radius: 50%; background: radial-gradient(circle at 45% 40%, var(--orb-core), var(--orb-edge) 70%); filter: blur(6px); animation: breathe 10s var(--ease-swell) infinite; }
-@keyframes breathe { 0%, 100% { transform: scale(0.94); opacity: 0.85; } 50% { transform: scale(1.06); opacity: 1; } }
-.ring-center { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; }
-.pct { font-size: 4.25rem; font-weight: 200; letter-spacing: -0.05em; line-height: 0.9; }
-.pct small { font-size: 0.4em; font-weight: 400; letter-spacing: 0; color: var(--text-2); margin-left: 2px; vertical-align: 0.95em; }
-.ring-cap { color: var(--text-2); font-size: var(--t-small); text-align: center; margin-top: var(--s-3); }
-.arc { transition: stroke-dasharray var(--d-story) var(--ease-swell); }
-.marker { transition: transform var(--d-story) var(--ease-swell); }
-.legend { display: flex; flex-wrap: wrap; gap: var(--s-2); justify-content: center; margin-top: var(--s-4); }
-
-/* pills */
-.pill { display: inline-flex; align-items: center; gap: 6px; font-size: var(--t-micro); font-weight: 600; letter-spacing: 0.01em; line-height: 1; padding: 7px 10px; border-radius: var(--r-pill); border: 1px solid var(--hairline-strong); color: var(--text-2); white-space: nowrap; }
-.pill.today { color: var(--today); border-color: color-mix(in srgb, var(--today) 40%, transparent); }
-.pill.positive { color: var(--positive); border-color: color-mix(in srgb, var(--positive) 40%, transparent); }
-.pill.alert { color: var(--alert); border-color: color-mix(in srgb, var(--alert) 45%, transparent); }
-.swatch-hatch { width: 14px; height: 8px; border-radius: 3px; background: repeating-linear-gradient(45deg, var(--hatch) 0 2px, transparent 2px 4px); }
-.dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
-
-/* today */
-.slot { display: flex; align-items: center; justify-content: space-between; min-height: 52px; border-top: 1px solid var(--hairline); }
-.slot:first-of-type { margin-top: var(--s-3); }
-.slot .t { font-weight: 600; }
-.slot .t span { color: var(--text-2); font-weight: 500; margin-left: 6px; }
-.tick-btn { width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid var(--hairline-strong); background: transparent; display: grid; place-items: center; cursor: pointer; transition: transform var(--d-fast) var(--ease-settle), background var(--d-fast) var(--ease-settle), border-color var(--d-fast) var(--ease-settle); }
-.tick-btn svg { width: 20px; height: 20px; opacity: 0; transition: opacity var(--d-fast) var(--ease-settle); }
-.tick-btn[aria-pressed="true"] { background: var(--action); border-color: var(--action); color: #fff; }
-.tick-btn[aria-pressed="true"] svg { opacity: 1; }
-.tick-btn:active { transform: scale(0.94); }
-
-/* insight */
-.insight p.say { font-size: 1.0625rem; line-height: 1.45; font-weight: 500; letter-spacing: -0.005em; }
-.insight .acts { display: flex; gap: var(--s-3); align-items: center; margin-top: var(--s-4); }
-.insight .acts .btn.ghost { padding: 0; }
-.thumb { width: 56px; height: 56px; border-radius: var(--r-inner); background: var(--surface-raised); border: 1px solid var(--hairline); flex: none; display: grid; place-items: center; overflow: hidden; }
-.thumb svg { width: 100%; height: 100%; }
+.hello { grid-area: hello; }
+.hello .date { color: var(--text-3); font-size: var(--t-small); font-weight: 500; }
+.hello h1 { font-family: var(--serif); font-weight: 400; font-size: var(--t-display); line-height: 1; letter-spacing: -0.02em; margin-top: 14px; }
+.hello .lead { font-size: var(--t-lead); color: var(--text-2); margin-top: 18px; max-width: 40ch; }
+.note { grid-area: note; padding-top: 32px; border-top: 1px solid var(--line); max-width: 36rem; }
+.note .say { font-size: var(--t-statement); line-height: 1.45; letter-spacing: -0.01em; }
+.note .acts { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; margin-top: 28px; }
+.ring-fig { grid-area: ring; margin: 0; position: relative; display: grid; justify-items: center; align-content: start; }
+@media (min-width: 960px) { .ring-fig { justify-items: end; padding-top: 8px; } }
+.ring { position: relative; width: min(100%, 280px); aspect-ratio: 1; }
+@media (min-width: 640px) { .ring { width: min(100%, 360px); } }
+.ring svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.ring-mid { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; }
+.ring-mid .pct { font-size: var(--t-numeral); font-weight: 200; letter-spacing: -0.05em; line-height: 0.9; }
+.ring-mid .pct small { font-size: 0.36em; font-weight: 400; letter-spacing: 0; color: var(--text-2); margin-left: 3px; vertical-align: 1.05em; }
+.ring-mid .wk { color: var(--text-2); font-size: var(--t-small); margin-top: 10px; }
+.ring-fig figcaption { color: var(--text-2); font-size: var(--t-small); text-align: center; margin-top: 20px; width: min(100%, 360px); }
+.arc { transition: stroke-dasharray 1000ms var(--ease-swell); }
+.marker { transition: transform 1000ms var(--ease-swell); transform-box: view-box; }
 
 /* buttons */
-.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 18px; border-radius: var(--r-pill); font-weight: 650; font-size: 0.9375rem; border: 1px solid transparent; cursor: pointer; transition: transform var(--d-fast) var(--ease-settle), background var(--d-fast) var(--ease-settle); text-decoration: none; }
-.btn:active { transform: scale(0.97); }
-.btn.primary { background: var(--action); color: var(--action-text); }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 44px; padding: 0 18px; border-radius: var(--r-md); font-weight: 500; font-size: 0.9375rem; border: 1px solid transparent; text-decoration: none; transition: background-color 160ms var(--ease-settle), border-color 160ms var(--ease-settle), transform 120ms var(--ease-settle); }
+.btn:active { transform: scale(0.98); }
+.btn.primary { background: var(--action); color: var(--on-action); }
 .btn.primary:hover { background: var(--action-hover); }
-.btn.secondary { background: transparent; color: var(--text); border-color: var(--hairline-strong); }
-.btn.ghost { background: transparent; color: var(--accent); padding: 0 6px; }
-.btn.danger { background: transparent; color: var(--alert); border-color: color-mix(in srgb, var(--alert) 45%, transparent); }
-.btn.sm { min-height: 40px; padding: 0 14px; font-size: var(--t-small); }
+.btn.quiet { border-color: var(--line-strong); color: var(--ink); }
+.btn.quiet:hover { border-color: var(--text-3); }
+.link { color: var(--text-2); font-weight: 500; font-size: 0.9375rem; text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 4px; min-height: 44px; display: inline-flex; align-items: center; transition: color 160ms var(--ease-settle), text-decoration-color 160ms var(--ease-settle); }
+.link:hover { color: var(--ink); text-decoration-color: currentColor; }
 
-/* mirror */
-.pair { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-2); margin-top: var(--s-3); }
-.shot { aspect-ratio: 1; border-radius: var(--r-inner); background: var(--surface-raised); border: 1px solid var(--hairline); position: relative; overflow: hidden; }
-.shot svg { width: 100%; height: 100%; display: block; }
-.shot span { position: absolute; left: 8px; bottom: 8px; font-size: var(--t-micro); font-weight: 600; padding: 4px 8px; border-radius: var(--r-pill); background: var(--glass-bg); color: var(--text); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+/* tags */
+.tag { display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 9px; border-radius: 999px; font-size: 0.75rem; font-weight: 500; background: var(--sunk); color: var(--text-2); white-space: nowrap; }
+.tag.today { background: var(--today-bg); color: var(--today); }
+.tag.info { background: var(--info-bg); color: var(--info); }
+.tag.alert { background: var(--alert-bg); color: var(--alert); }
+.tag.ok { background: var(--ok-bg); color: var(--ok); }
 
-/* runway */
-.runway { height: 10px; border-radius: var(--r-pill); background: var(--track); overflow: hidden; margin: var(--s-3) 0 var(--s-2); }
-.runway i { display: block; height: 100%; width: 30%; border-radius: inherit; background: linear-gradient(90deg, var(--action), #5B9BE6); }
+/* ============ sections ============ */
+.sec { padding-top: var(--section); }
+.sec-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 28px; }
+.sec-head h2, .h2 { font-size: var(--t-title); letter-spacing: -0.01em; }
 
-/* mates */
-.faces { display: flex; }
-.faces b { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; font-weight: 700; background: var(--surface-raised); border: 2px solid var(--surface); margin-left: -8px; color: var(--text-2); }
-[data-theme="light"] .faces b { border-color: #F3F6FB; }
+/* week strip */
+.strip { position: relative; }
+.phases { display: grid; grid-template-columns: repeat(24, minmax(0, 1fr)); gap: 4px; margin-bottom: 12px; font-size: var(--t-micro); color: var(--text-3); }
+.phases span { white-space: nowrap; overflow: hidden; padding-left: 6px; border-left: 1px solid var(--line-strong); line-height: 1.2; padding-block: 2px; }
+.phases span.cur { color: var(--ink); font-weight: 500; border-left-color: var(--ink); }
+.phases span:last-child { overflow: visible; text-align: right; border-left: 0; padding-left: 0; }
+.weeks { position: relative; display: grid; grid-template-columns: repeat(24, minmax(0, 1fr)); gap: 4px; }
+.wk-cell { position: relative; height: 44px; border-radius: 4px; background: var(--track); transition: background-color 400ms var(--ease-settle); }
+.wk-cell.past { background: color-mix(in srgb, var(--ink) 78%, transparent); }
+:root[data-theme="dark"] .wk-cell.past, :root[data-theme="dark"] .sw.past { background: color-mix(in srgb, var(--ink) 48%, transparent); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .wk-cell.past, :root:not([data-theme="light"]) .sw.past { background: color-mix(in srgb, var(--ink) 48%, transparent); } }
+.wk-cell.now { background: var(--accent); }
+.wk-cell.shed::before { content: ""; position: absolute; inset: 0; border-radius: inherit; background: repeating-linear-gradient(135deg, var(--hatch) 0 1.5px, transparent 1.5px 5px); }
+.wk-cell.past.shed::before, .wk-cell.now.shed::before { background: repeating-linear-gradient(135deg, rgba(255,255,255,0.2) 0 1.5px, transparent 1.5px 5px); }
+.wk-cell .ms { position: absolute; left: 50%; bottom: -14px; width: 6px; height: 6px; margin-left: -3px; border-radius: 50%; border: 1.5px solid var(--line-strong); background: var(--bg); }
+.wk-cell .ms.done { background: var(--today-dot); border-color: var(--today-dot); }
+.wknums span { justify-self: center; min-width: 22px; height: 20px; line-height: 20px; border-radius: 4px; }
+.wknums span.cur { background: var(--accent); color: var(--bg); font-weight: 600; visibility: visible !important; }
+.wknums { display: grid; grid-template-columns: repeat(24, minmax(0, 1fr)); gap: 4px; margin-top: 22px; font-size: 0.6875rem; color: var(--text-3); text-align: center; }
+.legend { display: flex; flex-wrap: wrap; gap: 10px 24px; margin-top: 24px; font-size: var(--t-small); color: var(--text-2); }
+.legend span { display: inline-flex; align-items: center; gap: 8px; }
+.sw { width: 18px; height: 10px; border-radius: 2px; }
+.sw.hatch { background: repeating-linear-gradient(135deg, var(--hatch) 0 1.5px, transparent 1.5px 5px), var(--track); }
+.sw.past { background: color-mix(in srgb, var(--ink) 78%, transparent); }
+.sw.now { background: var(--accent); }
+.sw.ms { width: 8px; height: 8px; border-radius: 50%; background: var(--today-dot); }
+@media (max-width: 899px) {
+  .phases { display: none; }
+}
+@media (max-width: 639px) {
+  .weeks, .wknums { gap: 2px; }
+  .wk-cell { height: 36px; border-radius: 3px; }
+  .wknums span:not(:nth-child(4n)):not(:first-child) { visibility: hidden; }
+}
+
+/* three up */
+.trio { display: grid; grid-template-columns: minmax(0, 1fr); border-top: 1px solid var(--line); }
+.trio > div { padding: 32px 0; border-bottom: 1px solid var(--line); }
+@media (min-width: 900px) {
+  .trio { grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr) minmax(0, 1fr); border-bottom: 1px solid var(--line); }
+  .trio > div { padding: 36px 40px; border-bottom: 0; }
+  .trio > div + div { border-left: 1px solid var(--line); }
+  .trio > div:first-child { padding-left: 0; }
+  .trio > div:last-child { padding-right: 0; }
+}
+.blk h3 { font-size: var(--t-title); letter-spacing: -0.01em; }
+.row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.meta { color: var(--text-2); font-size: var(--t-small); }
+.slot { display: flex; align-items: center; justify-content: space-between; min-height: 60px; border-bottom: 1px solid var(--line); }
+.slot:first-of-type { margin-top: 16px; border-top: 1px solid var(--line); }
+.slot b { font-weight: 500; }
+.slot span { color: var(--text-2); margin-left: 8px; }
+.check { width: 32px; height: 32px; border-radius: var(--r-md); border: 1.5px solid var(--line-strong); display: grid; place-items: center; position: relative; transition: background-color 160ms var(--ease-settle), border-color 160ms var(--ease-settle), transform 120ms var(--ease-settle); }
+.check::after { content: ""; position: absolute; inset: -6px; }
+.check i { font-size: 18px; color: var(--on-action); opacity: 0; transform: scale(0.6); transition: opacity 160ms var(--ease-settle), transform 220ms var(--ease-settle); }
+.check[aria-pressed="true"] { background: var(--action); border-color: var(--action); }
+.check[aria-pressed="true"] i { opacity: 1; transform: none; }
+.check:active { transform: scale(0.94); }
+.guide { color: var(--text-3); font-size: var(--t-micro); margin-top: 14px; }
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
+.shot { margin: 0; }
+.shot .img { aspect-ratio: 4 / 5; border-radius: var(--r-md); background: var(--sunk); border: 1px solid var(--line); display: grid; place-items: center; overflow: hidden; }
+.shot svg { width: 78%; height: auto; }
+.shot figcaption { font-size: var(--t-micro); color: var(--text-2); margin-top: 8px; }
+.big { font-size: var(--t-numeral); font-weight: 200; letter-spacing: -0.05em; line-height: 1; margin-top: 18px; }
+.big small { font-size: 0.3em; letter-spacing: 0; font-weight: 400; color: var(--text-2); margin-left: 8px; }
+.runway { height: 4px; border-radius: 2px; background: var(--track); margin: 20px 0 12px; overflow: hidden; }
+.runway i { display: block; height: 100%; width: 30%; background: var(--ink); border-radius: inherit; transition: width 400ms var(--ease-settle); }
+
+/* duo */
+.duo { display: grid; grid-template-columns: minmax(0, 1fr); gap: 56px; }
+@media (min-width: 900px) { .duo { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: clamp(40px, 6vw, 96px); } }
+.faces { display: flex; margin-top: 20px; }
+.faces b { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; font-size: 0.8125rem; font-weight: 500; background: var(--sunk); color: var(--text-2); border: 2px solid var(--bg); margin-left: -8px; }
 .faces b:first-child { margin-left: 0; }
+.feed { list-style: none; margin: 20px 0 0; padding: 0; border-top: 1px solid var(--line); }
+.feed li { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 60px; padding: 8px 0; border-bottom: 1px solid var(--line); }
+.feed li .when { color: var(--text-3); margin-left: 8px; font-size: var(--t-small); }
+.nudge { font-size: var(--t-small); font-weight: 500; color: var(--accent); min-height: 44px; padding: 0 4px; white-space: nowrap; }
+.proj { border: 1px solid var(--line); border-radius: var(--r-lg); padding: 28px; background: var(--surface); align-self: start; }
+.proj .meta { margin-top: 8px; }
+.proj .fine { color: var(--text-3); font-size: var(--t-micro); margin-top: 16px; }
 
-.stop { display: block; margin: var(--s-5) auto 0; background: none; border: 0; color: var(--text-2); font-size: var(--t-small); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--hairline-strong); min-height: 44px; cursor: pointer; }
+/* stop + footer */
+.stop { margin-top: var(--section); padding: 32px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 32px; }
+.stop h2 { font-family: var(--serif); font-weight: 400; font-size: clamp(1.75rem, 1.4rem + 1.2vw, 2.25rem); letter-spacing: -0.01em; line-height: 1.1; }
+.stop p { color: var(--text-2); margin-top: 6px; max-width: 46ch; }
+.foot { padding-top: 40px; display: grid; gap: 8px; color: var(--text-3); font-size: var(--t-small); }
+.foot p:first-child { color: var(--text-2); display: flex; align-items: center; gap: 8px; }
 
-/* capsule + tabbar */
-.capsule { position: absolute; left: 16px; right: 16px; bottom: 84px; height: 56px; z-index: 4; display: flex; align-items: center; gap: 10px; padding: 0 6px 0 16px; border-radius: var(--r-pill); background: var(--glass-bg); border: 1px solid var(--glass-border); -webkit-backdrop-filter: blur(20px) saturate(140%); backdrop-filter: blur(20px) saturate(140%); box-shadow: 0 12px 30px -14px rgba(8,17,31,0.5); cursor: text; }
-.capsule .ph { flex: 1; color: var(--text-2); font-weight: 500; font-size: 0.9375rem; }
-.capsule .drop { width: 20px; height: 20px; color: var(--accent); flex: none; }
-.capsule .send { width: 44px; height: 44px; border-radius: 50%; border: 0; display: grid; place-items: center; background: var(--action); color: #fff; cursor: pointer; position: relative; overflow: visible; }
-.capsule .send svg { width: 20px; height: 20px; }
-.ripple { position: absolute; inset: 0; border-radius: 50%; border: 2px solid var(--accent); opacity: 0; pointer-events: none; }
-.ripple.go { animation: ripple 900ms var(--ease-settle); }
-@keyframes ripple { from { transform: scale(1); opacity: 0.8; } to { transform: scale(2.6); opacity: 0; } }
-.tabbar { position: absolute; left: 0; right: 0; bottom: 0; height: 76px; padding: 6px 8px 18px; z-index: 4; display: grid; grid-template-columns: repeat(5, 1fr); background: color-mix(in srgb, var(--bg) 82%, transparent); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); border-top: 1px solid var(--hairline); }
-.tab { display: grid; justify-items: center; align-content: center; gap: 3px; font-size: 11px; font-weight: 600; color: var(--text-3); min-height: 48px; }
-.tab svg { width: 22px; height: 22px; }
-.tab[aria-current="page"] { color: var(--text); }
-.tab[aria-current="page"] svg { color: var(--accent); }
+/* check-in bar */
+.bar { position: fixed; z-index: 15; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom)); transform: translateX(-50%); width: min(560px, calc(100vw - 32px)); height: 56px; display: flex; align-items: center; gap: 12px; padding: 0 8px 0 18px; background: var(--surface); border: 1px solid var(--line-strong); border-radius: var(--r-xl); box-shadow: var(--shadow-float); text-align: left; transition: border-color 160ms var(--ease-settle); }
+.bar:hover { border-color: var(--text-3); }
+.bar .ph-drop { font-size: 20px; color: var(--accent); }
+.bar .ask { flex: 1; color: var(--text-2); font-size: 0.9375rem; }
+.bar .go { width: 40px; height: 40px; border-radius: var(--r-md); background: var(--action); color: var(--on-action); display: grid; place-items: center; position: relative; }
+.bar .go i { font-size: 18px; }
+.bar .rip { position: absolute; inset: 0; border-radius: var(--r-md); border: 1.5px solid var(--accent); opacity: 0; pointer-events: none; }
+.bar .rip.on { animation: rip 800ms var(--ease-settle); }
+@keyframes rip { from { opacity: 0.7; transform: scale(1); } to { opacity: 0; transform: scale(2.2); } }
 
-/* ---------- token + type sections ---------- */
-.swatches { display: grid; gap: var(--s-3); grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); margin-top: var(--s-5); }
-.sw { border-radius: var(--r-card); border: 1px solid var(--hairline); overflow: hidden; background: var(--surface); }
-.sw i { display: block; height: 64px; border-bottom: 1px solid var(--hairline); }
-.sw div { padding: 10px 12px; font-size: var(--t-small); }
-.sw b { display: block; font-weight: 650; }
-.sw span { color: var(--text-2); }
-.theme-cols { display: grid; gap: var(--s-5); grid-template-columns: 1fr; margin-top: var(--s-5); }
-@media (min-width: 900px) { .theme-cols { grid-template-columns: 1fr 1fr; } }
-.theme-panel { border-radius: var(--r-hero); padding: var(--s-5); background: var(--bg); background-image: var(--wash); border: 1px solid var(--hairline-strong); color: var(--text); }
-.theme-panel h3 { font-size: var(--t-h3); font-weight: 600; margin-bottom: var(--s-3); }
-.ctable { width: 100%; border-collapse: collapse; font-size: var(--t-small); }
-.ctable td { padding: 8px 0; border-top: 1px solid var(--hairline); vertical-align: middle; }
-.ctable td:last-child { text-align: right; color: var(--text-2); }
-.chip { display: inline-block; width: 14px; height: 14px; border-radius: 4px; vertical-align: -2px; margin-right: 8px; border: 1px solid var(--hairline-strong); }
+/* bottom tabs, phones only */
+.tabs { display: none; }
+@media (max-width: 767px) {
+  .tabs { display: grid; grid-template-columns: repeat(5, 1fr); position: fixed; z-index: 16; left: 0; right: 0; bottom: 0; height: calc(64px + env(safe-area-inset-bottom)); padding-bottom: env(safe-area-inset-bottom); background: color-mix(in srgb, var(--bg) 90%, transparent); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); border-top: 1px solid var(--line); }
+  .tabs a { display: grid; justify-items: center; align-content: center; gap: 2px; text-decoration: none; color: var(--text-3); font-size: 0.6875rem; font-weight: 500; }
+  .tabs a i { font-size: 22px; }
+  .tabs a[aria-current="page"] { color: var(--ink); }
+  .bar { bottom: calc(76px + env(safe-area-inset-bottom)); }
+  main { padding-bottom: 200px; }
+}
 
-.typespec { margin-top: var(--s-5); display: grid; gap: var(--s-2); }
-.typespec .ln { display: grid; grid-template-columns: 1fr; gap: 4px; padding: var(--s-4) 0; border-top: 1px solid var(--hairline); }
-@media (min-width: 768px) { .typespec .ln { grid-template-columns: 180px 1fr; align-items: baseline; gap: var(--s-5); } }
-.typespec .meta { font-size: var(--t-small); color: var(--text-2); }
-.letter { font-family: var(--font-serif); font-style: italic; font-size: var(--t-letter); line-height: 1.3; }
-
-.comp-grid { display: grid; gap: var(--s-4); grid-template-columns: 1fr; margin-top: var(--s-5); }
-@media (min-width: 768px) { .comp-grid { grid-template-columns: 1fr 1fr; } }
-@media (min-width: 1200px) { .comp-grid { grid-template-columns: 1fr 1fr 1fr; } }
-.comp-grid .card { margin: 0; }
-.comp-grid .card > h4 { margin-bottom: var(--s-3); }
-.btnrow { display: flex; flex-wrap: wrap; gap: var(--s-2); }
-.card.alert { border-color: color-mix(in srgb, var(--alert) 50%, transparent); }
-.card.alert h4 { color: var(--alert); }
-.paper { background: var(--surface-raised); border-radius: var(--r-inner); padding: var(--s-5); border: 1px solid var(--hairline); }
-.paper .from { font-size: var(--t-small); color: var(--text-2); margin-top: var(--s-3); }
-
-.five { margin-top: var(--s-2); }
-.five input { width: 100%; accent-color: var(--accent); min-height: 44px; }
-.five .lbls { display: flex; justify-content: space-between; font-size: var(--t-micro); color: var(--text-2); font-weight: 600; }
-
-.ease-row { display: grid; grid-template-columns: 1fr; gap: var(--s-2); padding: var(--s-4) 0; border-top: 1px solid var(--hairline); }
-@media (min-width: 768px) { .ease-row { grid-template-columns: 220px 1fr; align-items: center; gap: var(--s-5); } }
-.ease-row .meta b { display: block; font-weight: 650; }
-.ease-row .meta span { font-size: var(--t-small); color: var(--text-2); }
-.lane { position: relative; height: 28px; border-radius: var(--r-pill); background: var(--track); }
-.lane i { position: absolute; top: 4px; left: 4px; width: 20px; height: 20px; border-radius: 50%; background: var(--accent); }
-.lane.go i { left: calc(100% - 24px); }
-
-.note { margin-top: var(--s-10); color: var(--text-3); font-size: var(--t-small); max-width: 70ch; }
-
+/* ============ motion ============ */
+@media (prefers-reduced-motion: no-preference) {
+  .in { opacity: 0; transform: translateY(12px); }
+  .in.shown { opacity: 1; transform: none; transition: opacity 700ms var(--ease-settle), transform 700ms var(--ease-settle); transition-delay: calc(var(--i, 0) * 90ms); }
+}
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation: none !important; transition-duration: 1ms !important; }
-  .orb { transform: none; }
+  *, *::before, *::after { transition-duration: 1ms !important; animation: none !important; }
 }
 </style>
 </head>
 <body>
-<main class="page">
+<a class="skip" href="#main">Skip to content</a>
 
-  <header class="masthead">
-    <div class="brand">
-      <svg class="mark" viewBox="0 0 44 44" aria-hidden="true">
-        <path d="M22 6c-4 6-8.5 10.4-8.5 15.6a8.5 8.5 0 0 0 17 0C30.5 16.4 26 12 22 6z" fill="var(--accent)"/>
-        <ellipse cx="22" cy="37" rx="13" ry="3" fill="none" stroke="var(--accent)" stroke-width="1.6" opacity="0.7"/>
-      </svg>
-      <div>
-        <h1>Week Five, design preview</h1>
-        <p>Tokens, type, the ring, cards and the capsule, in both themes. Drag the day to see the plan move.</p>
-      </div>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#" aria-label="Week Five, today">
+      <svg viewBox="0 0 26 26" aria-hidden="true"><path d="M13 3.5c-2.6 3.9-5.2 6.6-5.2 9.6a5.2 5.2 0 0 0 10.4 0c0-3-2.6-5.7-5.2-9.6z" fill="var(--ink)"/><path d="M4.5 22h17" stroke="var(--accent)" stroke-width="1.6" stroke-linecap="round"/></svg>
+      Week Five
+    </a>
+    <nav class="nav" aria-label="Main">
+      <a href="#" aria-current="page">Today</a>
+      <a href="#map">Map</a>
+      <a href="#mirror">Mirror</a>
+      <a href="#mates">Mates</a>
+      <a href="#">You</a>
+    </nav>
+    <div class="tools">
+      <button class="chip" id="demoBtn" aria-expanded="false" aria-controls="demoPop"><span class="dot" aria-hidden="true"></span>Demo, day <span id="chipDay" class="num">34</span></button>
+      <button class="icon-btn" id="themeBtn" aria-label="Switch to dark theme"><i class="ph ph-moon" aria-hidden="true"></i></button>
     </div>
-    <div class="controls">
-      <label class="dayctl">Day <input id="day" type="range" min="1" max="180" value="34" aria-label="Preview journey day"> <output id="dayOut" class="num" for="day">34</output></label>
-      <div class="seg" role="group" aria-label="Page theme">
-        <button type="button" data-set-theme="system" aria-pressed="true">System</button>
-        <button type="button" data-set-theme="dark" aria-pressed="false">Dark</button>
-        <button type="button" data-set-theme="light" aria-pressed="false">Light</button>
-      </div>
+  </div>
+  <div class="pop" id="demoPop" data-open="false" role="dialog" aria-label="Demo controls">
+    <h2>Jump to any day</h2>
+    <p>Sample data only. Your real plan is untouched.</p>
+    <label class="sr" for="day">Journey day</label>
+    <input id="day" type="range" min="1" max="180" value="34">
+    <div class="picks" role="group" aria-label="Quick picks">
+      <button data-d="1">1</button><button data-d="10">10</button><button data-d="34">34</button><button data-d="60">60</button><button data-d="110">110</button><button data-d="168">168</button>
     </div>
-  </header>
+  </div>
+</header>
 
-  <section class="phones" aria-label="Home screen in both themes">
-    <div class="phone-wrap"><p class="phone-cap">Dark, the hero theme</p><div class="phone" data-theme="dark" data-phone></div></div>
-    <div class="phone-wrap"><p class="phone-cap">Light, frosted glass</p><div class="phone" data-theme="light" data-phone></div></div>
-  </section>
+<main id="main" class="wrap">
+  <section class="hero" aria-labelledby="greet">
+    <div class="hello">
+      <p class="date in" style="--i:0" id="date">Tuesday, 14 October</p>
+      <h1 id="greet" class="in" style="--i:1"><span id="greetWord">Evening</span>, Arjun.</h1>
+      <p class="lead in" style="--i:2" id="lead">Day 34 of 168. Week 5, the part everyone finds hardest.</p>
+    </div>
 
-  <section class="section" aria-labelledby="h-colour">
-    <h2 id="h-colour">Colour</h2>
-    <p class="lede">Man Matters blue as the anchor. Amber means today or a milestone. Coral means see a doctor, and nothing else. Every text pair below passes WCAG AA, measured.</p>
-    <div class="theme-cols">
-      <div class="theme-panel" data-theme="dark">
-        <h3>Dark</h3>
-        <table class="ctable">
-          <tr><td><i class="chip" style="background:#08111F"></i>Ground #08111F</td><td>base</td></tr>
-          <tr><td><i class="chip" style="background:#0F1B2E"></i>Surface #0F1B2E</td><td>cards</td></tr>
-          <tr><td><i class="chip" style="background:#EAF0F8"></i>Text #EAF0F8</td><td class="num">16.5 : 1</td></tr>
-          <tr><td><i class="chip" style="background:#A3B3C9"></i>Text 2 #A3B3C9</td><td class="num">8.9 : 1</td></tr>
-          <tr><td><i class="chip" style="background:#5B9BE6"></i>Accent #5B9BE6</td><td class="num">6.6 : 1</td></tr>
-          <tr><td><i class="chip" style="background:#F2B661"></i>Today #F2B661</td><td class="num">10.5 : 1</td></tr>
-          <tr><td><i class="chip" style="background:#F28B76"></i>Alert #F28B76</td><td class="num">7.9 : 1</td></tr>
-          <tr><td><i class="chip" style="background:#7CD4A6"></i>Positive #7CD4A6</td><td class="num">10.7 : 1</td></tr>
-          <tr><td><i class="chip" style="background:#22548A"></i>Action #22548A, white text</td><td class="num">7.8 : 1</td></tr>
-        </table>
-      </div>
-      <div class="theme-panel" data-theme="light">
-        <h3>Light</h3>
-        <table class="ctable">
-          <tr><td><i class="chip" style="background:#EEF3FA"></i>Ground #EEF3FA</td><td>base</td></tr>
-          <tr><td><i class="chip" style="background:#F8FAFD"></i>Surface #F8FAFD</td><td>glass fallback</td></tr>
-          <tr><td><i class="chip" style="background:#0E1F38"></i>Text #0E1F38</td><td class="num">14.8 : 1</td></tr>
-          <tr><td><i class="chip" style="background:#46566E"></i>Text 2 #46566E</td><td class="num">6.7 : 1</td></tr>
-          <tr><td><i class="chip" style="background:#22548A"></i>Accent #22548A</td><td class="num">7.0 : 1</td></tr>
-          <tr><td><i class="chip" style="background:#8A5A0F"></i>Today #8A5A0F</td><td class="num">5.3 : 1</td></tr>
-          <tr><td><i class="chip" style="background:#B23F2A"></i>Alert #B23F2A</td><td class="num">5.2 : 1</td></tr>
-          <tr><td><i class="chip" style="background:#1F7A4C"></i>Positive #1F7A4C</td><td class="num">4.8 : 1</td></tr>
-          <tr><td><i class="chip" style="background:#22548A"></i>Action #22548A, white text</td><td class="num">7.8 : 1</td></tr>
-        </table>
+    <figure class="ring-fig in" style="--i:2">
+      <div class="ring" id="ring"></div>
+      <figcaption>of the way to a fair verdict at week 24. The hatched band is the shed window.</figcaption>
+    </figure>
+
+    <div class="note in" style="--i:3">
+      <p class="say" id="say">This is the shed window. If more hair is coming out right now, that is the pattern most people describe. Here is your day-one photo to compare against.</p>
+      <div class="acts">
+        <a class="btn primary" href="#mirror">Compare with day one</a>
+        <button class="link" type="button">Why am I seeing this?</button>
       </div>
     </div>
   </section>
 
-  <section class="section" aria-labelledby="h-type">
-    <h2 id="h-type">Type</h2>
-    <p class="lede">Manrope speaks for the app. Instrument Serif appears in one place only: the note you write to yourself.</p>
-    <div class="typespec">
-      <div class="ln"><span class="meta">Numeral, 200</span><span class="num" style="font-size:var(--t-numeral);font-weight:200;letter-spacing:-0.04em;line-height:.9">20<small style="font-size:.4em;font-weight:400;color:var(--text-2)">%</small></span></div>
-      <div class="ln"><span class="meta">Display, 300</span><span style="font-size:var(--t-display);font-weight:300;letter-spacing:-0.03em;line-height:1.02">Evening, <span style="color:var(--text-2)">Arjun.</span></span></div>
-      <div class="ln"><span class="meta">H1, 600</span><span style="font-size:var(--t-h1);font-weight:600;letter-spacing:-0.02em;line-height:1.1">When did you start, or when will you?</span></div>
-      <div class="ln"><span class="meta">H2, 600</span><span style="font-size:var(--t-h2);font-weight:600;letter-spacing:-0.015em">Day one and now.</span></div>
-      <div class="ln"><span class="meta">Body, 450</span><span style="max-width:60ch">Between about week two and week eight, many people see more hair fall. Older resting hairs make way for new growing ones.</span></div>
-      <div class="ln"><span class="meta">Small, 500</span><span style="font-size:var(--t-small);font-weight:500;color:var(--text-2)">Everything on your map counts from this day.</span></div>
-      <div class="ln"><span class="meta">Letter, serif italic</span><span class="letter">Dear week-five me, you started this because you were tired of hats. Give it till March.</span></div>
+  <section class="sec" id="map" aria-labelledby="mapH">
+    <div class="sec-head in"><h2 id="mapH">Your 24 weeks</h2><a class="link" href="#">Open the map</a></div>
+    <div class="strip in" style="--i:1">
+      <div class="phases" id="phases" aria-hidden="true"></div>
+      <div class="weeks" id="weeks" role="img"></div>
+      <div class="wknums" id="wknums" aria-hidden="true"></div>
+    </div>
+    <div class="legend in" style="--i:2">
+      <span><i class="sw past"></i>Done</span>
+      <span><i class="sw now"></i>You are here</span>
+      <span><i class="sw hatch"></i>Shed window, weeks 3 to 8</span>
+      <span><i class="sw ms"></i>Photo days</span>
     </div>
   </section>
 
-  <section class="section" aria-labelledby="h-comp">
-    <h2 id="h-comp">Components</h2>
-    <p class="lede">Radius follows hierarchy: 28 for hero cards, 20 for tiles, 12 inside cards, pills fully round.</p>
-    <div class="comp-grid">
-      <div class="card">
-        <h4>Buttons</h4>
-        <div class="btnrow">
-          <button class="btn primary" type="button">Take photo</button>
-          <button class="btn secondary" type="button">Retake</button>
-          <button class="btn ghost" type="button">Why am I seeing this?</button>
-          <button class="btn danger" type="button">Delete everything</button>
+  <section class="sec" aria-label="Today at a glance">
+    <div class="trio">
+      <div class="blk in" style="--i:0">
+        <div class="row"><h3>Routine</h3><span class="meta num">6 days in a row</span></div>
+        <div class="slot"><p><b>Morning</b><span class="num">8:00</span></p><button class="check" aria-pressed="true" aria-label="Morning application done"><i class="ph-bold ph-check" aria-hidden="true"></i></button></div>
+        <div class="slot"><p><b>Evening</b><span class="num">21:30</span></p><button class="check" aria-pressed="false" aria-label="Evening application done"><i class="ph-bold ph-check" aria-hidden="true"></i></button></div>
+        <p class="guide">General guidance. Follow your pack leaflet or your doctor.</p>
+      </div>
+      <div class="blk in" style="--i:1" id="mirror">
+        <div class="row"><h3>Day one and now</h3><a class="link" href="#" style="min-height:0">Mirror</a></div>
+        <div class="pair">
+          <figure class="shot"><div class="img" data-head></div><figcaption>Day 1, 10 September</figcaption></figure>
+          <figure class="shot"><div class="img" data-head></div><figcaption id="nowCap">Day 34, this week</figcaption></figure>
         </div>
       </div>
-      <div class="card">
-        <h4>Pills</h4>
-        <div class="btnrow">
-          <span class="pill">Demo community</span>
-          <span class="pill today"><i class="dot"></i>Photos due tonight</span>
-          <span class="pill positive">Shed easing</span>
-          <span class="pill alert">See a doctor</span>
-        </div>
-      </div>
-      <div class="card">
-        <h4>Check-in slider</h4>
-        <div class="five">
-          <label for="shed" class="sub">Hair fall this week: <b id="shedWord" style="color:var(--text)">more than usual</b></label>
-          <input id="shed" type="range" min="0" max="4" step="1" value="3">
-          <div class="lbls" aria-hidden="true"><span>barely any</span><span>handfuls</span></div>
-        </div>
-      </div>
-      <div class="card alert">
-        <h4>Talk to a doctor today</h4>
-        <p class="sub" style="color:var(--text)">Dizziness, a racing heart, or swelling in your face, hands or feet needs a doctor today. Don't wait for the next check-in.</p>
-        <div class="btnrow" style="margin-top:var(--s-4)"><button class="btn danger sm" type="button">How to reach a doctor</button></div>
-      </div>
-      <div class="card">
-        <h4>The letter, revealed</h4>
-        <div class="paper">
-          <p class="letter" style="font-size:1.5rem">You said you'd give it six months. It's been five weeks. Keep your word.</p>
-          <p class="from">You wrote this on 10 September.</p>
-        </div>
-      </div>
-      <div class="card hero">
-        <h4>Glass card, hero radius</h4>
-        <p class="sub">In light theme every card is frosted glass over the wash. In dark theme cards are solid with a hairline; only the capsule and sheets use glass.</p>
+      <div class="blk in" style="--i:2">
+        <div class="row"><h3>Supply</h3><span class="tag">Solution, 60 ml</span></div>
+        <p class="big num"><span id="daysLeft">9</span><small>days left</small></p>
+        <div class="runway" role="img" id="runwayLbl" aria-label="About 9 of 30 days of supply left"><i id="runway"></i></div>
+        <p class="meta" id="runsOut">Runs out around 23 October.</p>
+        <a class="btn quiet" href="#" style="margin-top:20px">Reorder on Man Matters</a>
       </div>
     </div>
   </section>
 
-  <section class="section" aria-labelledby="h-motion">
-    <h2 id="h-motion">Motion</h2>
-    <p class="lede">Three eases, each with one job. Under reduced motion every one of these settles instantly.</p>
-    <div style="margin-top:var(--s-5)">
-      <div class="ease-row"><div class="meta"><b>Settle, 280 ms</b><span>Sheets, cards, page enters</span></div><div class="lane" data-ease="var(--ease-settle)" data-dur="280"><i></i></div></div>
-      <div class="ease-row"><div class="meta"><b>Swell, 900 ms</b><span>Ring draw, letter unfold, ripple</span></div><div class="lane" data-ease="var(--ease-swell)" data-dur="900"><i></i></div></div>
-      <div class="ease-row"><div class="meta"><b>Fall, 600 ms</b><span>The drop, and nothing else</span></div><div class="lane" data-ease="var(--ease-fall)" data-dur="600"><i></i></div></div>
-      <button class="btn secondary sm" type="button" id="play" style="margin-top:var(--s-4)">Play the eases</button>
+  <section class="sec duo" id="mates" aria-label="Community and projection">
+    <div class="in">
+      <div class="row"><h2 class="h2">People who started when you did</h2><span class="tag">Demo community</span></div>
+      <div class="faces" aria-hidden="true"><b>D</b><b>K</b><b>R</b><b>S</b><b>+8</b></div>
+      <ul class="feed">
+        <li><p>Dev from Pune took their week 4 photos.<span class="when">2h</span></p><button class="nudge">Send a nudge</button></li>
+        <li><p><span id="cohortN" class="num">12</span> people in your start week are on week <span id="cohortW" class="num">5</span> today.</p></li>
+        <li><p>Kabir from Delhi finished week 4.<span class="when">Yesterday</span></p><button class="nudge">Send a nudge</button></li>
+      </ul>
+    </div>
+    <div class="proj in" style="--i:1">
+      <h2 class="h2">What week 24 can look like</h2>
+      <p class="meta">Most visible change, if it comes, shows up between month four and six. This helps you picture the wait.</p>
+      <a class="btn quiet" href="#" style="margin-top:24px">See the illustration</a>
+      <p class="fine">An illustration of a typical outcome, not a promise. Results vary.</p>
     </div>
   </section>
 
-  <p class="note">Throwaway file for Phase 0 review. Fonts load from Google here; the app self-hosts them. Head drawings are placeholders, not photos.</p>
+  <section class="stop in" aria-labelledby="stopH">
+    <div>
+      <h2 id="stopH">Thinking of stopping?</h2>
+      <p>Look at three things first: your day-one photo, where you are on the map, and the note you wrote.</p>
+    </div>
+    <a class="btn quiet" href="#">Before you stop</a>
+  </section>
+
+  <footer class="foot">
+    <p><i class="ph ph-lock-simple" aria-hidden="true"></i>Your details and photos stay on this device.</p>
+    <p>Not medical advice. Follow your pack leaflet and your doctor.</p>
+    <p>An independent concept for the Mosaic Fellowship Builder Challenge. Not made or endorsed by Man Matters.</p>
+  </footer>
 </main>
 
-<template id="phone-tpl">
-  <div class="statusbar" aria-hidden="true"><span class="num">9:41</span><span>&#9679;&#9679;&#9679;</span></div>
-  <div class="phone-scroll">
-    <div class="hello">
-      <div>
-        <h3><span data-greet>Evening,</span> <span class="name">Arjun.</span></h3>
-        <p data-dayline>Day 34, week 5, the part everyone finds hardest.</p>
-      </div>
-      <span class="avatar" aria-hidden="true">A</span>
-    </div>
+<button class="bar" type="button" id="bar" aria-label="Check in: how is your scalp today?">
+  <i class="ph ph-drop" aria-hidden="true"></i>
+  <span class="ask">How is your scalp today?</span>
+  <span class="go" aria-hidden="true"><i class="ph-bold ph-arrow-up"></i><span class="rip"></span></span>
+</button>
 
-    <div class="card hero">
-      <div class="ring-box" data-ring></div>
-      <p class="ring-cap">of the way to a fair verdict at week 24</p>
-      <div class="legend">
-        <span class="pill"><i class="swatch-hatch"></i>Shed window, days 15 to 56</span>
-        <span class="pill today"><i class="dot"></i><span data-next>Next photos, week 8</span></span>
-      </div>
-    </div>
-
-    <div class="card insight">
-      <p class="say" data-insight>This is the shed window. If more hair is coming out right now, that is the pattern most people describe. Here is your day-one photo to compare against.</p>
-      <div class="acts">
-        <span class="thumb" data-head="0"></span>
-        <div style="display:grid;gap:2px;justify-items:start"><button class="btn secondary sm" type="button">Compare with today</button>
-        <button class="btn ghost sm" type="button" style="min-height:36px">Why am I seeing this?</button></div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="row"><h4 style="display:flex;align-items:center;gap:8px"><i class="dot" style="color:var(--today);width:8px;height:8px"></i>Today</h4><span class="pill">6 days in a row</span></div>
-      <div class="slot"><span class="t">Morning <span class="num">8:00</span></span><button class="tick-btn" type="button" aria-pressed="true" aria-label="Morning application done"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></button></div>
-      <div class="slot"><span class="t">Evening <span class="num">21:30</span></span><button class="tick-btn" type="button" aria-pressed="false" aria-label="Evening application done"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></button></div>
-    </div>
-
-    <div class="card">
-      <div class="row"><h4>Day one and now</h4><button class="btn ghost sm" type="button">Mirror</button></div>
-      <div class="pair">
-        <div class="shot" data-head="0"><span>Day 1</span></div>
-        <div class="shot" data-head="1"><span data-nowlabel>Day 34</span></div>
-      </div>
-    </div>
-
-    <div class="stack">
-      <div class="card">
-        <h4>About 9 days left</h4>
-        <div class="runway" role="img" aria-label="About 9 of 30 days of supply left"><i></i></div>
-        <p class="sub">Runs out around 23 Oct.</p>
-      </div>
-      <div class="card">
-        <h4>Week 24, typically</h4>
-        <p class="sub" style="margin-top:6px">An illustration, not a promise.</p>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="row"><div class="faces" aria-hidden="true"><b>D</b><b>K</b><b>R</b><b>S</b></div><span class="pill">Demo community</span></div>
-      <p style="margin-top:var(--s-3);font-weight:500">12 people in your start week are on week <span data-wk class="num">5</span> today.</p>
-    </div>
-
-    <button class="stop" type="button">I'm thinking of stopping</button>
-  </div>
-
-  <div class="capsule" role="button" tabindex="0" aria-label="Check in: how is your scalp today?">
-    <svg class="drop" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg>
-    <span class="ph">How is your scalp today?</span>
-    <span class="send" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></svg><i class="ripple"></i></span>
-  </div>
-
-  <nav class="tabbar" aria-label="Main">
-    <a class="tab" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Home</a>
-    <a class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><path d="M9 9h.01"/><path d="M15 9h.01"/></svg>Mirror</a>
-    <a class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z"/><path d="M15 5.764v15"/><path d="M9 3.236v15"/></svg>Journey</a>
-    <a class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Mates</a>
-    <a class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>You</a>
-  </nav>
-</template>
+<nav class="tabs" aria-label="Main">
+  <a href="#" aria-current="page"><i class="ph-fill ph-sun-horizon" aria-hidden="true"></i>Today</a>
+  <a href="#map"><i class="ph ph-map-trifold" aria-hidden="true"></i>Map</a>
+  <a href="#mirror"><i class="ph ph-images-square" aria-hidden="true"></i>Mirror</a>
+  <a href="#mates"><i class="ph ph-users-three" aria-hidden="true"></i>Mates</a>
+  <a href="#"><i class="ph ph-user-circle" aria-hidden="true"></i>You</a>
+</nav>
 
 <script>
 (() => {
-  const TOTAL = 168;
-  const SHED = [15, 56];
-  const MILESTONES = [4, 8, 12, 16, 20, 24];
+  const TOTAL = 168, MS = [4, 8, 12, 16, 20, 24];
+  const START = new Date(2026, 8, 10); // fictional demo start, 10 September 2026
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const $ = id => document.getElementById(id);
 
-  const phase = d => d < 15 ? 'calm' : d <= 56 ? 'shed' : d <= 84 ? 'settling' : d <= 126 ? 'fine' : d <= 167 ? 'building' : d <= 175 ? 'judgement' : 'beyond';
+  const phaseOf = d => d < 15 ? 'calm' : d <= 56 ? 'shed' : d <= 84 ? 'settling' : d <= 126 ? 'fine' : d <= 167 ? 'building' : d <= 175 ? 'judgement' : 'beyond';
   const phrase = d => {
-    const w = Math.ceil(d / 7), p = phase(d);
+    const w = Math.ceil(d / 7), p = phaseOf(d);
     if (p === 'calm') return 'the quiet start';
     if (p === 'shed') return w <= 4 ? 'the shed window' : w === 5 ? 'the part everyone finds hardest' : 'the shed window, past the middle';
     return { settling: 'things settling down', fine: 'when fine hairs often show up', building: 'the long middle', judgement: 'judgement week', beyond: 'past six months' }[p];
   };
-  const insight = d => ({
+  const say = {
     calm: 'Nothing to see yet, and that is the plan. Your photo is doing the remembering for you.',
     shed: 'This is the shed window. If more hair is coming out right now, that is the pattern most people describe. Here is your day-one photo to compare against.',
     settling: 'The shed window is closing. For many people hair fall eases over the next few weeks.',
-    fine: 'The first fine hairs often show up around now. Retake your photos tonight.',
+    fine: 'The first fine hairs often show up around now. Retake your photos tonight, in the same light as day one.',
     building: 'The long middle. Nobody writes songs about month five. Keep going anyway.',
     judgement: 'Week 24. Time to judge fairly: day one next to today. If you are not sure what you are seeing, a doctor can read it with you.',
     beyond: 'Many people keep going past six months, because the full effect can take closer to a year.'
-  })[phase(d)];
+  };
+  const PHASE_SPANS = [['Quiet start', 1, 2], ['Shed window', 3, 8], ['Settling', 9, 12], ['First fine hairs', 13, 18], ['Long middle', 19, 23], ['Judge', 24, 24]];
 
+  /* ring */
   const NS = 'http://www.w3.org/2000/svg';
   const el = (n, a = {}) => { const e = document.createElementNS(NS, n); for (const k in a) e.setAttribute(k, a[k]); return e; };
-  const C = 118, R = 100, RB = 113;
+  const C = 180, R = 150, RB = 163;
   const circ = r => 2 * Math.PI * r;
   const pt = (f, r) => { const a = (f * 360 - 90) * Math.PI / 180; return [C + r * Math.cos(a), C + r * Math.sin(a)]; };
+  const svg = el('svg', { viewBox: '0 0 360 360', role: 'img' });
+  const defs = el('defs');
+  const pat = el('pattern', { id: 'hatch', width: 5, height: 5, patternUnits: 'userSpaceOnUse', patternTransform: 'rotate(45)' });
+  pat.appendChild(el('rect', { width: 1.5, height: 5, fill: 'var(--hatch)' }));
+  defs.appendChild(pat); svg.appendChild(defs);
+  [200, 228, 260].forEach((r, i) => svg.appendChild(el('circle', { cx: C, cy: C, r, fill: 'none', stroke: 'var(--ripple)', 'stroke-width': 1, opacity: (1 - i * 0.22).toFixed(2) })));
+  for (let i = 0; i < 24; i++) {
+    const [x1, y1] = pt(i / 24, 132), [x2, y2] = pt(i / 24, i % 4 === 0 ? 124 : 128);
+    svg.appendChild(el('line', { x1, y1, x2, y2, stroke: 'var(--line-strong)', 'stroke-width': 1.25, 'stroke-linecap': 'round' }));
+  }
+  const rot = `rotate(-90 ${C} ${C})`;
+  const a0 = 14 / TOTAL, b0 = 56 / TOTAL, cb = circ(RB);
+  svg.appendChild(el('circle', { cx: C, cy: C, r: RB, fill: 'none', stroke: 'url(#hatch)', 'stroke-width': 8, 'stroke-dasharray': `0 ${cb * a0} ${cb * (b0 - a0)} ${cb}`, transform: rot }));
+  svg.appendChild(el('circle', { cx: C, cy: C, r: R, fill: 'none', stroke: 'var(--track)', 'stroke-width': 3 }));
+  const arc = el('circle', { class: 'arc', cx: C, cy: C, r: R, fill: 'none', stroke: 'var(--accent)', 'stroke-width': 3, 'stroke-linecap': 'round', 'stroke-dasharray': `0 ${circ(R)}`, transform: rot });
+  svg.appendChild(arc);
+  const msDots = MS.map(w => { const [x, y] = pt(w * 7 / TOTAL, R); const d = el('circle', { cx: x, cy: y, r: 4, 'stroke-width': 1.5 }); svg.appendChild(d); return { w, d }; });
+  const marker = el('g', { class: 'marker' });
+  marker.style.transformOrigin = `${C}px ${C}px`;
+  marker.appendChild(el('circle', { cx: C, cy: C - R, r: 9, fill: 'var(--bg)', stroke: 'var(--accent)', 'stroke-width': 2 }));
+  marker.appendChild(el('circle', { cx: C, cy: C - R, r: 3.5, fill: 'var(--accent)' }));
+  svg.appendChild(marker);
+  const mid = document.createElement('div'); mid.className = 'ring-mid';
+  mid.innerHTML = '<p class="pct num"><span id="pct">20</span><small>%</small></p><p class="wk num" id="wkOf">Week 5 of 24</p>';
+  $('ring').append(svg, mid);
 
-  function buildRing(box, uid) {
-    const svg = el('svg', { viewBox: '0 0 236 236', role: 'img' });
-    const defs = el('defs');
-    const pat = el('pattern', { id: 'hatch' + uid, width: 4, height: 4, patternUnits: 'userSpaceOnUse', patternTransform: 'rotate(45)' });
-    pat.appendChild(el('rect', { width: 2, height: 4, fill: 'var(--hatch)' }));
-    const grad = el('linearGradient', { id: 'arc' + uid, x1: 0, y1: 0, x2: 1, y2: 1 });
-    grad.appendChild(el('stop', { offset: '0', 'stop-color': '#22548A' }));
-    grad.appendChild(el('stop', { offset: '1', 'stop-color': '#5B9BE6' }));
-    defs.append(pat, grad);
-    svg.appendChild(defs);
-    for (let i = 0; i < 24; i++) {
-      const [x1, y1] = pt(i / 24, 84), [x2, y2] = pt(i / 24, i % 4 === 0 ? 78 : 81);
-      svg.appendChild(el('line', { x1, y1, x2, y2, stroke: 'var(--tick)', 'stroke-width': 1.25, 'stroke-linecap': 'round' }));
-    }
-    const rot = `rotate(-90 ${C} ${C})`;
-    const cb = circ(RB), a = (SHED[0] - 1) / TOTAL, b = SHED[1] / TOTAL;
-    svg.appendChild(el('circle', { cx: C, cy: C, r: RB, fill: 'none', stroke: `url(#hatch${uid})`, 'stroke-width': 7, 'stroke-dasharray': `0 ${cb * a} ${cb * (b - a)} ${cb}`, transform: rot }));
-    svg.appendChild(el('circle', { cx: C, cy: C, r: R, fill: 'none', stroke: 'var(--track)', 'stroke-width': 10 }));
-    const arc = el('circle', { class: 'arc', cx: C, cy: C, r: R, fill: 'none', stroke: `url(#arc${uid})`, 'stroke-width': 10, 'stroke-linecap': 'round', 'stroke-dasharray': `0 ${circ(R)}`, transform: rot });
-    svg.appendChild(arc);
-    const dots = MILESTONES.map(w => {
-      const [x, y] = pt(w * 7 / TOTAL, R);
-      const d = el('circle', { cx: x, cy: y, r: 4.5, 'stroke-width': 2 });
-      svg.appendChild(d); return { w, d };
-    });
-    const g = el('g', { class: 'marker' });
-    g.style.transformBox = 'view-box'; g.style.transformOrigin = `${C}px ${C}px`;
-    g.appendChild(el('circle', { cx: C, cy: C - R, r: 11, fill: 'var(--accent)', opacity: 0.25 }));
-    g.appendChild(el('circle', { cx: C, cy: C - R, r: 6, fill: '#fff' }));
-    svg.appendChild(g);
-    const orb = document.createElement('div'); orb.className = 'orb';
-    const center = document.createElement('div'); center.className = 'ring-center';
-    center.innerHTML = '<span class="pct num"><span data-pct>20</span><small>%</small></span>';
-    box.append(orb, svg, center);
-    return { svg, arc, dots, g, center };
+  /* week strip */
+  const weeks = $('weeks'), phases = $('phases'), nums = $('wknums');
+  PHASE_SPANS.forEach(([label, a, b]) => { const s = document.createElement('span'); s.textContent = label; s.style.gridColumn = `${a} / ${b + 1}`; s.dataset.a = a; s.dataset.b = b; phases.appendChild(s); });
+  const cells = [];
+  for (let w = 1; w <= 24; w++) {
+    const c = document.createElement('div'); c.className = 'wk-cell' + (w >= 3 && w <= 8 ? ' shed' : '');
+    if (MS.includes(w)) { const m = document.createElement('i'); m.className = 'ms'; c.appendChild(m); }
+    weeks.appendChild(c); cells.push(c);
+    const n = document.createElement('span'); n.textContent = w; nums.appendChild(n);
   }
 
-  function headSVG() {
-    // Top-down crown: outline, a whorl, and short strands spiralling out from it.
+  /* head drawing, a placeholder for the user's own photo */
+  const head = () => {
     const cx = 63, cy = 56, N = 150, GA = 2.39996;
-    let s = '<svg viewBox="0 0 120 120" aria-hidden="true"><defs><clipPath id="hc"><ellipse cx="60" cy="62" rx="39" ry="45"/></clipPath></defs>';
-    s += '<ellipse cx="60" cy="62" rx="40" ry="46" fill="none" stroke="var(--text-3)" stroke-width="1.4"/><g clip-path="url(#hc)">';
+    let s = '<svg viewBox="0 0 120 120" aria-hidden="true"><ellipse cx="60" cy="62" rx="40" ry="46" fill="none" stroke="var(--text-3)" stroke-width="1.2"/>';
     for (let i = 3; i < N; i++) {
-      const a = i * GA, r = Math.sqrt(i / N) * 52;
+      const a = i * GA, r = Math.sqrt(i / N) * 46;
       const x = cx + r * Math.cos(a), y = cy + r * Math.sin(a) * 1.1;
+      if (((x - 60) / 38) ** 2 + ((y - 62) / 44) ** 2 > 1) continue;
       const t = a + 1.9, len = 3 + r * 0.06;
-      s += `<path d="M${x.toFixed(1)} ${y.toFixed(1)} l${(Math.cos(t) * len).toFixed(1)} ${(Math.sin(t) * len).toFixed(1)}" stroke="var(--text-2)" stroke-width="1.1" stroke-linecap="round" opacity="${(0.75 - r / 110).toFixed(2)}"/>`;
+      s += `<path d="M${x.toFixed(1)} ${y.toFixed(1)} l${(Math.cos(t) * len).toFixed(1)} ${(Math.sin(t) * len).toFixed(1)}" stroke="var(--text-2)" stroke-width="1" stroke-linecap="round" opacity="${(0.8 - r / 90).toFixed(2)}"/>`;
     }
-    return s + '</g></svg>';
-  }
+    return s + '</svg>';
+  };
+  document.querySelectorAll('[data-head]').forEach(n => n.innerHTML = head());
 
-  const phones = [...document.querySelectorAll('[data-phone]')].map((ph, i) => {
-    ph.appendChild(document.getElementById('phone-tpl').content.cloneNode(true));
-    ph.querySelectorAll('[data-head]').forEach(n => n.insertAdjacentHTML('afterbegin', headSVG()));
-    const ring = buildRing(ph.querySelector('[data-ring]'), i);
-    ph.querySelectorAll('.tick-btn').forEach(b => b.addEventListener('click', () => b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') !== 'true')));
-    const cap = ph.querySelector('.capsule');
-    const fire = () => { const r = cap.querySelector('.ripple'); r.classList.remove('go'); void r.offsetWidth; r.classList.add('go'); };
-    cap.addEventListener('click', fire);
-    cap.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fire(); } });
-    return { ph, ring };
-  });
-
-  function render(day, animate) {
+  /* render */
+  const fmt = (d, o) => d.toLocaleDateString('en-GB', o);
+  function render(day) {
     const f = Math.min(day, TOTAL) / TOTAL, w = Math.min(Math.ceil(day / 7), 24), pct = Math.round(f * 100);
-    const hour = new Date().getHours();
-    const greet = hour < 5 ? 'Still up,' : hour < 12 ? 'Morning,' : hour < 17 ? 'Afternoon,' : hour < 22 ? 'Evening,' : 'Still up,';
-    const next = MILESTONES.find(m => m * 7 >= day);
-    phones.forEach(({ ph, ring }) => {
-      ring.arc.setAttribute('stroke-dasharray', `${circ(R) * f} ${circ(R)}`);
-      const [x, y] = pt(f, R);
-      ring.g.style.transform = `rotate(${f * 360}deg)`;
-      ring.dots.forEach(({ w: mw, d }) => {
-        const done = mw * 7 <= day;
-        d.setAttribute('fill', done ? 'var(--today)' : 'var(--bg)');
-        d.setAttribute('stroke', done ? 'var(--today)' : 'var(--hairline-strong)');
-      });
-      ring.svg.setAttribute('aria-label', `Day ${day} of 168. ${pct} percent of the way to week 24. Shed window is days 15 to 56.`);
-      ring.center.querySelector('[data-pct]').textContent = pct;
-      ph.querySelector('[data-greet]').textContent = greet;
-      ph.querySelector('[data-dayline]').textContent = day > TOTAL ? `Day ${day}, ${phrase(day)}.` : `Day ${day}, week ${w}, ${phrase(day)}.`;
-      ph.querySelector('[data-insight]').textContent = insight(day);
-      ph.querySelector('[data-next]').textContent = next ? `Next photos, week ${next}` : 'All six photo sets done';
-      ph.querySelector('[data-nowlabel]').textContent = `Day ${day}`;
-      ph.querySelector('[data-wk]').textContent = w;
+    const today = new Date(START); today.setDate(START.getDate() + day - 1);
+    const h = new Date().getHours();
+    $('greetWord').textContent = h < 5 ? 'Still up' : h < 12 ? 'Morning' : h < 17 ? 'Afternoon' : h < 22 ? 'Evening' : 'Still up';
+    $('date').textContent = fmt(today, { weekday: 'long', day: 'numeric', month: 'long' });
+    const ph = phrase(day);
+    $('lead').textContent = day > TOTAL ? `Day ${day}. ${ph[0].toUpperCase() + ph.slice(1)}.` : `Day ${day} of 168. Week ${w}, ${ph}.`;
+    $('say').textContent = say[phaseOf(day)];
+    $('pct').textContent = pct; $('wkOf').textContent = `Week ${w} of 24`;
+    $('chipDay').textContent = day; $('day').value = day;
+    arc.setAttribute('stroke-dasharray', `${circ(R) * f} ${circ(R)}`);
+    marker.style.transform = `rotate(${f * 360}deg)`;
+    msDots.forEach(({ w: mw, d }) => { const done = mw * 7 <= day; d.setAttribute('fill', done ? 'var(--today-dot)' : 'var(--bg)'); d.setAttribute('stroke', done ? 'var(--today-dot)' : 'var(--line-strong)'); });
+    svg.setAttribute('aria-label', `Day ${day} of 168, ${pct} percent of the way to week 24.`);
+    cells.forEach((c, i) => {
+      const wk = i + 1;
+      c.classList.toggle('past', wk < w); c.classList.toggle('now', wk === w);
+      const m = c.querySelector('.ms'); if (m) m.classList.toggle('done', wk * 7 <= day);
     });
+    phases.querySelectorAll('span').forEach(s => s.classList.toggle('cur', w >= +s.dataset.a && w <= +s.dataset.b));
+    nums.querySelectorAll('span').forEach((n, i) => { n.classList.toggle('cur', i + 1 === w); if (i + 1 === w) n.setAttribute('aria-current', 'step'); else n.removeAttribute('aria-current'); });
+    weeks.setAttribute('aria-label', `Week ${w} of 24. Shed window is weeks 3 to 8.`);
+    $('nowCap').textContent = `Day ${day}, this week`;
+    $('cohortW').textContent = w;
+    const supply = 30, bought = 13, left = Math.max(0, supply - ((day - bought) % supply + supply) % supply);
+    $('daysLeft').textContent = left;
+    $('runway').style.width = `${(left / supply) * 100}%`;
+    $('runwayLbl').setAttribute('aria-label', `About ${left} of ${supply} days of supply left`);
+    const out = new Date(today); out.setDate(today.getDate() + left);
+    $('runsOut').textContent = `Runs out around ${fmt(out, { day: 'numeric', month: 'long' })}.`;
+    document.querySelectorAll('.picks button').forEach(b => b.setAttribute('aria-pressed', +b.dataset.d === day));
   }
 
-  const dayIn = document.getElementById('day'), out = document.getElementById('dayOut');
-  dayIn.addEventListener('input', () => { out.textContent = dayIn.value; render(+dayIn.value); });
+  /* controls */
+  const pop = $('demoPop'), demoBtn = $('demoBtn');
+  const setPop = open => { pop.dataset.open = open; demoBtn.setAttribute('aria-expanded', open); };
+  demoBtn.addEventListener('click', e => { e.stopPropagation(); setPop(pop.dataset.open !== 'true'); });
+  document.addEventListener('click', e => { if (!pop.contains(e.target)) setPop(false); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') setPop(false); });
+  $('day').addEventListener('input', e => render(+e.target.value));
+  document.querySelectorAll('.picks button').forEach(b => b.addEventListener('click', () => render(+b.dataset.d)));
+
+  const root = document.documentElement, tBtn = $('themeBtn');
+  const isDark = () => root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  const syncThemeBtn = () => { const d = isDark(); tBtn.innerHTML = `<i class="ph ${d ? 'ph-sun' : 'ph-moon'}" aria-hidden="true"></i>`; tBtn.setAttribute('aria-label', d ? 'Switch to light theme' : 'Switch to dark theme'); };
+  tBtn.addEventListener('click', () => { const t = isDark() ? 'light' : 'dark'; root.dataset.theme = t; try { localStorage.setItem('wf-preview-theme', t); } catch (e) {} syncThemeBtn(); });
+  syncThemeBtn();
+
+  document.querySelectorAll('.check').forEach(b => b.addEventListener('click', () => b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') !== 'true')));
+  $('bar').addEventListener('click', () => { const r = document.querySelector('.rip'); r.classList.remove('on'); void r.offsetWidth; r.classList.add('on'); });
+
+  /* entrance: one orchestrated moment, then quiet reveals */
   render(1);
-  requestAnimationFrame(() => requestAnimationFrame(() => render(+dayIn.value)));
-  if (reduce) render(+dayIn.value);
-
-  const shedWords = ['barely any', 'a few', 'normal for me', 'more than usual', 'handfuls'];
-  const shed = document.getElementById('shed');
-  shed.addEventListener('input', () => { document.getElementById('shedWord').textContent = shedWords[shed.value]; });
-  shed.setAttribute('aria-valuetext', shedWords[shed.value]);
-  shed.addEventListener('change', () => shed.setAttribute('aria-valuetext', shedWords[shed.value]));
-
-  document.querySelectorAll('[data-set-theme]').forEach(b => b.addEventListener('click', () => {
-    const t = b.dataset.setTheme;
-    if (t === 'system') document.documentElement.removeAttribute('data-theme'); else document.documentElement.setAttribute('data-theme', t);
-    document.querySelectorAll('[data-set-theme]').forEach(x => x.setAttribute('aria-pressed', x === b));
-  }));
-
-  document.getElementById('play').addEventListener('click', () => {
-    document.querySelectorAll('.lane').forEach(l => {
-      const dot = l.querySelector('i');
-      dot.style.transition = `left ${l.dataset.dur}ms ${l.dataset.ease}`;
-      l.classList.toggle('go');
-    });
-  });
+  const settle = () => render(34);
+  if (reduce) { settle(); document.querySelectorAll('.in').forEach(n => n.classList.add('shown')); return; }
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('shown'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px' });
+  document.querySelectorAll('.in').forEach(n => io.observe(n));
+  setTimeout(settle, 350);
 })();
 </script>
 </body>

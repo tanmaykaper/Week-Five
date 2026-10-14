@@ -21,12 +21,15 @@
 - No real person's name, number, quote or photo anywhere. Demo people are fictional.
 
 ## Stack
-Next.js 16 (App Router, `output: "export"`, `basePath` from `NEXT_PUBLIC_BASE_PATH`), TypeScript, Tailwind v4 with CSS-variable tokens, `motion`, GSAP + ScrollTrigger (intro only), Zustand (persisted), `idb`, `date-fns`, Zod, `qrcode` (dev page), `lucide-react`, Serwist (`@serwist/build`, run after export). Vitest + Playwright. pnpm. Node 26 via Homebrew.
+Next.js 16.4 (App Router, `output: "export"`, `basePath` from `NEXT_PUBLIC_BASE_PATH`, `/week-five` on GitHub Pages), TypeScript 6.0, Tailwind v4 with CSS-variable tokens, `motion`, GSAP + ScrollTrigger (intro only), Zustand (persisted), `idb`, `date-fns`, Zod, `qrcode` (dev page), `@phosphor-icons/react`, Serwist (`@serwist/build`, run after export). Fonts: Geist + Instrument Serif via `next/font`. Vitest + Playwright. pnpm 12, Node 26 via Homebrew.
+
+## Design in one breath
+A responsive website, not a phone mock. Minimal and document-like: space and hairlines, not boxes. Serif greeting, Geist for everything else, one blue accent, amber only for photo days, coral only for see-a-doctor. The ring and the 24-week strip carry the drop-and-ripple idea. Reference render: `docs/design-preview.html`. Spec: `docs/DESIGN_SYSTEM.md`.
 
 ## Phases
 | # | Phase | Status |
 |---|---|---|
-| 0 | Design and build doc | Done, awaiting review |
+| 0 | Design and build doc | Done (design v2 approved direction) |
 | 1 | Foundation | Not started |
 | 2 | Scroll intro | Not started |
 | 3 | QR entry and onboarding story | Not started |

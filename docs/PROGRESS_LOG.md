@@ -18,3 +18,14 @@
 - Copy in CONTENT_BANK is a first draft for Tanmay's edit.
 
 **Next step:** Tanmay reviews the docs and the design preview. On "go", Phase 1: foundation.
+
+## 2026-10-14, design v2
+
+**Done**
+- Tanmay rejected the v1 look (phone mockups, glow, boxed cards). Rebuilt `docs/design-preview.html` as a responsive website: top nav, serif greeting, quiet ring with ripple hairlines, 24-week strip, hairline-divided rows, floating check-in bar, bottom tabs on phones, demo day jumper, light and dark.
+- Rewrote `DESIGN_SYSTEM.md`, updated `SCREENS.md`, `BUILD_DOC.md`, `CONTENT_BANK.md`, `DECISIONS.md` (24 to 32).
+- Checked at 1440, 1024 and 390 in both themes; no horizontal scroll; contrast re-measured.
+
+**Answers from Tanmay:** name stays Week Five, GitHub Pages hosting, he records the video, Hinglish as planned.
+
+**Next step:** Phase 1, foundation.
