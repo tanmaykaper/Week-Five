@@ -30,8 +30,8 @@ A responsive website, not a phone mock. Minimal and document-like: space and hai
 | # | Phase | Status |
 |---|---|---|
 | 0 | Design and build doc | Done (design v2 after review) |
-| 1 | Foundation | Done, awaiting review |
-| 2 | Scroll intro | Not started |
+| 1 | Foundation | Done |
+| 2 | Scroll intro | Done, awaiting review |
 | 3 | QR entry and onboarding story | Not started |
 | 4 | Baseline capture | Not started |
 | 5 | Home dashboard | Not started |

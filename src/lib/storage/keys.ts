@@ -14,6 +14,9 @@ export const PHOTO_DB: Record<Mode, string> = {
 /** Which namespace is active. Kept separate so the theme script and the store agree. */
 export const MODE_KEY = "weekfive:mode";
 
+/** "seen" once the intro has played or been skipped. Read before first paint so the intro cover never flashes the page. */
+export const INTRO_KEY = "weekfive:intro";
+
 /** "system" | "light" | "dark". Shared by both namespaces; read before first paint. */
 export const THEME_KEY = "weekfive:theme";
 

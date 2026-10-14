@@ -2,18 +2,16 @@ import { expect, test } from "@playwright/test";
 import { horizontalOverflow, seedDemo, seedFresh } from "./helpers";
 
 test.describe("first visit", () => {
-  test("goes to the intro, then to the welcome screen", async ({ page }) => {
+  test("goes to the welcome screen, which plays the intro first", async ({ page }) => {
     await seedFresh(page);
     await page.goto("/");
-    await expect(page).toHaveURL(/\/intro\/$/);
-    await expect(page.getByRole("heading", { name: "Before you start, six things worth knowing." })).toBeVisible();
-    await page.getByRole("button", { name: "Let's set up your plan" }).click();
     await expect(page).toHaveURL(/\/start\/$/);
+    await page.getByRole("button", { name: "Skip intro" }).click();
     await expect(page.getByText("Your details and photos stay on this phone.")).toBeVisible();
   });
 
   test("reads the pack QR and ignores everything else", async ({ page }) => {
-    await seedFresh(page);
+    await seedFresh(page, "light", { introSeen: true });
     await page.goto("/start/?sku=WF-SOL-60&reg=2026-10-01&batch=B1&name=Someone");
     await expect(page.getByRole("heading", { name: /^Welcome\. Let.s set up your plan\.$/ })).toBeVisible();
     await expect(page.getByText("Regrowth solution, 60 ml")).toBeVisible();

@@ -1,0 +1,264 @@
+/* The intro is always a deep navy room, whatever the theme. One moment, then out of the way. */
+.intro,
+.intro-cover {
+  --intro-bg: #0d1a2c;
+  --intro-line: #e9eef5;
+  --intro-text: #e9eef5;
+  --intro-text-2: #a7b4c6;
+  --intro-accent: #7db0ee;
+  --intro-liquid: rgba(125, 176, 238, 0.42);
+  --intro-liquid-top: rgba(125, 176, 238, 0.95);
+  --intro-bulb: #142640;
+  background: var(--intro-bg);
+  color: var(--intro-text);
+}
+
+/* Painted on first paint by the head script's data-intro flag, so /start never flashes before the intro. */
+.intro-cover {
+  display: none;
+}
+html[data-intro="pending"] .intro-cover {
+  display: block;
+  position: fixed;
+  inset: 0;
+  z-index: 59;
+}
+
+.intro {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  isolation: isolate;
+}
+.intro.is-revealing {
+  -webkit-mask-image: radial-gradient(circle at var(--x) var(--y), transparent var(--r), #000 calc(var(--r) + 1px));
+  mask-image: radial-gradient(circle at var(--x) var(--y), transparent var(--r), #000 calc(var(--r) + 1px));
+}
+.intro.is-leaving {
+  opacity: 0;
+  transition: opacity 220ms var(--ease-settle);
+}
+
+.intro-scroller {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  outline: none;
+}
+.intro-scroller::-webkit-scrollbar {
+  display: none;
+}
+.intro-track {
+  position: relative;
+  height: 700dvh;
+}
+.intro[data-mode="calm"] .intro-track {
+  height: 100%;
+}
+
+.intro-stage {
+  position: sticky;
+  top: 0;
+  height: 100dvh;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  padding: 76px var(--gutter) 104px;
+  gap: 24px;
+}
+@media (min-width: 900px) {
+  .intro-stage {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    grid-template-rows: minmax(0, 1fr);
+    align-items: center;
+    column-gap: clamp(40px, 6vw, 96px);
+    padding-block: 88px 112px;
+  }
+}
+
+.intro-art {
+  position: relative;
+  min-height: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(24px, 5dvh, 56px);
+}
+.intro-dropper {
+  position: relative;
+  height: min(38dvh, 300px);
+  aspect-ratio: 120 / 320;
+  transform: rotate(-62deg);
+  will-change: transform;
+}
+.intro-dropper svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+@media (min-width: 900px) {
+  .intro-dropper {
+    height: min(52dvh, 400px);
+  }
+}
+.intro[data-mode="calm"] .intro-dropper {
+  transform: none;
+}
+.intro-surface {
+  width: min(60%, 240px);
+  height: 1px;
+  background: color-mix(in srgb, var(--intro-line) 22%, transparent);
+  opacity: 0;
+}
+.intro-drop {
+  position: absolute;
+  width: 12px;
+  height: 16px;
+  margin-left: -6px;
+  transform: scale(0);
+  transform-origin: 50% 0%;
+  will-change: transform, opacity;
+}
+.intro-ring {
+  position: absolute;
+  width: 64px;
+  height: 16px;
+  margin: -8px 0 0 -32px;
+  border: 1.5px solid var(--intro-accent);
+  border-radius: 50%;
+  opacity: 0;
+  transform: scale(0.2);
+  will-change: transform, opacity;
+}
+
+.intro-beats {
+  display: grid;
+  align-content: center;
+  text-align: center;
+  justify-items: center;
+}
+@media (min-width: 900px) {
+  .intro-beats {
+    text-align: left;
+    justify-items: start;
+  }
+}
+.intro-beat {
+  grid-area: 1 / 1;
+  font-family: var(--font-serif);
+  font-size: clamp(1.75rem, 1.15rem + 2.5vw, 3.25rem);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  max-width: 19ch;
+  text-wrap: balance;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+.intro-beat:first-child {
+  opacity: 1;
+}
+
+.intro-top {
+  position: absolute;
+  inset: 0 0 auto 0;
+  z-index: 2;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-inline: var(--gutter);
+  pointer-events: none;
+}
+.intro-top > * {
+  pointer-events: auto;
+}
+.intro-skip {
+  min-height: 44px;
+  padding-inline: 4px;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--intro-text-2);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--intro-text-2) 40%, transparent);
+  text-underline-offset: 4px;
+  transition: color 150ms var(--ease-settle);
+}
+.intro-skip:hover {
+  color: var(--intro-text);
+}
+
+.intro-foot {
+  position: absolute;
+  inset: auto 0 0 0;
+  z-index: 2;
+  padding: 0 var(--gutter) calc(28px + env(safe-area-inset-bottom));
+  display: grid;
+  gap: 18px;
+  justify-items: center;
+}
+.intro-hint {
+  font-size: 0.875rem;
+  color: var(--intro-text-2);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+}
+.intro-cta {
+  height: 44px;
+  padding: 0 20px;
+  border-radius: 8px;
+  background: #e9eef5;
+  color: #0d1a2c;
+  font-weight: 500;
+  font-size: 0.9375rem;
+  transition: transform 120ms var(--ease-settle), opacity 200ms var(--ease-settle);
+}
+.intro-cta:active {
+  transform: scale(0.98);
+}
+.intro-calm-controls {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.intro-calm-controls button:not(.intro-cta) {
+  height: 44px;
+  padding: 0 16px;
+  border-radius: 8px;
+  border: 1px solid color-mix(in srgb, var(--intro-line) 22%, transparent);
+  color: var(--intro-text);
+  font-weight: 500;
+  font-size: 0.9375rem;
+}
+.intro-progress {
+  width: min(100%, 560px);
+  height: 1px;
+  background: color-mix(in srgb, var(--intro-line) 14%, transparent);
+  overflow: hidden;
+}
+.intro-progress > i {
+  display: block;
+  height: 100%;
+  background: var(--intro-accent);
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+}
+.intro :focus-visible {
+  outline: 2px solid var(--intro-accent);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .intro-hint svg {
+    animation: intro-bob 1.8s var(--ease-swell) infinite;
+  }
+}
+@keyframes intro-bob {
+  50% {
+    transform: translateY(3px);
+  }
+}

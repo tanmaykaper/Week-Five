@@ -27,7 +27,9 @@ Shared frame, under 768 px:
 ## `/` redirect
 No UI. A blank `--bg` frame with the app mark centred for at most one frame while the redirect runs.
 
-## `/intro`
+## The intro (overlay on `/start`; `/intro` replays it)
+Always deep navy, whatever the theme. Built: see `artifacts/screens/phase-2/intro-frames` after running the capture.
+
 Phone
 ```
 +------------------------------+

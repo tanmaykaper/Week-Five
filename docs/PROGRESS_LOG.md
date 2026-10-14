@@ -49,3 +49,18 @@
 - Full-page screenshots show the fixed check-in bar mid-page; that is a screenshot artefact, not a layout bug.
 
 **Next step:** Phase 2, the scroll intro.
+
+## 2026-10-14, Phase 2: the scroll intro
+
+**Done**
+- Line-art dropper (bulb, glass, graduations, liquid) and a navy stage. Scroll, swipe or keys drive one GSAP timeline: the dropper turns upright, the bulb squeezes, the liquid drops in two steps, a drop forms at the tip and swells while a surface line appears, with the six beats fading in and out in the serif.
+- At the end (scroll, Enter, or "Let's set up your plan"), the drop falls, squashes on the surface, three rings spread, and a growing circle opens the overlay onto the welcome screen, whose content rises into place as it is revealed.
+- Skip intro always visible. Progress line along the bottom. Screen-reader version of all six sentences. Page behind made inert. Reduced-motion calm sequence with Pause, Next and Skip.
+- First-paint cover so `/start` never flashes; GSAP loaded lazily; `/onboarding` and `/home` prefetched while the intro plays.
+- Tests: 6 new e2e tests (calm path, skip, inert background, demo mode, replay, keyboard release) plus a 4x CPU throttle frame-rate test on phone and desktop (57 to 60 fps, p95 16.8 ms).
+
+**Decisions:** 45 to 53.
+
+**Known issues:** none new. Page weight unchanged from Phase 1 apart from about 4 KB on `/start`.
+
+**Next step:** Phase 3, QR entry and the onboarding story.

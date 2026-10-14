@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { buildDemoState, type Persona } from "@/lib/demo/personas";
-import { backupKey, MODE_KEY, safeLocal, STATE_KEY, THEME_KEY, type Mode } from "./keys";
+import { backupKey, INTRO_KEY, MODE_KEY, safeLocal, STATE_KEY, THEME_KEY, type Mode } from "./keys";
 import { loadState } from "./migrations";
 import { deletePhotoDatabase } from "./photos";
 import { emptyState, type AppState } from "./schema";
@@ -21,6 +21,8 @@ interface Store {
   /** Apply a change to the active namespace and save it. */
   update: (change: (draft: AppState) => AppState) => void;
   setTheme: (theme: ThemeSetting) => void;
+  /** Marks the intro as played for this device (both the plan and the first-paint key). */
+  markIntroSeen: () => void;
   enterDemo: (persona?: Persona) => void;
   leaveDemo: () => void;
   setDemoDay: (day: number) => void;
@@ -89,6 +91,12 @@ export const useApp = create<Store>()((set, get) => ({
     safeLocal.set(THEME_KEY, theme);
     document.documentElement.dataset.theme = resolveTheme(theme);
     set({ theme });
+  },
+
+  markIntroSeen: () => {
+    safeLocal.set(INTRO_KEY, "seen");
+    delete document.documentElement.dataset.intro;
+    if (!get().data.settings.introSeen) get().update((s) => ({ ...s, settings: { ...s.settings, introSeen: true } }));
   },
 
   enterDemo: (persona = "steady") => {

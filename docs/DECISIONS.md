@@ -51,3 +51,14 @@ One line each: the decision, then why. Newest at the bottom.
 42. **Serif display titles get typographic apostrophes automatically** (`curl()` in primitives). Straight quotes look clumsy in Instrument Serif; body text keeps plain ones.
 43. **`navigator.storage.persist()` is requested after the baseline photos, not on first load.** Firefox shows a prompt for it, and it means more once there are photos to protect.
 44. **References show exactly what HANDOFF gives.** No author initials or details were added from memory.
+
+## Phase 2 (2026-10-14)
+45. **The intro is an overlay on the welcome screen, not a separate page.** `/start` hosts it on a first visit, so the ripple genuinely opens onto the real next screen and the QR pack details survive. `/intro` is kept for replaying from About; it swaps its URL to `/start/` when done.
+46. **A static navy cover on `/start`, shown by the head script on first visits.** The welcome screen never flashes before the intro, even before JavaScript runs. The overlay removes it as soon as it mounts.
+47. **The intro has its own scroll container** (700dvh track, sticky stage), so the page behind never moves, and ScrollTrigger scrubs one timeline against it. No pinning, no Lenis.
+48. **The last segment releases the drop on a timer instead of a scrub.** Scrolling to the end, pressing Enter or the button plays a 1.8 s fall, rings and reveal, so nobody can get stuck half-revealed.
+49. **The reveal is a radial mask on the overlay.** It is the one paint-heavy step and lasts under a second; everything else animates transform and opacity only.
+50. **GSAP is imported only inside the intro's effect.** It never loads for returning visitors or on any other page. The intro adds about 4 KB to `/start`.
+51. **Reduced motion gets a calm sequence**: the same six sentences, auto-advancing every 3.5 s, with Pause, Next and Skip, a static dropper and no ripple. It is also the fallback if the animation library fails to load.
+52. **Keyboard:** arrow keys, Page Up and Down and Space step one beat; Enter releases at the end; Skip is always the first focusable control. The page behind is made inert while the intro is open.
+53. **Measured smoothness:** with the CPU throttled 4x in Chrome, scrubbing the whole intro averaged 57 to 60 fps with a p95 frame time of 16.8 ms on desktop and phone viewports. This is a Playwright test, not a one-off check.

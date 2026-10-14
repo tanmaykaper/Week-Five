@@ -36,9 +36,9 @@ Idea: meet them at the pack, the one touchpoint every channel shares.
 - Scanning a second pack later appends to `profile.packs` and refreshes the runway, without restarting onboarding.
 - `/dev/qr` renders QR codes for every fictional SKU, pointing at the current origin, and is excluded from production navigation and the sitemap (built only when `NEXT_PUBLIC_DEV_PAGES=1`).
 
-### F2. Scroll intro (`/intro`)
+### F2. Scroll intro (overlay on `/start`, replay at `/intro`)
 Idea: forewarning (McGuire 1961) delivered before the first question, while the app loads.
-- First visit only. `settings.introSeen` set on finish or skip. "Replay intro" in About.
+- First visit only (tracked by `weekfive:intro`). It plays over the welcome screen and its ripple opens onto it. "Replay the intro" in About opens `/intro`.
 - Six beats tied to scroll segments, dropper rotates upright, bulb squeezes, liquid drops, final drop falls and its ripple reveals the next screen through a circular `clip-path`.
 - Skip is always visible and focusable. A thin progress line shows position.
 - Arrow keys, Page Down and Space advance a beat. Screen readers get all six sentences as a list.
@@ -176,9 +176,9 @@ Accounts, cloud sync, analytics SDKs, servers, any AI diagnosis of photos, any m
 ## 5. Sitemap
 
 ```
-/                      Redirect: intro on first visit, onboarding if not finished, else home
-/intro                 Scroll-driven dropper intro
-/start                 QR landing, reads sku, reg, batch
+/                      Redirect: /start until setup is done (it plays the intro on a first visit), else /home
+/intro                 Replays the intro over the welcome screen, then becomes /start
+/start                 QR landing, reads sku, reg, batch; hosts the intro on a first visit
 /onboarding            Nine-step story, then briefing
 /baseline              Three-view capture, area painter
 /home                  Dashboard
@@ -204,9 +204,9 @@ Briefing is a step inside `/onboarding` (`?step=briefing`), not its own route, s
 ```mermaid
 flowchart TD
   A[Scan QR on pack] --> B{First visit?}
-  B -- yes --> C[/intro scroll story/]
+  B -- yes --> C[Intro plays over /start]
   B -- no --> H[/home/]
-  C -->|finish or skip| D[/start reads sku, reg, batch/]
+  C -->|ripple opens or skip| D[/start reads sku, reg, batch/]
   D --> E[Privacy screen: stays on this phone]
   E --> F[Onboarding steps 1 to 9]
   F --> G{Channel}

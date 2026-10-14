@@ -5,7 +5,7 @@ export default function FlowLayout({ children }: { children: React.ReactNode }) 
   return (
     <>
       <SiteHeader minimal />
-      <main id="main" className="wrap pb-24">
+      <main id="main" tabIndex={-1} className="wrap pb-24 outline-none">
         {children}
       </main>
     </>
