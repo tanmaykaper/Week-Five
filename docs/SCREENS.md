@@ -27,89 +27,43 @@ Shared frame, under 768 px:
 ## `/` redirect
 No UI. A blank `--bg` frame with the app mark centred for at most one frame while the redirect runs.
 
-## The intro (overlay on `/start`; `/intro` replays it)
-Always deep navy, whatever the theme. Built: see `artifacts/screens/phase-2/intro-frames` after running the capture.
+## The intro (overlay on `/start`; `/intro` replays it), v3
 
-Phone
-```
-+------------------------------+
-|                  ( Skip intro)|
-|                              |
-|          ___                 |
-|         (   )   bulb         |
-|          | |                 |
-|          |~|   liquid level  |
-|          | |                 |
-|           v                  |
-|                              |
-|  Around week three, a lot    |
-|  of people see more hair     |
-|  fall, not less.             |
-|                              |
-| ---------------o------------ |  thin progress line
-+------------------------------+
-```
-Desktop: dropper pinned centre-left at 40 percent width, beat text to its right in `--t-display`, progress line along the bottom, Skip top right.
+Always light, on the pool. Captures: `artifacts/v3/final/` (run `node artifacts/tools/v3-intro.mjs <dir>` against the dev server).
 
-### Beat script (scroll is 600 vh, pinned, scrubbed)
-| Scroll | Dropper | Text | Ripple |
-|---|---|---|---|
-| 0 to 12 % | Lying at 60 degrees, slowly rotating upright | Beat 1 fades in at 4 %, out at 14 % | none |
-| 12 to 28 % | Upright, bulb squeezes 8 % | Beat 2 | none |
-| 28 to 44 % | Liquid drops 25 % | Beat 3 | none |
-| 44 to 60 % | Liquid drops another 25 % | Beat 4 | none |
-| 60 to 76 % | Bulb squeezes again, drop forms at the tip | Beat 5 | none |
-| 76 to 88 % | Drop hangs, swells | Beat 6 | Surface line appears below |
-| 88 to 100 % | Drop falls (`--ease-fall`), hits the surface | "Let's set up your plan." | Ripple ring expands, circular clip-path grows from impact point to cover the screen, revealing onboarding |
+Desktop: words in the left 48 percent, vertically centred; the dropper and later the rings fill the right. HUD along the bottom: chapter name left, 24 ticks centre, next action right. Phone: the scene above, words at the bottom, HUD under them.
 
-Reduced motion: dropper is a static illustration, the six beats cross-fade every 3.5 s with Pause, Next, Skip. Final screen fades to onboarding.
+| Scroll | Camera and scene | Words |
+|---|---|---|
+| 0 to 14 % | Three-quarter view; the tilted dropper turns upright | The roots |
+| 14 to 28 % | Closer; the bulb squeezes, the liquid drops | The shed |
+| 28 to 42 % | Macro on the tip; a drop forms | Six months |
+| 42 to 56 % | The drop swells and falls; the camera follows it down; impact and ripple | The photo |
+| 56 to 70 % | The camera climbs to look down; the ripple freezes into 24 rings; shed band, photo dots and labels appear | The map |
+| 70 to 84 % | A slow orbit; six other drops land and ring out | Not alone |
+| 84 to 100 % | Settles above the rings | Let's set up your plan |
+| Release | The camera settles on the welcome view; the page rises at 0.55 s | |
 
-## `/start`
-Phone
-```
-+------------------------------+
-|  (mark)                      |
-|                              |
-|  Welcome. Let's set up       |
-|  your plan.                  |
-|                              |
-|  We read this from your      |
-|  pack:                       |
-|  { Regrowth solution, 60 ml }|
-|                              |
-|  Your details and photos     |
-|  stay on this phone.         |
-|  No account. Nothing sent.   |
-|                              |
-|  [      Start setup       ]  |
-|  ( Try it with sample data ) |
-+------------------------------+
-```
-Desktop: same column, centred, max 520, with the orb glowing behind it.
+Reduced motion: the same six poses, cut every 4 s, with Pause, Next and Skip.
 
-## `/onboarding`
-Phone (step 6 shown)
+## `/start` (v3)
+Open layout on the pool. Desktop: words in a 640 px column on the left, the rings spreading on the right. Phone: rings above, everything else at the bottom.
 ```
-+------------------------------+
-| ====------  6 of 9    (Back) |  progress thread
-|                              |
-|  When did you start,         |
-|  or when will you?           |
-|                              |
-|  Everything on your map      |
-|  counts from this day.       |
-|                              |
-|                              |
-|  ( Today ) ( Yesterday )     |
-|  ( Last week )               |
-|  { date picker            }  |
-|                              |
-|  [        Continue        ]  |  thumb zone
-+------------------------------+
+Welcome.
+Let's set up your plan.          (serif turn)
+One question at a time, about two minutes.
+{ (drop) We read this from your pack / Regrowth solution, 60 ml / Bought 1 October, batch B2291 }
+[ Start setup ]  ( Try it with sample data )
+(lock) Your details and photos stay on this phone. No account...
 ```
-Step 8 (letter) uses a full-height serif text area on a slightly raised surface, like paper.
-Briefing (inside onboarding): one card per screen, swipe, dots for position (the content is a sequence, so dots are information), [ Next ].
-Desktop: question left (5 of 12 columns), answer area right, progress thread across the top.
+Mid-way through setup the primary reads "Carry on from question {n}".
+
+## `/onboarding` (v3)
+HUD row: ( < )  3 of 9  Your rains  ---------  (nine ticks)
+Then the question in two voices, the answers, and Continue (plus Skip where allowed). Desktop: a 720 px column on the left, the camera's view of the pool on the right, a new view per question. Phone: question and answers at the bottom, the pool above.
+- City and start date questions show their effect on the rings (rain, "you are here") and say it in a live line.
+- Finish: "Your plan / is ready." with a five-row summary, then the briefing.
+- Briefing (`?step=briefing`): title, lead, one card at a time (sans title, body, which weeks light up), dots, ( < ) [ Next ]. Last: [ Got it. Take my day-one photos. ]
 
 ## `/baseline`
 Phone

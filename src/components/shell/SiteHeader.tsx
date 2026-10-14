@@ -9,16 +9,23 @@ import { DemoChip } from "./DemoChip";
 import { NAV, activeNav } from "./nav";
 import { ThemeToggle } from "./ThemeToggle";
 
-export function SiteHeader({ minimal = false }: { minimal?: boolean }) {
+export function SiteHeader({ minimal = false, id }: { minimal?: boolean; id?: string }) {
   const path = normalisePath(usePathname());
   const current = activeNav(path);
   const mode = useApp((s) => s.mode);
   const ready = useApp((s) => s.status === "ready");
 
   return (
-    <header className="sticky top-0 z-30 h-[var(--header-h)] border-b border-line bg-bg/85 backdrop-blur-md backdrop-saturate-150">
-      <div className="wrap flex h-full items-center gap-8">
-        <Link href={minimal ? "/" : "/home"} className="inline-flex items-center gap-2.5 text-[1.0625rem] font-semibold tracking-[-0.01em]">
+    <header
+      id={id}
+      className={
+        minimal
+          ? "relative z-30 h-[var(--header-h)]"
+          : "sticky top-0 z-30 h-[var(--header-h)] bg-bg"
+      }
+    >
+      <div className={`flex h-full items-center gap-8 ${minimal ? "px-[var(--gutter)]" : "wrap"}`}>
+        <Link href={minimal ? "/" : "/home"} className="inline-flex items-center gap-2.5 text-[1.0625rem] font-semibold tracking-[-0.02em]">
           <Mark />
           Week Five
         </Link>
@@ -33,10 +40,8 @@ export function SiteHeader({ minimal = false }: { minimal?: boolean }) {
                   href={item.href}
                   aria-current={on ? "page" : undefined}
                   className={
-                    "relative rounded-md px-3 py-2 text-[0.9375rem] font-medium transition-colors duration-150 ease-settle hover:bg-sunk hover:text-ink " +
-                    (on
-                      ? "text-ink after:absolute after:inset-x-3 after:-bottom-[13px] after:h-0.5 after:rounded-full after:bg-ink"
-                      : "text-text-2")
+                    "relative rounded-full px-3.5 py-2 text-[0.9375rem] font-medium transition-colors duration-200 ease-settle hover:text-ink " +
+                    (on ? "bg-ink/[0.07] text-ink" : "text-text-2")
                   }
                 >
                   {item.label}
@@ -48,7 +53,7 @@ export function SiteHeader({ minimal = false }: { minimal?: boolean }) {
 
         <div className="ml-auto flex items-center gap-2">
           {ready && mode === "demo" ? <DemoChip /> : null}
-          <ThemeToggle />
+          {minimal ? null : <ThemeToggle />}
         </div>
       </div>
     </header>

@@ -14,16 +14,21 @@ All user-facing copy in one place for Tanmay to edit. When this is approved, ins
 - **Buttons** say what happens: "Take photo", "Save note", "Pause with a plan". The confirmation uses the same verb: "Photo saved", "Note saved".
 - **Errors** say what happened and what to do. They don't apologise.
 
-## Intro: the six beats
+## Intro: the six beats (v3, two voices)
 
-1. What's in this bottle works on hair that hasn't grown yet.
-2. Around week three, a lot of people see more hair fall, not less. For many, that's the treatment starting.
-3. The fair time to judge is about six months. Not week five. Definitely not day nine.
-4. Your memory is a bad judge of hair. A photo is a good one.
-5. So here's a 24 week plan, with a map for every week of it.
-6. And you're not the only one. Plenty of people started the same week you did.
+Each beat: the sans line (what happens), the serif turn (how it feels), a short note, and a chapter name for the HUD. Source: `src/content/intro.ts`.
 
-Final frame (with the drop): **Let's set up your plan.**
+| Chapter | Sans | Serif turn | Note |
+|---|---|---|---|
+| The roots | It works on hair | that hasn't grown yet. | What's in the bottle works on the roots under your skin. The hair you can see today was decided months ago. |
+| The shed | Around week three, | more hair falls, not less. | For many people, that's the treatment starting. Older resting hairs make way for new ones. |
+| Six months | Judge it at six months. | Not week five. Not day nine. | Hair grows about a centimetre a month. Anything you decide sooner is a guess. |
+| The photo | Memory is a bad judge. | A photo is a good one. | Same spot, same light, once a month. Your day-one photo does the remembering for you. |
+| The map | 24 weeks. | A ring for each one. | So here's the plan, with a map for every week of it. The shed window is drawn on from day one. |
+| Not alone | You're not the only one. | Others started this week too. | Plenty of people began the same week you did. You'll see them along the way. |
+
+Final frame: **Let's set up your plan.** "About two minutes. Nothing leaves this phone." Chapter: "Your plan".
+Ring labels on the map: "Day one", "Weeks 3 to 8, the shed window", "Photo days", "Week 13, fine hairs often show", "Week 24, a fair verdict".
 Skip control: **Skip intro**. Reduced-motion controls: **Pause**, **Next**, **Skip intro**.
 Screen-reader heading: "Before you start, six things worth knowing."
 
@@ -37,25 +42,29 @@ Screen-reader heading: "Before you start, six things worth knowing."
 - Privacy body: "No account, no sign-up, nothing sent anywhere. If you delete the app's data, it's gone for good, so we'll remind you to export a copy now and then."
 - Primary: **Start setup** (about 2 minutes). Secondary: **Try it with sample data**.
 
-## Onboarding story (nine steps)
+## Onboarding story (nine steps, v3)
 
-Each step: question, why we ask, input, skip rule.
+Each question is a headline in two voices: the question, then why we ask it as the serif turn. Source: `src/content/onboarding.ts`.
 
-| # | Question | Why we ask | Input | Skip |
-|---|---|---|---|---|
-| 1 | What should we call you? | Only for greetings. A nickname is fine. | Text, 24 chars, placeholder "e.g. Arjun" | No (default "you" if blank: "Morning, you") |
-| 2 | Which age band are you in? | Changes a few tips and default reminder times. Never your dose. | 18 to 24, 25 to 34, 35 to 44, 45 and up | Yes |
-| 3 | Which city are you in? | Only to know when your rainy season is. Monsoon months make hair fall worse for everyone. | Search list of cities, plus "Somewhere else" with a monsoon yes or no | Yes |
-| 4 | Here's what we found on your pack. Using anything else? | So your daily card shows the right things. | Product chips, pre-ticked from the SKU | No (at least one) |
-| 5 | How did you buy it? | If nobody walked you through it, we'll give you the short briefing first. | Hair assessment and kit, Quick-commerce app, Pharmacy or somewhere else | No |
-| 6 | When did you start, or when will you? | Everything on your map counts from this day. | Date, default today, quick picks "Today", "Yesterday", "Last week" | No |
-| 7 | What bothers you most right now? | We'll keep an eye on that area in your photos. | Multi-select: Shedding, Seeing my scalp, Hairline, Crown, Something else | Yes |
-| 8 | Write a note to yourself for week five. | Week five is when most people want to stop. Your own words land better than ours. | Text area, 400 chars, serif. Placeholder: "Dear week-five me, you started this because..." | Yes ("I'll write it later") |
-| 9 | When do you want your reminders? | So the daily card shows the right times. You can turn notifications off. | Morning and evening time pickers, notifications toggle | Times prefilled |
+| # | Chapter | Question | Turn (why we ask) | Input | Skip |
+|---|---|---|---|---|---|
+| 1 | Your name | What should we call you? | Only for greetings. A nickname is fine. | Text, 24 chars, placeholder "e.g. Arjun". Hint: "Leave it blank and we'll say "you"." | Blank allowed |
+| 2 | Age | Which age band are you in? | It changes a few tips. Never your dose. | 18 to 24, 25 to 34, 35 to 44, 45 and up | Skip |
+| 3 | Your rains | Which city are you in? | Only to know when your rains come. | City search and picks, plus Somewhere else ("Does it rain hard where you are, roughly June to September?" Yes, No, Not sure) | Skip |
+| 4 | Your routine | What are you using? (with a pack: "Here's what's on your pack.") | So your day shows the right things. (with a pack: "Using anything else as well?") | Product chips, pre-ticked from the pack | At least one |
+| 5 | How you bought it | How did you buy it? | If nobody briefed you, we will. | Hair assessment and kit; A quick-commerce app; A pharmacy or somewhere else, each with a one-line note | Required |
+| 6 | Day one | When did you start? | Everything on your map counts from this day. | Today, Yesterday, A week ago, The day I bought it, or a date | Required |
+| 7 | Your worry | What bothers you most? | We'll keep an eye on it in your photos. | Shedding, Seeing my scalp, Hairline, Crown, Something else | Skip |
+| 8 | A note | Write a note for week five. | Your own words will land better than ours. | Serif text area, 400 chars. Placeholder "Dear week-five me, you started this because". Hint: "Week five is when most people want to stop. We'll keep this hidden until then." | "I'll write it later" |
+| 9 | Reminders | When do you want reminders? | So your day shows the right times. | Morning and evening times (defaults by age band), notifications switch | Times prefilled |
 
-Step 3, "Somewhere else" follow-up: "Is it monsoon season where you are between June and September?" Yes / No / Not sure (treated as yes).
-Step 8 saved toast: **Note saved. We'll hand it back in week four.**
-Finish: **Your plan is ready.** "One more thing before the map: the bit nobody tells you."
+Live lines under the city and date questions:
+- Rains over the shed window: "The rains land on weeks {a} to {b}, on top of the shed window. We'll tell you which hair fall is the season."
+- Rains clear of it: "The rains land on weeks {a} to {b} of your plan, clear of the shed window."
+- None: "No rainy months inside your 24 weeks in {city}. One less thing muddying the picture."
+- Date: "Day one is {date}. Today is day {n}, week {w}. Your shed window runs {from} to {to}." or "Your plan starts in {n} days, on {date}..."
+
+Finish: **Your plan** / *is ready.* "{Name}, here's your plan. One more thing before you start: the bit nobody tells you." Summary rows: Day one, Shed window, Rains, Photo days, A fair verdict. Button **Read the briefing**.
 
 ## Briefing
 

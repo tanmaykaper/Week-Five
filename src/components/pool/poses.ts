@@ -1,0 +1,129 @@
+import type { PoolState, Rig } from "./engine";
+
+/**
+ * Camera framings and scene states, by name. Framings are written for a landscape
+ * screen and adapted for portrait: the camera backs away from its target and the
+ * target moves up the screen, so phone text can sit underneath.
+ */
+
+type V3 = [number, number, number];
+
+export interface Framing {
+  cam: V3;
+  at: V3;
+  fov?: number;
+  /** Where the target sits on a landscape screen, as a fraction of the viewport. */
+  shift?: [number, number];
+  /** On portrait screens. */
+  phoneShift?: [number, number];
+  /** How much further back the camera sits on portrait screens. */
+  phoneZoom?: number;
+}
+
+/** 0 on portrait phones, 1 on landscape screens, in between for squarish windows. */
+export const landscapeness = (aspect: number) => Math.min(1, Math.max(0, (aspect - 0.8) / 0.5));
+
+export function frame(f: Framing, aspect: number): Rig {
+  const l = landscapeness(aspect);
+  const zoom = 1 + ((f.phoneZoom ?? 1.5) - 1) * (1 - l);
+  const [sx, sy] = f.shift ?? [0, 0];
+  const [px, py] = f.phoneShift ?? [0, -0.14];
+  return {
+    camX: f.at[0] + (f.cam[0] - f.at[0]) * zoom,
+    camY: f.at[1] + (f.cam[1] - f.at[1]) * zoom,
+    camZ: f.at[2] + (f.cam[2] - f.at[2]) * zoom,
+    tx: f.at[0],
+    ty: f.at[1],
+    tz: f.at[2],
+    fov: f.fov ?? 32,
+    shiftX: px + (sx - px) * l,
+    shiftY: py + (sy - py) * l,
+  };
+}
+
+export const BASE_STATE: PoolState = {
+  dX: 0,
+  dY: 2,
+  dZ: 0,
+  tilt: 1.05,
+  spin: -0.4,
+  squeeze: 0,
+  level: 0.62,
+  drop: 0,
+  fall: 0,
+  ripple: 0,
+  map: 0,
+  week: 0,
+  seasonFrom: 0,
+  seasonTo: 0,
+  focusFrom: 0,
+  focusTo: 0,
+  focus: 0,
+  shed: 0,
+  dots: 0,
+  cohort: 0,
+  labels: 0,
+  idle: 1,
+};
+
+/** The intro's camera, beat by beat. */
+export const INTRO_FRAMES = {
+  hero: { cam: [2.3, 2.45, 5.4], at: [0.25, 1.7, 0], fov: 30, shift: [0.2, 0.03], phoneShift: [0, -0.17], phoneZoom: 1.7 },
+  upright: { cam: [1.6, 2.35, 4.5], at: [0, 1.85, 0], fov: 30, shift: [0.2, 0], phoneShift: [0, -0.16], phoneZoom: 1.6 },
+  tip: { cam: [0.62, 1.05, 1.7], at: [0, 0.74, 0], fov: 28, shift: [0.16, 0], phoneShift: [0, -0.15], phoneZoom: 1.6 },
+  fall: { cam: [0.95, 0.5, 2.2], at: [0, 0.14, 0], fov: 30, shift: [0.16, -0.02], phoneShift: [0, -0.12], phoneZoom: 1.6 },
+  map: { cam: [0.2, 12.2, 5.0], at: [0, 0, -0.2], fov: 34, shift: [0.25, 0.04], phoneShift: [0, -0.12], phoneZoom: 1.7 },
+  cohort: { cam: [3.4, 9.4, 6.2], at: [0, 0, 0], fov: 34, shift: [0.25, 0.02], phoneShift: [0, -0.12], phoneZoom: 1.9 },
+  end: { cam: [0.4, 11.6, 3.0], at: [0, 0, -0.1], fov: 34, shift: [0.24, 0], phoneShift: [0, -0.12], phoneZoom: 1.95 },
+} satisfies Record<string, Framing>;
+
+/** After the intro: the plan's rings spread out on the right, calm water under the welcome text. */
+export const WELCOME_FRAME: Framing = {
+  cam: [-1.5, 2.7, 6.1],
+  at: [0.7, 0, 0.3],
+  fov: 30,
+  shift: [0.22, 0.13],
+  phoneShift: [0, -0.24],
+  phoneZoom: 1.25,
+};
+
+export const WELCOME_STATE: Partial<PoolState> = {
+  dY: 14,
+  drop: 0,
+  fall: 0,
+  ripple: 0,
+  map: 1,
+  shed: 0.6,
+  dots: 0,
+  cohort: 0,
+  labels: 0,
+  idle: 1,
+  week: 0,
+};
+
+/** Setup: the camera takes a different view of the pool for each question. */
+const step = (cam: V3, at: V3, extra: Partial<Framing> = {}): Framing => ({
+  cam,
+  at,
+  fov: 30,
+  shift: [0.25, 0.08],
+  phoneShift: [0, -0.27],
+  phoneZoom: 1.55,
+  ...extra,
+});
+
+export const SETUP_FRAMES = {
+  name: step([2.4, 1.6, 6.2], [0.5, 0, 0]),
+  age: step([-4.2, 2.8, 5.4], [0.4, 0, 0]),
+  city: step([0.4, 9.6, 5.2], [0, 0, -0.3], { fov: 34, phoneZoom: 1.9 }),
+  products: step([2.6, 2.6, 5.6], [0, 1.45, 0], { phoneZoom: 1.9, phoneShift: [0.3, -0.22] }),
+  channel: step([-1.4, 4.4, 6.8], [0.3, 0, -0.4]),
+  start: step([-0.5, 10, 4.6], [0, 0, -0.3], { fov: 34, phoneZoom: 1.9 }),
+  worries: step([1.9, 1.25, 4.4], [0.2, 0.1, -0.7], { phoneShift: [0, -0.16] }),
+  letter: step([0, 0.55, 6.8], [0, 0.22, 0], { shift: [0.25, 0.14], phoneShift: [0, -0.3] }),
+  reminders: step([3.8, 5.4, 5.6], [0, 0, 0]),
+  finish: step([0.3, 11.2, 3.6], [0, 0, -0.1], { fov: 34, phoneZoom: 1.9 }),
+  briefing: step([0.8, 8.4, 6.4], [0, 0, -0.4], { fov: 34, phoneZoom: 1.9 }),
+} satisfies Record<string, Framing>;
+
+export type SetupFrame = keyof typeof SETUP_FRAMES;

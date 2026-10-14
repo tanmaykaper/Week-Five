@@ -99,7 +99,20 @@ interface Settings {
   reorder: { snoozedUntil?: ISODate; lastShownAt?: ISODateTime };
 }
 
-interface Onboarding { step: number; completedAt?: ISODateTime; briefingSeenAt?: ISODateTime; baselineDoneAt?: ISODateTime }
+interface Onboarding {
+  step: number;                 // next question, 0 to 8; 9 once the plan is saved
+  draft?: Draft;                // answers so far, so setup resumes where it was left
+  completedAt?: ISODateTime;    // set when the last question is answered and the plan is saved
+  briefingSeenAt?: ISODateTime;
+  baselineDoneAt?: ISODateTime;
+}
+
+interface Draft {               // every field optional; null means "skipped"
+  nickname?: string; ageBand?: AgeBand | null; cityId?: string | null;
+  seasonOverride?: "monsoon" | "no-monsoon" | null; products?: ProductId[]; channel?: Channel;
+  startDate?: ISODate; worries?: Worry[]; letter?: string;
+  morning?: string; evening?: string; notifications?: boolean; pack?: PackScan;
+}
 
 interface AppState {
   schemaVersion: 1;

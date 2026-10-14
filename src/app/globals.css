@@ -3,44 +3,51 @@
 /* Dark variant follows the resolved theme the head script writes to <html data-theme>. */
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
-/* ============ tokens (docs/DESIGN_SYSTEM.md) ============ */
-:root {
-  --bg: #fbfcfd;
+/* ============ tokens (docs/DESIGN_SYSTEM.md, v3) ============ */
+/* Light is the designed default. The flow screens (intro, welcome, setup) wear .theme-light
+   whatever the setting, because they sit on the pool, which is always water in daylight. */
+:root,
+.theme-light {
+  --bg: #f1f4f7;
   --surface: #ffffff;
-  --sunk: #f3f5f8;
-  --line: #e6eaf0;
-  --line-strong: #d5dce5;
+  --sunk: #e6ebf0;
+  --line: #dce2e9;
+  --line-strong: #c9d2dc;
   --ink: #0f1e33;
-  --text-2: #556275;
-  --text-3: #626e7e;
+  --text-2: #45546a;
+  --text-3: #536074;
   --accent: #22548a;
   --action: #22548a;
   --action-hover: #1b4572;
   --on-action: #ffffff;
-  --track: #e9edf2;
+  --track: #e1e7ed;
   --hatch: rgba(34, 84, 138, 0.42);
   --ripple: rgba(15, 30, 51, 0.07);
   --done: color-mix(in srgb, #0f1e33 78%, transparent);
-  --today-bg: #fbf3db;
-  --today: #7a5200;
+  --today-bg: #f8efd6;
+  --today: #6f4a00;
   --today-dot: #c98a12;
-  --alert-bg: #fdebec;
-  --alert: #9f2f2d;
-  --ok-bg: #edf3ec;
-  --ok: #346538;
-  --info-bg: #e8f0fa;
+  --alert-bg: #fbe7e8;
+  --alert: #962c2a;
+  --ok-bg: #e5efe4;
+  --ok: #2f5c33;
+  --info-bg: #e2ebf6;
   --info: #22548a;
-  --float-shadow: 0 1px 2px rgba(15, 30, 51, 0.04), 0 12px 32px -12px rgba(15, 30, 51, 0.1);
-  --selection: rgba(34, 84, 138, 0.16);
+  --rain: #3f7fc7;
+  --float-shadow: 0 1px 2px rgba(15, 30, 51, 0.05), 0 16px 40px -14px rgba(15, 30, 51, 0.16);
+  --selection: rgba(34, 84, 138, 0.18);
   color-scheme: light;
+}
 
-  --t-display: clamp(2.75rem, 1.7rem + 4.2vw, 5rem);
+:root {
+  --t-hero: clamp(2.375rem, 1.2rem + 3.9vw, 4.75rem);
+  --t-display: clamp(2.375rem, 1.35rem + 3.4vw, 4.25rem);
   --t-numeral: clamp(3.5rem, 2.8rem + 2.6vw, 5rem);
   --t-statement: clamp(1.25rem, 1.12rem + 0.55vw, 1.5rem);
   --t-lead: clamp(1.0625rem, 1rem + 0.3vw, 1.1875rem);
-  --gutter: clamp(20px, 4vw, 48px);
-  --section: clamp(64px, 7vw, 112px);
-  --header-h: 64px;
+  --gutter: clamp(20px, 4vw, 56px);
+  --section: clamp(72px, 9vw, 160px);
+  --header-h: 72px;
   --tabs-h: 64px;
 }
 
@@ -75,6 +82,7 @@
   --ok: #7cd4a6;
   --info-bg: #1b2839;
   --info: #7db0ee;
+  --rain: #7db0ee;
   --float-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 16px 40px -16px rgba(0, 0, 0, 0.6);
   --selection: rgba(125, 176, 238, 0.28);
   color-scheme: dark;
@@ -107,9 +115,12 @@
   --font-sans: var(--font-geist), ui-sans-serif, system-ui, -apple-system, sans-serif;
   --font-serif: var(--font-instrument), ui-serif, Georgia, serif;
 
+  --text-hero: var(--t-hero);
+  --text-hero--line-height: 0.98;
+  --text-hero--letter-spacing: -0.045em;
   --text-display: var(--t-display);
   --text-display--line-height: 1;
-  --text-display--letter-spacing: -0.02em;
+  --text-display--letter-spacing: -0.04em;
   --text-numeral: var(--t-numeral);
   --text-numeral--line-height: 0.9;
   --text-numeral--letter-spacing: -0.05em;
@@ -128,6 +139,7 @@
   --radius-md: 8px;
   --radius-lg: 12px;
   --radius-xl: 16px;
+  --radius-2xl: 24px;
 
   --shadow-float: var(--float-shadow);
 
@@ -172,6 +184,27 @@
   }
   button {
     cursor: pointer;
+  }
+}
+
+/* A headline in two voices: what happens, in the sans, then how it feels, in the italic serif. */
+@utility pair {
+  font-size: var(--t-display);
+  line-height: 0.98;
+  font-weight: 500;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
+  & > span {
+    display: block;
+  }
+  & > span + span {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 1.1em;
+    line-height: 0.92;
+    letter-spacing: -0.02em;
+    margin-top: 0.04em;
   }
 }
 

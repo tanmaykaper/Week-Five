@@ -62,3 +62,34 @@ One line each: the decision, then why. Newest at the bottom.
 51. **Reduced motion gets a calm sequence**: the same six sentences, auto-advancing every 3.5 s, with Pause, Next and Skip, a static dropper and no ripple. It is also the fallback if the animation library fails to load.
 52. **Keyboard:** arrow keys, Page Up and Down and Space step one beat; Enter releases at the end; Skip is always the first focusable control. The page behind is made inert while the intro is open.
 53. **Measured smoothness:** with the CPU throttled 4x in Chrome, scrubbing the whole intro averaged 57 to 60 fps with a p95 frame time of 16.8 ms on desktop and phone viewports. This is a Playwright test, not a one-off check.
+
+## Design v3 (2026-10-14, after Tanmay's review of v2)
+54. **Light, 3D, cinematic, from Turion Space and Morpho.** Tanmay didn't like v2 and asked for an Awwwards-style 3D layout in light mode that flows like those two sites. Studied both frame by frame; see DESIGN_SYSTEM "What the references taught". Replaces decisions 25 and 28 for the flow screens.
+55. **One idea carries it: one drop, twenty four rings.** The dropper is the camera's vehicle (Morpho's can); the ripple seen from above is the 24-week map (Turion's orbits). It belongs to this product and no other.
+56. **A shared 3D pool behind the flow layout.** Intro, welcome, setup and baseline sit on one Three.js scene that stays mounted between routes, so the camera travels instead of cutting.
+57. **Three.js, imperative, no React Three Fiber.** One small engine class with plain `rig` and `state` objects suits GSAP scrubbing and keeps the dependency count down. It loads only on flow screens, after first paint.
+58. **The water is one shader, not geometry.** Ripples, rings, rain and dots are per-pixel slopes and lines. It looks the same at any size and costs one draw.
+59. **Light is the default theme; flow screens are always light.** Dark stays selectable in You for app pages. The theme toggle leaves the flow header. Replaces decision 28.
+60. **Headlines in two voices.** Geist 500 says what happens, Instrument Serif italic says how it feels or why. Replaces decision 26's "serif for people" rule; the user's letter stays in the serif.
+61. **Pill buttons and tone-filled controls, no hairline boxes in the flow.** The taste skill's square-or-round rule, decided once: round, like a drop.
+62. **The intro's beats are rewritten as two-line pairs with a note and a chapter name.** Same six ideas as before, shorter lines so the sans line fits one line on desktop.
+63. **The intro overlay is transparent and the page behind is hidden with `visibility`.** The ripple mask of v2 is gone; the camera settling on the welcome screen is the reveal.
+64. **The first-visit hold is a style block that only /start renders.** A `:has()` rule on `<html>` was not re-evaluated by Chrome when the flag was removed, which left the page hidden and unfocusable.
+65. **Focus moves to the page once it is actually visible.** Under reduced motion every property gets a 1 ms transition, `visibility` included, so same-frame focus landed nowhere.
+66. **Reduced motion keeps the 3D but cuts between settled poses.** The water stops moving and nothing travels; the story still has its pictures. The SVG fallback remains for no WebGL.
+67. **Labels on the scene are fewer on phones.** Only one or two at a time, placed up and left so their text runs on screen; the live line says the rest in words.
+
+## Phase 3 (2026-10-14)
+68. **Setup answers are saved as a draft inside `onboarding`** (`onboarding.draft`, every field optional), so closing the tab resumes at the same question. Adding an optional field keeps old documents valid, so the schema version stays 1.
+69. **The pack scan pre-ticks products and offers its purchase day as a start-date pick**, but never overwrites an answer already given.
+70. **Each question's "why we ask" is its serif turn.** Short, always visible, never a tooltip.
+71. **Single-choice questions advance by themselves 360 ms after a pick.** The pick registers visibly (fill, tick, ring) before the camera moves on.
+72. **Skipping the city means June to September**, which covers most of India. "Somewhere else" asks one yes, no or not sure question; not sure counts as yes.
+73. **Cities carry their own monsoon months** (`src/content/cities.ts`, 30 cities). Tamil Nadu and Puducherry get October to December; Bengaluru, Mysuru and Visakhapatnam run to October.
+74. **The rains are drawn on the weeks they cover, not only where they meet the shed window.** The live line says whether they overlap it.
+75. **Start dates may be up to a year back or two months ahead.** Validated with a plain reason when out of range.
+76. **Reminder times default by age band** (from 07:00 and 20:30 for 45 and up, to 09:00 and 22:30 for 18 to 24). Times only, never amounts.
+77. **The plan is saved when the last question is answered**, before the briefing, so leaving during the briefing still leaves a plan. The root route sends people back to setup only while it is unfinished.
+78. **A blank name stays blank in the profile**; greetings already say "you".
+79. **The briefing is a step inside /onboarding (`?step=briefing`)**, with swipe, buttons and arrow keys, and lights up the weeks each card is about. It ends on /baseline (Phase 4).
+80. **The dev QR page renders real codes with `qrcode`** (a dev dependency, never in production bundles) for every fictional pack, with an editable purchase date and batch.

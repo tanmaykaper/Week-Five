@@ -18,11 +18,11 @@ export function CheckinBar() {
     <Link
       href="/checkin"
       aria-label="Check in: how is your scalp today?"
-      className="group fixed bottom-[calc(20px+env(safe-area-inset-bottom))] left-1/2 z-20 flex h-14 w-[min(560px,calc(100vw-32px))] -translate-x-1/2 items-center gap-3 rounded-xl border border-line-strong bg-surface pr-2 pl-[18px] shadow-float transition-colors duration-150 ease-settle hover:border-text-3 max-md:bottom-[calc(var(--tabs-h)+12px+env(safe-area-inset-bottom))]"
+      className="group fixed bottom-[calc(20px+env(safe-area-inset-bottom))] left-1/2 z-20 flex h-14 w-[min(560px,calc(100vw-32px))] -translate-x-1/2 items-center gap-3 rounded-full bg-surface pr-2 pl-5 shadow-float transition-transform duration-200 ease-settle hover:-translate-y-0.5 max-md:bottom-[calc(var(--tabs-h)+12px+env(safe-area-inset-bottom))]"
     >
       <Drop size={20} className="text-accent" aria-hidden="true" />
       <span className="flex-1 text-[0.9375rem] text-text-2">How is your scalp today?</span>
-      <span className="grid size-10 place-items-center rounded-md bg-action text-on-action transition-colors duration-150 group-hover:bg-action-hover" aria-hidden="true">
+      <span className="grid size-10 place-items-center rounded-full bg-action text-on-action transition-colors duration-150 group-hover:bg-action-hover" aria-hidden="true">
         <ArrowUp size={18} weight="bold" />
       </span>
     </Link>

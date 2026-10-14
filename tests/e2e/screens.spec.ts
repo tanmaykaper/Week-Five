@@ -7,6 +7,7 @@ const PHASE = process.env.PHASE ?? "1";
 const ROUTES: { slug: string; path: string; demo: boolean; intro?: boolean }[] = [
   { slug: "intro", path: "/start/", demo: false, intro: true },
   { slug: "start-qr", path: "/start/?sku=WF-SOL-60&reg=2026-10-01&batch=B1", demo: false },
+  { slug: "onboarding", path: "/onboarding/?sku=WF-SOL-60&reg=2026-10-01", demo: false },
   { slug: "home", path: "/home/", demo: true },
   { slug: "map", path: "/map/", demo: true },
   { slug: "week-5", path: "/map/week/5/", demo: true },

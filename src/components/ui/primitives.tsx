@@ -4,15 +4,15 @@ import type { ComponentProps, ReactNode } from "react";
 type Variant = "primary" | "quiet" | "danger" | "danger-quiet";
 
 const base =
-  "inline-flex h-11 items-center justify-center gap-2 rounded-md px-[18px] text-[0.9375rem] font-medium whitespace-nowrap " +
-  "transition-[background-color,border-color,transform] duration-150 ease-settle active:scale-[0.98] " +
-  "disabled:pointer-events-none disabled:opacity-50";
+  "inline-flex h-12 items-center justify-center gap-2 rounded-full px-6 text-[0.9375rem] font-medium whitespace-nowrap " +
+  "transition-[background-color,color,transform] duration-200 ease-settle active:scale-[0.97] " +
+  "disabled:pointer-events-none disabled:opacity-45";
 
 const variants: Record<Variant, string> = {
   primary: "bg-action text-on-action hover:bg-action-hover",
-  quiet: "border border-line-strong text-ink hover:border-text-3",
+  quiet: "bg-ink/[0.06] text-ink hover:bg-ink/[0.11]",
   danger: "bg-alert text-bg hover:opacity-90",
-  "danger-quiet": "border border-line-strong text-alert hover:border-alert",
+  "danger-quiet": "bg-alert/[0.08] text-alert hover:bg-alert/[0.14]",
 };
 
 export function buttonClass(variant: Variant = "primary", extra = "") {
@@ -75,8 +75,53 @@ export function Mark({ className = "size-[26px]" }: { className?: string }) {
 /** Typographic apostrophes for display type: straight quotes look clumsy in the serif. */
 export const curl = (text: string) => text.replace(/'/g, "\u2019");
 
-/** Serif page opener used by every route: optional date-like line, title, lead. */
-export function PageHead({ kicker, title, lead, as: As = "h1" }: { kicker?: ReactNode; title: ReactNode; lead?: ReactNode; as?: "h1" | "h2" }) {
+/**
+ * A headline in two voices: `title` in the sans says what happens, the optional `turn`
+ * in the italic serif says how it feels. The space between them keeps the accessible
+ * name a sentence.
+ */
+export function Pair({
+  title,
+  turn,
+  as: As = "h1",
+  className = "",
+  style,
+  id,
+}: {
+  title: string;
+  turn?: string;
+  as?: "h1" | "h2" | "p";
+  className?: string;
+  style?: React.CSSProperties;
+  id?: string;
+}) {
+  return (
+    <As id={id} className={`pair ${className}`} style={style}>
+      <span>{curl(title)}</span>
+      {turn ? (
+        <>
+          {" "}
+          <span>{curl(turn)}</span>
+        </>
+      ) : null}
+    </As>
+  );
+}
+
+/** Page opener used by every route: optional date-like line, the two-voice title, lead. */
+export function PageHead({
+  kicker,
+  title,
+  turn,
+  lead,
+  as = "h1",
+}: {
+  kicker?: ReactNode;
+  title: string;
+  turn?: string;
+  lead?: ReactNode;
+  as?: "h1" | "h2";
+}) {
   return (
     <header className="max-w-3xl">
       {kicker ? (
@@ -84,12 +129,7 @@ export function PageHead({ kicker, title, lead, as: As = "h1" }: { kicker?: Reac
           {kicker}
         </p>
       ) : null}
-      <As
-        className="reveal mt-3.5 font-serif text-display font-normal"
-        style={{ "--i": 1 } as React.CSSProperties}
-      >
-        {typeof title === "string" ? curl(title) : title}
-      </As>
+      <Pair as={as} title={title} turn={turn} className="reveal mt-3.5" style={{ "--i": 1 } as React.CSSProperties} />
       {lead ? (
         <p className="reveal mt-[18px] max-w-[44ch] text-lead text-text-2" style={{ "--i": 2 } as React.CSSProperties}>
           {lead}

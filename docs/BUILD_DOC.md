@@ -39,10 +39,10 @@ Idea: meet them at the pack, the one touchpoint every channel shares.
 ### F2. Scroll intro (overlay on `/start`, replay at `/intro`)
 Idea: forewarning (McGuire 1961) delivered before the first question, while the app loads.
 - First visit only (tracked by `weekfive:intro`). It plays over the welcome screen and its ripple opens onto it. "Replay the intro" in About opens `/intro`.
-- Six beats tied to scroll segments, dropper rotates upright, bulb squeezes, liquid drops, final drop falls and its ripple reveals the next screen through a circular `clip-path`.
+- Six beats tied to scroll segments, told on the 3D pool (design v3): the dropper turns upright, the bulb squeezes, a drop forms and falls, its ripple freezes into the 24 week rings, other drops land, and the camera settles onto the welcome screen.
 - Skip is always visible and focusable. A thin progress line shows position.
 - Arrow keys, Page Down and Space advance a beat. Screen readers get all six sentences as a list.
-- Reduced motion: auto-advancing sequence of the six sentences, 3.5 s each, with pause and skip, no scrub, no ripple scale.
+- Reduced motion: auto-advancing sequence of the six beats, 4 s each, with pause and skip, cutting between the same 3D poses with no travel.
 - Holds near 60 fps with 4x CPU throttling in Chrome DevTools (transforms and opacity only).
 - Onboarding and Home bundles are prefetched while the intro plays.
 

@@ -53,7 +53,7 @@ function readNamespace(mode: Mode): { data: AppState; issue: Issue } {
 
 function readTheme(): ThemeSetting {
   const t = safeLocal.get(THEME_KEY);
-  return t === "light" || t === "dark" ? t : "system";
+  return t === "system" || t === "dark" ? t : "light";
 }
 
 export function resolveTheme(setting: ThemeSetting): "light" | "dark" {
@@ -66,11 +66,11 @@ export const useApp = create<Store>()((set, get) => ({
   issue: null,
   mode: "real",
   data: emptyState(),
-  theme: "system",
+  theme: "light",
 
   hydrate: () => {
     if (!storageWorks()) {
-      set({ status: "ready", issue: "storage-blocked", mode: "real", data: emptyState(), theme: "system" });
+      set({ status: "ready", issue: "storage-blocked", mode: "real", data: emptyState(), theme: "light" });
       return;
     }
     const mode: Mode = safeLocal.get(MODE_KEY) === "demo" ? "demo" : "real";
@@ -120,7 +120,7 @@ export const useApp = create<Store>()((set, get) => ({
   deleteEverything: async () => {
     for (const key of safeLocal.keys()) if (key.startsWith("weekfive")) safeLocal.remove(key);
     await Promise.all([deletePhotoDatabase("real"), deletePhotoDatabase("demo")]);
-    set({ mode: "real", data: emptyState(), issue: null, theme: "system" });
-    document.documentElement.dataset.theme = resolveTheme("system");
+    set({ mode: "real", data: emptyState(), issue: null, theme: "light" });
+    document.documentElement.dataset.theme = "light";
   },
 }));

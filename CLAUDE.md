@@ -21,18 +21,18 @@
 - No real person's name, number, quote or photo anywhere. Demo people are fictional.
 
 ## Stack
-Next.js 16.4 (App Router, `output: "export"`, `basePath` from `NEXT_PUBLIC_BASE_PATH`, `/week-five` on GitHub Pages), TypeScript 6.0, Tailwind v4 with CSS-variable tokens, `motion`, GSAP + ScrollTrigger (intro only), Zustand (explicit save, real and demo namespaces), `idb`, `zod/mini`, `qrcode` (dev page), `@phosphor-icons/react`, a hand-written service worker (`scripts/build-sw.mjs`, run after export). No date-fns. Fonts: Geist + Instrument Serif via `next/font`. Vitest + Playwright. pnpm 12, Node 26 via Homebrew.
+Next.js 16.4 (App Router, `output: "export"`, `basePath` from `NEXT_PUBLIC_BASE_PATH`, `/week-five` on GitHub Pages), TypeScript 6.0, Tailwind v4 with CSS-variable tokens, `motion`, GSAP + ScrollTrigger (intro only), Three.js (the pool, flow screens only, lazy), Zustand (explicit save, real and demo namespaces), `idb`, `zod/mini`, `qrcode` (dev page), `@phosphor-icons/react`, a hand-written service worker (`scripts/build-sw.mjs`, run after export). No date-fns. Fonts: Geist + Instrument Serif via `next/font`. Vitest + Playwright. pnpm 12, Node 26 via Homebrew.
 
 ## Design in one breath
-A responsive website, not a phone mock. Minimal and document-like: space and hairlines, not boxes. Serif greeting, Geist for everything else, one blue accent, amber only for photo days, coral only for see-a-doctor. The ring and the 24-week strip carry the drop-and-ripple idea. Reference render: `docs/design-preview.html`. Spec: `docs/DESIGN_SYSTEM.md`.
+v3: light, 3D, cinematic, after Turion Space and Morpho. One drop, twenty four rings: a light Three.js pool sits behind every flow screen; the dropper's drop falls, its ripple freezes into the 24 week rings, and setup draws your map on them (rain on monsoon weeks, your week lit). Headlines in two voices: Geist 500 for what happens, Instrument Serif italic for how it feels. Pill buttons, tone-filled controls, one blue accent, amber for photo days, rain blue for monsoon, coral only for see-a-doctor. Light by default. Spec: `docs/DESIGN_SYSTEM.md`. App pages move to v3 phase by phase.
 
 ## Phases
 | # | Phase | Status |
 |---|---|---|
 | 0 | Design and build doc | Done (design v2 after review) |
 | 1 | Foundation | Done |
-| 2 | Scroll intro | Done, awaiting review |
-| 3 | QR entry and onboarding story | Not started |
+| 2 | Scroll intro | Done (rebuilt in 3D for design v3) |
+| 3 | QR entry and onboarding story | Done, awaiting review (with design v3) |
 | 4 | Baseline capture | Not started |
 | 5 | Home dashboard | Not started |
 | 6 | Journey map and reassurance engine | Not started |

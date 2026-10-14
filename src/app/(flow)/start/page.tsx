@@ -6,13 +6,16 @@ import { StartScreen } from "./StartScreen";
 
 export const metadata: Metadata = { title: "Welcome" };
 
-// useSearchParams needs a Suspense boundary in a static export. The cover is static HTML:
-// on a first visit the head script shows it before any JavaScript runs, so the welcome
-// screen never flashes before the intro.
+// useSearchParams needs a Suspense boundary in a static export. The style block is static
+// HTML: on a first visit the head script's flag plus this rule keep the welcome screen
+// hidden before any JavaScript runs, so it never flashes before the intro. It only exists
+// while /start is on screen.
+const HOLD = `html[data-intro="pending"] #main, html[data-intro="pending"] #flow-header { visibility: hidden; }`;
+
 export default function StartPage() {
   return (
     <>
-      <div className="intro-cover" aria-hidden="true" />
+      <style>{HOLD}</style>
       <Suspense fallback={<PageSkeleton />}>
         <StartScreen />
       </Suspense>

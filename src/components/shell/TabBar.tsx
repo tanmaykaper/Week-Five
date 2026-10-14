@@ -21,7 +21,7 @@ export function TabBar() {
   return (
     <nav
       aria-label="Main"
-      className="fixed inset-x-0 bottom-0 z-30 grid h-[calc(var(--tabs-h)+env(safe-area-inset-bottom))] grid-cols-5 border-t border-line bg-bg/90 pb-[env(safe-area-inset-bottom)] backdrop-blur-md md:hidden"
+      className="fixed inset-x-0 bottom-0 z-30 grid h-[calc(var(--tabs-h)+env(safe-area-inset-bottom))] grid-cols-5 bg-surface pb-[env(safe-area-inset-bottom)] shadow-[0_-1px_0_var(--line)] md:hidden"
     >
       {NAV.map((item) => {
         const on = current === item.href;

@@ -81,8 +81,27 @@ export const settingsSchema = z.object({
   reorder: z.object({ snoozedUntil: z.optional(isoDate), lastShownAt: z.optional(isoDateTime) }),
 });
 
+/** Answers given so far during setup, so closing the tab resumes where it was. Nothing here is required. */
+export const draftSchema = z.object({
+  nickname: z.optional(z.string().check(z.maxLength(24))),
+  /** null means the question was skipped. */
+  ageBand: z.optional(z.nullable(z.enum(ageBands))),
+  cityId: z.optional(z.nullable(z.string().check(z.maxLength(40)))),
+  seasonOverride: z.optional(z.nullable(z.enum(["monsoon", "no-monsoon"]))),
+  products: z.optional(z.array(z.enum(productIds))),
+  channel: z.optional(z.enum(channels)),
+  startDate: z.optional(isoDate),
+  worries: z.optional(z.array(z.enum(worries))),
+  letter: z.optional(z.string().check(z.maxLength(400))),
+  morning: z.optional(time),
+  evening: z.optional(time),
+  notifications: z.optional(z.boolean()),
+  pack: z.optional(packScanSchema),
+});
+
 export const onboardingSchema = z.object({
   step: z.int().check(z.gte(0)),
+  draft: z.optional(draftSchema),
   completedAt: z.optional(isoDateTime),
   briefingSeenAt: z.optional(isoDateTime),
   baselineDoneAt: z.optional(isoDateTime),
@@ -112,6 +131,8 @@ export type Routine = z.infer<typeof routineSchema>;
 export type CheckIn = z.infer<typeof checkInSchema>;
 export type DoseLog = z.infer<typeof doseLogSchema>;
 export type Letter = z.infer<typeof letterSchema>;
+export type Draft = z.infer<typeof draftSchema>;
+export type PackScan = z.infer<typeof packScanSchema>;
 export type Intercept = z.infer<typeof interceptSchema>;
 export type ProductId = (typeof productIds)[number];
 export type Channel = (typeof channels)[number];

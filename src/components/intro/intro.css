@@ -1,42 +1,24 @@
-/* The intro is always a deep navy room, whatever the theme. One moment, then out of the way. */
-.intro,
-.intro-cover {
-  --intro-bg: #0d1a2c;
-  --intro-line: #e9eef5;
-  --intro-text: #e9eef5;
-  --intro-text-2: #a7b4c6;
-  --intro-accent: #7db0ee;
-  --intro-liquid: rgba(125, 176, 238, 0.42);
-  --intro-liquid-top: rgba(125, 176, 238, 0.95);
-  --intro-bulb: #142640;
-  background: var(--intro-bg);
-  color: var(--intro-text);
-}
+/* The intro is told on the pool, which sits behind it. The overlay itself is clear:
+   words on the left (or the bottom on phones), the HUD along the edges. */
 
-/* Painted on first paint by the head script's data-intro flag, so /start never flashes before the intro. */
-.intro-cover {
-  display: none;
-}
-html[data-intro="pending"] .intro-cover {
-  display: block;
-  position: fixed;
-  inset: 0;
-  z-index: 59;
+/* Keep the welcome screen out of sight until the camera settles on it. "open" is set by
+   the overlay itself; "pending" (before first paint) is handled by a style block that only
+   /start renders, so a first visit to any other page is never hidden. */
+html[data-intro="open"] #main,
+html[data-intro="open"] #flow-header {
+  visibility: hidden;
 }
 
 .intro {
   position: fixed;
   inset: 0;
   z-index: 60;
-  isolation: isolate;
-}
-.intro.is-revealing {
-  -webkit-mask-image: radial-gradient(circle at var(--x) var(--y), transparent var(--r), #000 calc(var(--r) + 1px));
-  mask-image: radial-gradient(circle at var(--x) var(--y), transparent var(--r), #000 calc(var(--r) + 1px));
+  visibility: visible;
+  color: var(--ink);
 }
 .intro.is-leaving {
   opacity: 0;
-  transition: opacity 220ms var(--ease-settle);
+  transition: opacity 240ms var(--ease-settle);
 }
 
 .intro-scroller {
@@ -52,7 +34,7 @@ html[data-intro="pending"] .intro-cover {
 }
 .intro-track {
   position: relative;
-  height: 700dvh;
+  height: 820dvh;
 }
 .intro[data-mode="calm"] .intro-track {
   height: 100%;
@@ -63,109 +45,74 @@ html[data-intro="pending"] .intro-cover {
   top: 0;
   height: 100dvh;
   display: grid;
-  grid-template-rows: minmax(0, 1fr) auto;
-  padding: 76px var(--gutter) 104px;
-  gap: 24px;
+  align-items: end;
+  padding: 88px var(--gutter) calc(150px + env(safe-area-inset-bottom));
+  pointer-events: none;
 }
 @media (min-width: 900px) {
   .intro-stage {
-    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-    grid-template-rows: minmax(0, 1fr);
     align-items: center;
-    column-gap: clamp(40px, 6vw, 96px);
-    padding-block: 88px 112px;
+    padding-block: 96px 120px;
   }
-}
-
-.intro-art {
-  position: relative;
-  min-height: 0;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: clamp(24px, 5dvh, 56px);
-}
-.intro-dropper {
-  position: relative;
-  height: min(38dvh, 300px);
-  aspect-ratio: 120 / 320;
-  transform: rotate(-62deg);
-  will-change: transform;
-}
-.intro-dropper svg {
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-}
-@media (min-width: 900px) {
-  .intro-dropper {
-    height: min(52dvh, 400px);
-  }
-}
-.intro[data-mode="calm"] .intro-dropper {
-  transform: none;
-}
-.intro-surface {
-  width: min(60%, 240px);
-  height: 1px;
-  background: color-mix(in srgb, var(--intro-line) 22%, transparent);
-  opacity: 0;
-}
-.intro-drop {
-  position: absolute;
-  width: 12px;
-  height: 16px;
-  margin-left: -6px;
-  transform: scale(0);
-  transform-origin: 50% 0%;
-  will-change: transform, opacity;
-}
-.intro-ring {
-  position: absolute;
-  width: 64px;
-  height: 16px;
-  margin: -8px 0 0 -32px;
-  border: 1.5px solid var(--intro-accent);
-  border-radius: 50%;
-  opacity: 0;
-  transform: scale(0.2);
-  will-change: transform, opacity;
 }
 
 .intro-beats {
   display: grid;
-  align-content: center;
-  text-align: center;
-  justify-items: center;
-}
-@media (min-width: 900px) {
-  .intro-beats {
-    text-align: left;
-    justify-items: start;
-  }
 }
 .intro-beat {
   grid-area: 1 / 1;
-  font-family: var(--font-serif);
-  font-size: clamp(1.75rem, 1.15rem + 2.5vw, 3.25rem);
-  line-height: 1.1;
-  letter-spacing: -0.01em;
-  max-width: 19ch;
-  text-wrap: balance;
-  opacity: 0;
+  max-width: min(100%, 15.5em);
+  font-size: clamp(2.125rem, 1.1rem + 3.3vw, 4.5rem);
+}
+@media (min-width: 900px) {
+  .intro-beat {
+    max-width: min(48vw, 15em);
+  }
+}
+.intro-beat > * {
   will-change: transform, opacity;
 }
-.intro-beat:first-child {
+.intro-beat:not(:first-child) > * {
+  opacity: 0;
+}
+.intro[data-mode="calm"] .intro-beat > * {
+  opacity: 0;
+  transition: opacity 400ms var(--ease-settle);
+}
+.intro[data-mode="calm"] .intro-beat[data-on] > * {
   opacity: 1;
+}
+
+.intro-line {
+  font-weight: 500;
+  line-height: 0.98;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
+}
+.intro-turn {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 1.1em;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  margin-top: 0.04em;
+}
+.intro-note {
+  margin-top: clamp(16px, 2.2vw, 28px);
+  max-width: 36ch;
+  font-size: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+  line-height: 1.5;
+  letter-spacing: -0.005em;
+  color: var(--text-2);
+  text-wrap: pretty;
 }
 
 .intro-top {
   position: absolute;
   inset: 0 0 auto 0;
-  z-index: 2;
-  height: 64px;
+  z-index: 3;
+  height: var(--header-h);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -177,78 +124,168 @@ html[data-intro="pending"] .intro-cover {
 }
 .intro-skip {
   min-height: 44px;
-  padding-inline: 4px;
+  padding: 0 18px;
+  border-radius: 999px;
   font-size: 0.9375rem;
   font-weight: 500;
-  color: var(--intro-text-2);
-  text-decoration: underline;
-  text-decoration-color: color-mix(in srgb, var(--intro-text-2) 40%, transparent);
-  text-underline-offset: 4px;
-  transition: color 150ms var(--ease-settle);
+  color: var(--ink);
+  background: rgba(15, 30, 51, 0.06);
+  transition: background-color 200ms var(--ease-settle);
 }
 .intro-skip:hover {
-  color: var(--intro-text);
+  background: rgba(15, 30, 51, 0.11);
 }
 
+.intro-labels {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* The HUD: chapter name, 24 ticks (one per week of the plan), and the next action. */
 .intro-foot {
   position: absolute;
   inset: auto 0 0 0;
-  z-index: 2;
-  padding: 0 var(--gutter) calc(28px + env(safe-area-inset-bottom));
+  z-index: 3;
+  padding: 0 var(--gutter) calc(22px + env(safe-area-inset-bottom));
   display: grid;
-  gap: 18px;
-  justify-items: center;
+  gap: 20px;
+}
+.intro-hud {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    "chapter actions"
+    "ticks ticks";
+  align-items: center;
+  gap: 12px 20px;
+}
+@media (min-width: 900px) {
+  .intro-hud {
+    grid-template-columns: minmax(140px, 1fr) minmax(0, 480px) minmax(140px, 1fr);
+    grid-template-areas: "chapter ticks actions";
+    min-height: 56px;
+  }
+}
+.intro-chapter {
+  grid-area: chapter;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--ink);
+}
+.intro-ticks {
+  grid-area: ticks;
+  display: grid;
+  grid-template-columns: repeat(24, minmax(0, 1fr));
+  gap: 4px;
+  height: 14px;
+  align-items: end;
+}
+.intro-ticks i {
+  display: block;
+  height: 8px;
+  border-radius: 2px;
+  background: rgba(15, 30, 51, 0.12);
+  transition:
+    background-color 220ms var(--ease-settle),
+    height 220ms var(--ease-settle);
+}
+.intro-ticks i[data-on] {
+  height: 14px;
+  background: var(--ink);
+}
+/* weeks 3 to 8, the shed window, are marked on the line too */
+.intro-ticks i:nth-child(n + 3):nth-child(-n + 8) {
+  background: rgba(34, 84, 138, 0.28);
+}
+.intro-ticks i:nth-child(n + 3):nth-child(-n + 8)[data-on] {
+  background: var(--accent);
+}
+.intro-actions {
+  grid-area: actions;
+  justify-self: end;
+  display: flex;
+  gap: 8px;
+  align-items: center;
 }
 .intro-hint {
   font-size: 0.875rem;
-  color: var(--intro-text-2);
+  font-weight: 500;
+  color: var(--text-2);
   display: inline-flex;
   align-items: center;
   gap: 8px;
   min-height: 44px;
 }
 .intro-cta {
-  height: 44px;
-  padding: 0 20px;
-  border-radius: 8px;
-  background: #e9eef5;
-  color: #0d1a2c;
+  height: 48px;
+  padding: 0 24px;
+  border-radius: 999px;
+  background: var(--action);
+  color: var(--on-action);
   font-weight: 500;
   font-size: 0.9375rem;
-  transition: transform 120ms var(--ease-settle), opacity 200ms var(--ease-settle);
+  transition:
+    transform 160ms var(--ease-settle),
+    background-color 200ms var(--ease-settle);
+}
+.intro-cta:hover {
+  background: var(--action-hover);
 }
 .intro-cta:active {
-  transform: scale(0.98);
+  transform: scale(0.97);
 }
-.intro-calm-controls {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-.intro-calm-controls button:not(.intro-cta) {
+.intro-quiet {
   height: 44px;
-  padding: 0 16px;
-  border-radius: 8px;
-  border: 1px solid color-mix(in srgb, var(--intro-line) 22%, transparent);
-  color: var(--intro-text);
+  padding: 0 18px;
+  border-radius: 999px;
+  background: rgba(15, 30, 51, 0.06);
+  color: var(--ink);
   font-weight: 500;
   font-size: 0.9375rem;
 }
-.intro-progress {
-  width: min(100%, 560px);
-  height: 1px;
-  background: color-mix(in srgb, var(--intro-line) 14%, transparent);
-  overflow: hidden;
+
+/* The last words, which replace the beats once the camera has climbed out. */
+.intro-final {
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity 500ms var(--ease-settle),
+    transform 500ms var(--ease-settle);
+  pointer-events: none;
 }
-.intro-progress > i {
-  display: block;
-  height: 100%;
-  background: var(--intro-accent);
-  transform-origin: 0 50%;
-  transform: scaleX(0);
+.intro-foot[data-ending] .intro-final {
+  opacity: 1;
+  transform: none;
 }
+.intro-final-title {
+  font-size: clamp(2.125rem, 1.1rem + 3.3vw, 4.5rem);
+  font-weight: 500;
+  line-height: 0.98;
+  letter-spacing: -0.045em;
+}
+.intro-final-note {
+  margin-top: 12px;
+  color: var(--text-2);
+}
+@media (min-width: 900px) {
+  .intro-final {
+    position: absolute;
+    left: var(--gutter);
+    bottom: 50dvh;
+    transform: translateY(calc(50% + 16px));
+  }
+  .intro-foot[data-ending] .intro-final {
+    transform: translateY(50%);
+  }
+}
+.intro[data-mode="calm"] .intro-final {
+  display: none;
+}
+
 .intro :focus-visible {
-  outline: 2px solid var(--intro-accent);
+  outline: 2px solid var(--accent);
   outline-offset: 3px;
 }
 

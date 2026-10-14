@@ -64,8 +64,9 @@ test.describe("full motion", () => {
     await seedFresh(page);
     await page.goto("/start/?sku=WF-SOL-60&reg=2026-10-01");
     await expect(dialog(page)).toBeVisible();
-    await page.waitForFunction(() => document.querySelector<HTMLElement>(".intro-dropper")?.style.transform !== undefined);
-    await page.waitForTimeout(400); // the animation library loads behind the first frame
+    // The 3D pool and the animation library load behind the first frame.
+    await page.locator(".pool[data-live]").waitFor({ timeout: 10_000 }).catch(() => {});
+    await page.waitForTimeout(600);
     for (let i = 0; i < 6; i++) {
       await page.keyboard.press("ArrowDown");
       await page.waitForTimeout(700);
@@ -80,7 +81,8 @@ test.describe("full motion", () => {
     await seedFresh(page);
     await page.goto("/start/");
     await expect(dialog(page)).toBeVisible();
-    await page.waitForTimeout(600);
+    await page.locator(".pool[data-live]").waitFor({ timeout: 10_000 }).catch(() => {});
+    await page.waitForTimeout(800);
 
     const cdp = await page.context().newCDPSession(page);
     await cdp.send("Emulation.setCPUThrottlingRate", { rate: 4 });

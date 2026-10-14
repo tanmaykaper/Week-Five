@@ -1,0 +1,456 @@
+/* Setup: one question per screen over the pool. Words on the left (top on phones),
+   answers in reach of the thumb, the camera's view of the rings in the open space. */
+
+.ob {
+  min-height: calc(100dvh - var(--header-h));
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  padding-bottom: calc(20px + env(safe-area-inset-bottom));
+}
+
+.ob-hud {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 52px;
+}
+.ob-back {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  flex: none;
+  border-radius: 999px;
+  background: rgba(15, 30, 51, 0.06);
+  transition: background-color 200ms var(--ease-settle);
+}
+.ob-back:hover {
+  background: rgba(15, 30, 51, 0.11);
+}
+.ob-back:disabled {
+  opacity: 0.35;
+  pointer-events: none;
+}
+.ob-count {
+  font-size: 0.875rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.ob-chapter {
+  margin-left: 10px;
+  color: var(--text-2);
+}
+.ob-ticks,
+.ob-dots {
+  flex: 1;
+  max-width: 240px;
+  margin-left: auto;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 4px;
+}
+.ob-ticks i,
+.ob-dots i {
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(15, 30, 51, 0.13);
+  transition: background-color 300ms var(--ease-settle);
+}
+.ob-ticks i[data-on],
+.ob-dots i[data-on] {
+  background: var(--ink);
+}
+.ob-ticks i[data-now] {
+  background: var(--accent);
+}
+
+.ob-body {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  padding-top: clamp(20px, 4dvh, 40px);
+  max-width: 720px;
+}
+.ob-q {
+  font-size: clamp(2rem, 1.1rem + 2.3vw, 3.25rem);
+  outline: none;
+}
+.ob-q > span + span {
+  max-width: 17em;
+}
+/* On phones the question and the answers sit together at the bottom, in reach of the
+   thumb; the open space above them shows the pool, like the intro. */
+.ob-answer {
+  display: grid;
+  margin-top: 28px;
+}
+@media (max-width: 959px) {
+  .ob-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding-top: clamp(96px, 18dvh, 220px);
+  }
+}
+@media (min-width: 960px) {
+  .ob-body {
+    grid-template-rows: auto auto;
+    align-content: center;
+    padding-block: 24px 64px;
+  }
+  .ob-answer {
+    margin-top: 36px;
+  }
+}
+
+.ob-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 24px;
+}
+@media (max-width: 959px) {
+  .ob-actions > button[type="submit"] {
+    flex: 1;
+  }
+}
+
+/* Inputs */
+.ob-field {
+  display: grid;
+}
+.ob-text {
+  width: 100%;
+  height: 64px;
+  padding: 0 22px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.86);
+  color: var(--ink);
+  font-size: 1.5rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  outline: none;
+  transition: background-color 200ms var(--ease-settle), box-shadow 200ms var(--ease-settle);
+}
+.ob-text::placeholder {
+  color: var(--text-3);
+  opacity: 0.75;
+}
+.ob-text:focus {
+  background: #fff;
+  box-shadow: 0 0 0 2px var(--accent);
+}
+.ob-text-sm {
+  height: 52px;
+  font-size: 1.0625rem;
+  letter-spacing: -0.01em;
+}
+.ob-search {
+  position: relative;
+  display: block;
+}
+.ob-search svg {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-2);
+  pointer-events: none;
+}
+.ob-search .ob-text {
+  padding-left: 50px;
+}
+.ob-date,
+.ob-time {
+  display: grid;
+  gap: 8px;
+}
+.ob-hint {
+  margin-top: 10px;
+  font-size: 0.875rem;
+  color: var(--text-2);
+}
+.ob-sub {
+  padding: 18px 20px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+/* Single choice rows */
+.ob-choices {
+  display: grid;
+  gap: 8px;
+}
+.ob-choice {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 60px;
+  padding: 12px 14px 12px 20px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.82);
+  color: var(--ink);
+  font-size: 1.0625rem;
+  transition:
+    background-color 220ms var(--ease-settle),
+    color 220ms var(--ease-settle),
+    transform 140ms var(--ease-settle);
+}
+.ob-choice:hover {
+  background: #fff;
+}
+.ob-choice:active {
+  transform: scale(0.985);
+}
+.ob-choice[aria-checked="true"] {
+  background: var(--action);
+  color: var(--on-action);
+}
+.ob-choice-note {
+  font-size: 0.875rem;
+  color: var(--text-2);
+}
+.ob-choice[aria-checked="true"] .ob-choice-note {
+  color: rgba(255, 255, 255, 0.8);
+}
+.ob-tick {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  flex: none;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 2px rgba(15, 30, 51, 0.18);
+}
+.ob-choice[aria-checked="true"] .ob-tick {
+  background: #fff;
+  color: var(--action);
+  box-shadow: none;
+}
+/* The pick lands like a drop: one ring spreads from the tick. */
+.ob-choice[aria-checked="true"] .ob-tick::after,
+.ob-chip[aria-pressed="true"]::after,
+.ob-chip[aria-checked="true"]::after {
+  color: var(--ink);
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  box-shadow: 0 0 0 2px currentColor;
+  opacity: 0;
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ob-choice[aria-checked="true"] .ob-tick::after,
+  .ob-chip[aria-pressed="true"]::after,
+  .ob-chip[aria-checked="true"]::after {
+    animation: ob-ring 520ms var(--ease-settle);
+  }
+}
+@keyframes ob-ring {
+  from {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.5);
+  }
+}
+
+/* Multi choice chips */
+.ob-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.ob-chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.82);
+  color: var(--ink);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  transition:
+    background-color 220ms var(--ease-settle),
+    color 220ms var(--ease-settle),
+    transform 140ms var(--ease-settle);
+}
+.ob-chip:hover {
+  background: #fff;
+}
+.ob-chip:active {
+  transform: scale(0.97);
+}
+.ob-chip[aria-pressed="true"],
+.ob-chip[aria-checked="true"] {
+  background: var(--ink);
+  color: #fff;
+}
+
+/* The letter: the one place the user's own words are set in the serif. */
+.ob-letter {
+  display: grid;
+}
+.ob-letter textarea {
+  min-height: 190px;
+  padding: 20px 22px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--ink);
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.5rem;
+  line-height: 1.35;
+  resize: vertical;
+  outline: none;
+}
+.ob-letter textarea:focus {
+  background: #fff;
+  box-shadow: 0 0 0 2px var(--accent);
+}
+.ob-letter textarea::placeholder {
+  color: var(--text-3);
+  opacity: 0.8;
+}
+
+/* Notifications switch */
+.ob-switch {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 64px;
+  padding: 12px 16px 12px 20px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.82);
+  color: var(--ink);
+}
+.ob-switch-track {
+  position: relative;
+  width: 46px;
+  height: 28px;
+  flex: none;
+  border-radius: 999px;
+  background: rgba(15, 30, 51, 0.18);
+  transition: background-color 220ms var(--ease-settle);
+}
+.ob-switch-track > span {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: #fff;
+  transition: transform 220ms var(--ease-settle);
+}
+.ob-switch[aria-checked="true"] .ob-switch-track {
+  background: var(--action);
+}
+.ob-switch[aria-checked="true"] .ob-switch-track > span {
+  transform: translateX(18px);
+}
+
+/* What the answers do to the rings, said in words. */
+.ob-live {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--ink);
+  text-wrap: pretty;
+}
+.ob-live-dot {
+  flex: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 2px var(--accent);
+  transform: translateY(1px);
+}
+.ob-live-dot[data-tone="rain"] {
+  box-shadow: inset 0 0 0 2px var(--rain);
+}
+
+.ob-summary {
+  display: grid;
+  gap: 3px;
+}
+.ob-summary > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 13px 18px;
+  background: rgba(255, 255, 255, 0.78);
+}
+.ob-summary > div:first-child {
+  border-radius: 16px 16px 4px 4px;
+}
+.ob-summary > div:last-child {
+  border-radius: 4px 4px 16px 16px;
+}
+.ob-summary dt {
+  color: var(--text-2);
+}
+.ob-summary dd {
+  font-weight: 500;
+  text-align: right;
+}
+
+/* Briefing */
+.ob-brief .ob-body {
+  grid-template-rows: auto auto auto;
+}
+.ob-brief-lead {
+  max-width: 44ch;
+  color: var(--text-2);
+}
+.ob-card {
+  display: grid;
+  align-content: end;
+  gap: 18px;
+  margin-top: 24px;
+}
+.ob-card-body {
+  max-width: 38ch;
+  font-size: var(--t-lead);
+  line-height: 1.55;
+}
+@media (min-width: 960px) {
+  .ob-card {
+    align-content: start;
+    padding-top: 40px;
+  }
+}
+
+/* Moving between questions: out goes up and away, in rises into place. */
+@media (prefers-reduced-motion: no-preference) {
+  .ob-in {
+    animation: ob-in 640ms var(--ease-settle) both;
+    animation-delay: calc(var(--i, 0) * 80ms + 60ms);
+  }
+  .ob[data-phase="out"] .ob-body > * {
+    animation: ob-out 220ms var(--ease-settle) both;
+  }
+}
+@keyframes ob-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+}
+@keyframes ob-out {
+  to {
+    opacity: 0;
+    transform: translateY(-16px);
+  }
+}

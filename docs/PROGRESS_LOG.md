@@ -64,3 +64,30 @@
 **Known issues:** none new. Page weight unchanged from Phase 1 apart from about 4 KB on `/start`.
 
 **Next step:** Phase 3, QR entry and the onboarding story.
+
+## 2026-10-14, design v3 and Phase 3: QR entry and the setup story
+
+**Done, design v3**
+- Studied Turion Space and Morpho frame by frame at 1440 (headless Chrome captures) and took their grammar: one 3D object as the camera's vehicle, a camera travelling round concentric rings, two-voice headlines, chapter names and a segmented progress.
+- Concept: one drop, twenty four rings. A light 3D pool (Three.js 0.186) behind every flow screen: glass dropper, a drop that falls, a ripple that freezes into the 24 week rings, rain on monsoon weeks, other people's drops.
+- Rebuilt the intro on the pool: six two-line beats with notes and chapter names, 24-tick progress, labels on the rings, release that settles the camera onto the welcome screen. Calm path cuts between the same 3D poses.
+- New light tokens (ground matches the pool's fog), Geist 500 plus italic serif headline pairs, pill buttons, tone-filled controls, footer close with the name at full width. Light is now the default theme.
+- Welcome screen rebuilt as an open layout over the rings, with the pack read from the QR as a chip.
+
+**Done, Phase 3**
+- Nine questions, one per screen, each with its why-we-ask as the serif turn; the camera takes a new view of the pool for each.
+- Live map: the city puts rain on the weeks its monsoon covers, the start date lights "you are here", a line says what changed. Season logic in `src/lib/season.ts`, 30 cities with their own months.
+- Draft saved after every answer; reopening resumes at the same question (and the welcome screen offers to carry on). Required: products, how they bought it, a valid start date.
+- Plan summary at the end (day one, shed window dates, rains, photo days, verdict date), then the briefing: five cards for quick-commerce and pharmacy, three for the assessment route, with the rings lighting the weeks each card is about.
+- `/dev/qr` renders real QR codes for every fictional pack.
+- Tests: 18 new unit tests (season, setup rules, finishing the plan), 5 new end-to-end tests (full setup from a pack scan, resume, required steps, short briefing, demo). Intro tests updated for the 3D scene.
+
+**Checks:** `pnpm check` passes (lint, types, 55 unit tests, copy check, build). 56 end-to-end tests pass across phone, tablet and desktop (1 skipped by design). The 3D intro holds 60 fps average, p95 16.8 ms, with the CPU slowed 4x on phone and desktop. Screens looked at in full motion at 1440, 1024 and 390, and under reduced motion.
+
+**Decisions:** 54 to 80.
+
+**Known issues**
+- Today, Map, Mirror and the other app pages still use the v2 layouts under the v3 tokens; they move to v3 in their own phases (Today in Phase 5). `docs/design-preview.html` is the v2 render and is superseded for the flow screens.
+- First-load JS for the flow screens grows by the Three.js chunk (lazy, after first paint). App pages are unchanged.
+
+**Next step:** Tanmay reviews v3 and Phase 3. On "go", Phase 4: baseline capture.

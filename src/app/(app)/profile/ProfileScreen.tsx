@@ -9,9 +9,9 @@ import { PageHead } from "@/components/ui/primitives";
 import { useApp, type ThemeSetting } from "@/lib/storage/store";
 
 const THEMES: { value: ThemeSetting; label: string }[] = [
-  { value: "system", label: "System" },
   { value: "light", label: "Light" },
   { value: "dark", label: "Dark" },
+  { value: "system", label: "System" },
 ];
 
 export function ProfileScreen() {

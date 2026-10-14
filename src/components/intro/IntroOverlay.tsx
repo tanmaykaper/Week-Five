@@ -3,30 +3,55 @@
 import { ArrowDown } from "@phosphor-icons/react/ssr";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
-import { Mark } from "@/components/ui/primitives";
-import { INTRO_BEATS } from "@/content/intro";
+import { poolController, usePool } from "@/components/pool/controller";
+import type { PoolEngine } from "@/components/pool/engine";
+import { DOT_ANGLE, LABEL_ANGLE, LABEL_ANGLE_PHONE, onRing, SHED_WEEKS } from "@/components/pool/geometry";
+import { BASE_STATE, frame, INTRO_FRAMES, landscapeness, WELCOME_FRAME, WELCOME_STATE } from "@/components/pool/poses";
+import { Mark, curl } from "@/components/ui/primitives";
+import { INTRO_BEATS, INTRO_FINAL, INTRO_FINAL_NOTE, INTRO_LABELS } from "@/content/intro";
 import { useReducedMotion } from "@/lib/hooks/useReducedMotion";
 import { useApp } from "@/lib/storage/store";
-import { Dropper, TIP_Y } from "./Dropper";
 import "./intro.css";
 
 type Gsap = typeof import("gsap").gsap;
+type Timeline = ReturnType<Gsap["timeline"]>;
 
-/** Each beat owns an equal slice of the first 90 percent of the scroll; the last slice releases the drop. */
-const SEG = 0.15;
-/** Where each beat sits fully on screen, used by the keyboard and the Next button. */
+/** Each beat owns an equal slice of the first 84 percent of the scroll; the rest is the way out. */
+/**
+ * Moves focus to the page once it is really visible. The page behind the intro is hidden
+ * with `visibility`, which (like every property) gets a 1 ms transition under reduced
+ * motion, so focusing in the same frame would land nowhere.
+ */
+export function focusMainWhenVisible(tries = 12) {
+  const main = document.getElementById("main");
+  if (!main) return;
+  if (getComputedStyle(main).visibility === "visible" || tries <= 0) {
+    main.focus({ preventScroll: true });
+    return;
+  }
+  requestAnimationFrame(() => focusMainWhenVisible(tries - 1));
+}
+
+const SEG = 0.14;
 const BEAT_CENTRES = INTRO_BEATS.map((_, i) => i * SEG + SEG / 2);
-const RELEASE_AT = 0.97;
+/** Where the calm path cuts to: each beat's settled pose, after its camera move has finished. */
+const CALM_AT = [0.07, 0.24, 0.4, 0.535, 0.695, 0.83];
+const END_AT = INTRO_BEATS.length * SEG;
+const RELEASE_AT = 0.985;
+const TICKS = 24;
 
 /**
- * The first-visit story. Scroll (or swipe, or the arrow keys) drives a dropper through
- * six sentences; the last drop falls, and its ripple opens onto the welcome screen
- * underneath. Under reduced motion it becomes a calm, auto-advancing sequence.
+ * The first-visit story, told on the pool. Scroll (or swipe, or the arrow keys) moves the
+ * camera around a glass dropper while six two-line beats pass: the bulb squeezes, a drop
+ * forms and falls, its ripple spreads into the 24 week rings, and other people's drops
+ * land around it. At the end the camera settles on the welcome screen underneath.
+ * Under reduced motion it becomes a calm, auto-advancing sequence with cuts, not travel.
  */
 export function IntroOverlay({ onImpact, onDone }: { onImpact?: () => void; onDone: () => void }) {
   const markIntroSeen = useApp((s) => s.markIntroSeen);
   const router = useRouter();
   const headingId = useId();
+  const pool = usePool();
 
   const reduced = useReducedMotion();
   const [loadFailed, setLoadFailed] = useState(false);
@@ -38,82 +63,63 @@ export function IntroOverlay({ onImpact, onDone }: { onImpact?: () => void; onDo
   const rootRef = useRef<HTMLDivElement>(null);
   const scrollerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
-  const artRef = useRef<HTMLDivElement>(null);
-  const dropperRef = useRef<HTMLDivElement>(null);
-  const surfaceRef = useRef<HTMLDivElement>(null);
-  const dropRef = useRef<HTMLDivElement>(null);
-  const ringsRef = useRef<HTMLDivElement[]>([]);
   const beatsRef = useRef<HTMLDivElement>(null);
   const footRef = useRef<HTMLDivElement>(null);
-  const progressRef = useRef<HTMLElement>(null);
-  const bulbRef = useRef<SVGGElement>(null);
-  const liquidRef = useRef<SVGGElement>(null);
+  const ticksRef = useRef<HTMLDivElement>(null);
+  const labelsRef = useRef<HTMLDivElement>(null);
   const gsapRef = useRef<Gsap | null>(null);
+  const tlRef = useRef<Timeline | null>(null);
   const released = useRef(false);
+  const lastTick = useRef(-1);
 
   const finish = useCallback(() => {
     markIntroSeen();
     onDone();
   }, [markIntroSeen, onDone]);
 
-  /** Fade out without ceremony: Skip, or reduced motion's last step. */
+  const reveal = useCallback(() => {
+    delete document.documentElement.dataset.intro;
+    onImpact?.();
+  }, [onImpact]);
+
+  /** Out without ceremony: Skip, or reduced motion's last step. */
   const leave = useCallback(() => {
     if (released.current) return;
     released.current = true;
+    tlRef.current?.scrollTrigger?.kill();
     const root = rootRef.current;
+    const engine = poolController.get();
+    if (engine) void engine.to({ ...frame(WELCOME_FRAME, engine.aspect), ...WELCOME_STATE }, 1000);
     if (!root || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      onImpact?.();
+      reveal();
       finish();
       return;
     }
     root.classList.add("is-leaving");
-    onImpact?.();
-    window.setTimeout(finish, 230);
-  }, [finish, onImpact]);
+    reveal();
+    window.setTimeout(finish, 260);
+  }, [finish, reveal]);
 
-  /** The drop falls, hits the surface, and the ripple opens a window onto the page below. */
+  /** The way out at the end: the camera settles over the rings and the welcome screen rises under it. */
   const release = useCallback(() => {
     const gsap = gsapRef.current;
-    const root = rootRef.current;
-    const art = artRef.current;
-    const dropper = dropperRef.current;
-    const surface = surfaceRef.current;
-    const drop = dropRef.current;
+    const engine = poolController.get();
     if (released.current) return;
-    if (!gsap || !root || !art || !dropper || !surface || !drop) return leave();
+    if (!gsap) return leave();
     released.current = true;
+    tlRef.current?.scrollTrigger?.kill();
     scrollerRef.current?.style.setProperty("overflow", "hidden");
 
-    const tipX = dropper.offsetLeft + dropper.offsetWidth / 2;
-    const tipY = dropper.offsetTop + dropper.offsetHeight * TIP_Y;
-    const surfaceY = surface.offsetTop;
-    const box = art.getBoundingClientRect();
-    const ix = box.left + tipX;
-    const iy = box.top + surfaceY;
-    const radius = Math.hypot(Math.max(ix, window.innerWidth - ix), Math.max(iy, window.innerHeight - iy)) + 48;
-    root.style.setProperty("--x", `${ix}px`);
-    root.style.setProperty("--y", `${iy}px`);
-    root.style.setProperty("--r", "0px");
-
-    const fall = surfaceY - tipY - drop.offsetHeight;
-    gsap
-      .timeline({ onComplete: finish })
-      .to([beatsRef.current, footRef.current], { opacity: 0, y: -10, duration: 0.35, ease: "power2.out" }, 0)
-      .to(drop, { scale: 1, scaleY: 1.15, duration: 0.18, ease: "power1.out" }, 0)
-      .to(drop, { y: fall, scaleY: 1.25, duration: 0.55, ease: "power2.in" }, 0.18)
-      .to(drop, { scaleX: 1.7, scaleY: 0.2, opacity: 0, transformOrigin: "50% 100%", duration: 0.14, ease: "power2.out" }, 0.73)
-      .add(() => {
-        root.classList.add("is-revealing");
-        onImpact?.();
-      }, 0.73)
-      .fromTo(
-        ringsRef.current,
-        { scale: 0.2, opacity: 0.9 },
-        { scale: (i: number) => 5 + i * 3.5, opacity: 0, duration: 1.1, ease: "power2.out", stagger: 0.12 },
-        0.73,
-      )
-      .to(root, { "--r": `${radius}px`, duration: 0.95, ease: "power2.inOut" }, 0.82);
-  }, [finish, leave, onImpact]);
+    const out = gsap.timeline({ onComplete: finish });
+    out.to([beatsRef.current, footRef.current, labelsRef.current], { opacity: 0, y: -14, duration: 0.5, ease: "power2.out" }, 0);
+    if (engine) {
+      const { camX, camY, camZ, tx, ty, tz, fov, shiftX, shiftY } = frame(WELCOME_FRAME, engine.aspect);
+      out
+        .to(engine.rig, { camX, camY, camZ, tx, ty, tz, fov, shiftX, shiftY, duration: 1.7, ease: "power3.inOut" }, 0)
+        .to(engine.state, { ...WELCOME_STATE, duration: 1.3, ease: "power2.inOut" }, 0);
+    }
+    out.add(reveal, engine ? 0.55 : 0.3);
+  }, [finish, leave, reveal]);
 
   // Lock the page behind, take focus, keep everything else out of reach while open.
   useEffect(() => {
@@ -130,21 +136,37 @@ export function IntroOverlay({ onImpact, onDone }: { onImpact?: () => void; onDo
       }
     }
     others.forEach((el) => (el.inert = true));
-    // The overlay now covers the page itself, so the first-paint cover can go. Otherwise
-    // the ripple would open onto the cover instead of the welcome screen.
-    delete html.dataset.intro;
+    // The page behind stays hidden until the camera settles on it.
+    html.dataset.intro = "open";
     scrollerRef.current?.focus({ preventScroll: true });
     router.prefetch("/onboarding");
     router.prefetch("/home");
     return () => {
       html.style.overflow = previous;
       others.forEach((el) => (el.inert = false));
+      if (html.dataset.intro === "open") delete html.dataset.intro;
     };
   }, [router]);
 
-  // Choose the path and, for the scroll path, build the scrubbed timeline.
+  // Labels on the rings, placed where they read best for the screen's shape.
+  const placeLabels = useCallback((engine: PoolEngine) => {
+    const box = labelsRef.current;
+    if (!box) return;
+    const l = landscapeness(engine.aspect);
+    const angle = LABEL_ANGLE_PHONE + (LABEL_ANGLE - LABEL_ANGLE_PHONE) * l;
+    const el = (name: string) => box.querySelector<HTMLElement>(`[data-label="${name}"]`)!;
+    engine.setLabels([
+      { el: el("start"), at: onRing(1, angle) },
+      { el: el("shed"), at: onRing((SHED_WEEKS[0] + SHED_WEEKS[1]) / 2, angle), weight: () => engine.state.shed },
+      // Phones have no room beside the stacked labels; the amber dots speak for themselves there.
+      { el: el("photos"), at: onRing(12, DOT_ANGLE), weight: () => (l > 0.5 ? engine.state.dots : 0) },
+      { el: el("hairs"), at: onRing(13, angle) },
+      { el: el("verdict"), at: onRing(24, angle) },
+    ]);
+  }, []);
+
+  // Build the story: one timeline on the camera, the scene and the words.
   useEffect(() => {
-    if (mode !== "scroll") return;
     let cancelled = false;
     let cleanup = () => {};
     (async () => {
@@ -154,63 +176,134 @@ export function IntroOverlay({ onImpact, onDone }: { onImpact?: () => void; onDo
         gsap.registerPlugin(ScrollTrigger);
         gsapRef.current = gsap;
         const scroller = scrollerRef.current!;
-        const beats = Array.from(beatsRef.current!.children) as HTMLElement[];
-        const drop = dropRef.current!;
-        const dropper = dropperRef.current!;
-        const surface = surfaceRef.current!;
+        const engine = poolController.get();
 
-        const place = () => {
-          drop.style.left = `${dropper.offsetLeft + dropper.offsetWidth / 2}px`;
-          drop.style.top = `${dropper.offsetTop + dropper.offsetHeight * TIP_Y - 1}px`;
-          const x = `${dropper.offsetLeft + dropper.offsetWidth / 2}px`;
-          const y = `${surface.offsetTop}px`;
-          ringsRef.current.forEach((ring) => {
-            ring.style.left = x;
-            ring.style.top = y;
-          });
+        const build = () => {
+          const tl = gsap.timeline({ paused: true, defaults: { ease: "none" } });
+          if (engine) {
+            const a = engine.aspect;
+            const F = Object.fromEntries(Object.entries(INTRO_FRAMES).map(([k, f]) => [k, frame(f, a)])) as Record<
+              keyof typeof INTRO_FRAMES,
+              ReturnType<typeof frame>
+            >;
+            engine.claim();
+            engine.set({ ...F.hero, ...BASE_STATE });
+            placeLabels(engine);
+            const R = engine.rig;
+            const S = engine.state;
+            tl
+              // 1. The roots: the dropper turns upright.
+              .to(R, { ...F.upright, duration: 0.15, ease: "power2.inOut" }, 0)
+              .to(S, { tilt: 0, spin: 0.25, duration: 0.14, ease: "power2.inOut" }, 0)
+              // 2. The shed: a squeeze, the level drops.
+              .to(S, { squeeze: 1, duration: 0.04, ease: "power2.inOut" }, 0.17)
+              .to(S, { squeeze: 0, duration: 0.05, ease: "power2.out" }, 0.215)
+              .to(S, { level: 0.48, duration: 0.07, ease: "power1.inOut" }, 0.18)
+              .to(S, { spin: -0.2, duration: 0.12 }, 0.15)
+              // 3. Six months: close on the tip, a drop forms.
+              .to(R, { ...F.tip, duration: 0.13, ease: "power2.inOut" }, 0.27)
+              .to(S, { squeeze: 0.85, duration: 0.05, ease: "power2.inOut" }, 0.33)
+              .to(S, { level: 0.4, duration: 0.05 }, 0.33)
+              .to(S, { drop: 0.7, duration: 0.07, ease: "power2.out" }, 0.34)
+              // 4. The photo: the drop swells, lets go, and the water takes it.
+              .to(S, { drop: 1, squeeze: 1, duration: 0.03, ease: "power1.inOut" }, 0.42)
+              .to(R, { ...F.fall, duration: 0.09, ease: "power2.inOut" }, 0.44)
+              .to(S, { fall: 1, duration: 0.05, ease: "power2.in" }, 0.455)
+              .to(S, { squeeze: 0.2, duration: 0.04 }, 0.46)
+              .to(S, { ripple: 1.1, duration: 0.07 }, 0.505)
+              // 5. The map: the camera climbs, the ripple freezes into 24 rings.
+              .to(S, { dY: 14, duration: 0.1, ease: "power2.in" }, 0.53)
+              .to(R, { ...F.map, duration: 0.13, ease: "power2.inOut" }, 0.55)
+              .to(S, { ripple: 4.2, duration: 0.19 }, 0.575)
+              .to(S, { map: 1, duration: 0.11, ease: "power1.out" }, 0.53)
+              .to(S, { shed: 1, duration: 0.04 }, 0.63)
+              .to(S, { dots: 1, duration: 0.04 }, 0.62)
+              .to(S, { labels: 1, duration: 0.035 }, 0.6)
+              // 6. Not alone: other drops land around yours.
+              .to(R, { ...F.cohort, duration: 0.13, ease: "power1.inOut" }, 0.7)
+              .to(S, { labels: 0.45, duration: 0.03 }, 0.72)
+              .to(S, { cohort: 1, duration: 0.13 }, 0.71)
+              // The way out: settle above the rings.
+              .to(R, { ...F.end, duration: 0.12, ease: "power2.inOut" }, END_AT)
+              .to(S, { labels: 0, duration: 0.04 }, END_AT);
+          }
+          if (mode === "scroll") {
+            const beats = Array.from(beatsRef.current!.children) as HTMLElement[];
+            beats.forEach((el, i) => {
+              const parts = Array.from(el.children) as HTMLElement[];
+              const start = i * SEG;
+              if (i > 0) tl.fromTo(parts, { opacity: 0, y: 28 }, { opacity: 1, y: 0, duration: 0.03, stagger: 0.008, ease: "power2.out" }, start + 0.008);
+              tl.to(parts, { opacity: 0, y: -20, duration: 0.025, stagger: 0.005, ease: "power2.in" }, start + SEG - 0.03);
+            });
+          }
+          tl.set({}, {}, 1);
+          return tl;
         };
-        place();
 
-        const tl = gsap.timeline({ paused: true, defaults: { ease: "none" } });
-        tl.to(dropper, { rotate: 0, ease: "power2.inOut", duration: 0.14 }, 0.0)
-          .to(bulbRef.current, { scaleX: 0.84, scaleY: 0.95, svgOrigin: "60 92", duration: 0.05, ease: "power2.inOut" }, 0.17)
-          .to(bulbRef.current, { scaleX: 1, scaleY: 1, svgOrigin: "60 92", duration: 0.05, ease: "power2.out" }, 0.23)
-          .to(liquidRef.current, { y: 34, duration: 0.12, ease: "power1.inOut" }, 0.31)
-          .to(liquidRef.current, { y: 68, duration: 0.12, ease: "power1.inOut" }, 0.46)
-          .to(bulbRef.current, { scaleX: 0.8, scaleY: 0.94, svgOrigin: "60 92", duration: 0.06, ease: "power2.inOut" }, 0.62)
-          .to(liquidRef.current, { y: 78, duration: 0.06 }, 0.62)
-          .to(drop, { scale: 0.75, duration: 0.08, ease: "power2.out" }, 0.64)
-          .to(surface, { opacity: 1, duration: 0.06 }, 0.76)
-          .to(drop, { scale: 1, scaleY: 1.12, duration: 0.1, ease: "power1.inOut" }, 0.77);
-        beats.forEach((el, i) => {
-          const start = i * SEG;
-          if (i > 0) tl.fromTo(el, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.035, ease: "power2.out" }, start + 0.01);
-          if (i < beats.length - 1) tl.to(el, { opacity: 0, y: -12, duration: 0.03, ease: "power2.in" }, start + SEG - 0.035);
-        });
-        tl.set({}, {}, 1);
+        let tl = build();
+        tlRef.current = tl;
+
+        if (mode === "calm") {
+          tl.progress(CALM_AT[0]!);
+          const off = poolController.onResize(() => {
+            const p = tl.progress();
+            tl.kill();
+            tl = build();
+            tl.progress(p);
+            tlRef.current = tl;
+          });
+          cleanup = () => {
+            off();
+            tl.kill();
+          };
+          return;
+        }
 
         let lastBeat = -1;
-        const st = ScrollTrigger.create({
+        const onUpdate = (self: { progress: number }) => {
+          const p = self.progress;
+          const tick = Math.min(TICKS, Math.round(p * TICKS));
+          if (tick !== lastTick.current && ticksRef.current) {
+            lastTick.current = tick;
+            ticksRef.current.style.setProperty("--on", String(tick));
+            Array.from(ticksRef.current.children).forEach((t, i) => t.toggleAttribute("data-on", i < tick));
+          }
+          const b = Math.min(INTRO_BEATS.length - 1, Math.floor(p / SEG));
+          if (b !== lastBeat) {
+            lastBeat = b;
+            setBeat(b);
+          }
+          setAtEnd(p > END_AT);
+          if (p >= RELEASE_AT) release();
+        };
+        let st = ScrollTrigger.create({
           trigger: trackRef.current,
           scroller,
           start: "top top",
           end: "bottom bottom",
           animation: tl,
-          scrub: 0.5,
-          invalidateOnRefresh: true,
-          onRefresh: place,
-          onUpdate: (self) => {
-            if (progressRef.current) progressRef.current.style.transform = `scaleX(${self.progress})`;
-            const b = Math.min(INTRO_BEATS.length - 1, Math.floor(self.progress / SEG));
-            if (b !== lastBeat) {
-              lastBeat = b;
-              setBeat(b);
-            }
-            setAtEnd(self.progress > 0.8);
-            if (self.progress >= RELEASE_AT) release();
-          },
+          scrub: 0.6,
+          onUpdate,
+        });
+        // A new screen shape means new framings: rebuild at the same place.
+        const off = poolController.onResize(() => {
+          if (released.current) return;
+          st.kill();
+          tl.kill();
+          tl = build();
+          tlRef.current = tl;
+          st = ScrollTrigger.create({
+            trigger: trackRef.current,
+            scroller,
+            start: "top top",
+            end: "bottom bottom",
+            animation: tl,
+            scrub: 0.6,
+            onUpdate,
+          });
         });
         cleanup = () => {
+          off();
           st.kill();
           tl.kill();
         };
@@ -223,12 +316,14 @@ export function IntroOverlay({ onImpact, onDone }: { onImpact?: () => void; onDo
       cancelled = true;
       cleanup();
     };
-  }, [mode, release]);
+  }, [mode, pool, release, placeLabels]);
 
-  // Reduced motion: advance every 3.5 s unless paused.
+  // Calm path: cut to each beat's pose; advance every 4 s unless paused.
   useEffect(() => {
-    if (mode !== "calm" || paused || beat >= INTRO_BEATS.length - 1) return;
-    const id = window.setTimeout(() => setBeat((b) => b + 1), 3500);
+    if (mode !== "calm") return;
+    tlRef.current?.progress(CALM_AT[beat]!);
+    if (paused || beat >= INTRO_BEATS.length - 1) return;
+    const id = window.setTimeout(() => setBeat((b) => b + 1), 4000);
     return () => window.clearTimeout(id);
   }, [mode, paused, beat]);
 
@@ -240,17 +335,20 @@ export function IntroOverlay({ onImpact, onDone }: { onImpact?: () => void; onDo
     scroller.scrollTo({ top: Math.max(0, Math.min(max, p * max)), behavior: "smooth" });
   }, []);
 
+  const last = beat >= INTRO_BEATS.length - 1;
+
   const step = useCallback(
     (dir: 1 | -1) => {
       if (mode === "calm") {
-        if (dir === 1 && beat >= INTRO_BEATS.length - 1) return leave();
+        if (dir === 1 && last) return leave();
         setBeat((b) => Math.max(0, Math.min(INTRO_BEATS.length - 1, b + dir)));
         return;
       }
-      if (dir === 1 && beat >= INTRO_BEATS.length - 1) return release();
+      if (dir === 1 && atEnd) return release();
+      if (dir === 1 && last) return scrollToProgress(END_AT + 0.06);
       scrollToProgress(BEAT_CENTRES[Math.max(0, Math.min(INTRO_BEATS.length - 1, beat + dir))]!);
     },
-    [mode, beat, leave, release, scrollToProgress],
+    [mode, beat, last, atEnd, leave, release, scrollToProgress],
   );
 
   const onKeyDown = (e: React.KeyboardEvent) => {
@@ -261,59 +359,58 @@ export function IntroOverlay({ onImpact, onDone }: { onImpact?: () => void; onDo
     } else if (["ArrowUp", "PageUp", "ArrowLeft"].includes(e.key)) {
       e.preventDefault();
       step(-1);
-    } else if (e.key === "Enter" && beat >= INTRO_BEATS.length - 1) {
+    } else if (e.key === "Enter" && (atEnd || (mode === "calm" && last))) {
       e.preventDefault();
       if (mode === "calm") leave();
       else release();
     }
   };
 
-  const last = beat >= INTRO_BEATS.length - 1;
+  const ending = mode === "scroll" ? atEnd : last;
 
   return (
-    <div ref={rootRef} className="intro" data-mode={mode} role="dialog" aria-modal="true" aria-labelledby={headingId}>
+    <div ref={rootRef} className="intro theme-light" data-mode={mode} role="dialog" aria-modal="true" aria-labelledby={headingId}>
       <div ref={scrollerRef} className="intro-scroller" tabIndex={-1} onKeyDown={onKeyDown}>
         <div ref={trackRef} className="intro-track">
           <div className="intro-stage">
-            <div ref={artRef} className="intro-art" aria-hidden="true">
-              <div ref={dropperRef} className="intro-dropper">
-                <Dropper bulbRef={bulbRef} liquidRef={liquidRef} liquidOffset={mode === "calm" ? 40 : 0} />
-              </div>
-              <div ref={surfaceRef} className="intro-surface" style={mode === "calm" ? { opacity: 1 } : undefined} />
-              <div ref={dropRef} className="intro-drop">
-                <svg viewBox="0 0 12 16" width="12" height="16">
-                  <path d="M6 0.5C4.4 3.6 1.5 6.4 1.5 10a4.5 4.5 0 0 0 9 0C10.5 6.4 7.6 3.6 6 0.5z" fill="var(--intro-accent)" />
-                </svg>
-              </div>
-              {[0, 1, 2].map((i) => (
-                <div
-                  key={i}
-                  className="intro-ring"
-                  ref={(el) => {
-                    if (el) ringsRef.current[i] = el;
-                  }}
-                />
-              ))}
-            </div>
-
             <div ref={beatsRef} className="intro-beats" aria-hidden="true">
-              {INTRO_BEATS.map((text, i) => (
-                <p
-                  key={text}
+              {INTRO_BEATS.map((b, i) => (
+                <div
+                  key={b.title}
                   className="intro-beat"
-                  style={mode === "calm" ? { opacity: i === beat ? 1 : 0, transition: "opacity 300ms var(--ease-settle)" } : undefined}
+                  data-on={mode === "calm" ? i === beat || undefined : undefined}
                 >
-                  {text.replace(/'/g, "’")}
-                </p>
+                  <p className="intro-line">{curl(b.title)}</p>
+                  <p className="intro-line intro-turn">{curl(b.turn)}</p>
+                  <p className="intro-note">{curl(b.note)}</p>
+                </div>
               ))}
             </div>
           </div>
         </div>
       </div>
 
+      <div ref={labelsRef} className="intro-labels" aria-hidden="true">
+        <div className="pool-label" data-label="start">
+          <span>{INTRO_LABELS.start}</span>
+        </div>
+        <div className="pool-label" data-label="shed" data-tone="accent">
+          <span>{INTRO_LABELS.shed}</span>
+        </div>
+        <div className="pool-label" data-label="photos" data-tone="amber">
+          <span>{INTRO_LABELS.photos}</span>
+        </div>
+        <div className="pool-label" data-label="hairs">
+          <span>{INTRO_LABELS.hairs}</span>
+        </div>
+        <div className="pool-label" data-label="verdict">
+          <span>{INTRO_LABELS.verdict}</span>
+        </div>
+      </div>
+
       <div className="intro-top">
-        <span className="inline-flex items-center gap-2.5 text-[1.0625rem] font-semibold tracking-[-0.01em]">
-          <Mark className="size-[26px] [&_path:first-child]:fill-[var(--intro-line)]" />
+        <span className="inline-flex items-center gap-2.5 text-[1.0625rem] font-semibold tracking-[-0.02em]">
+          <Mark />
           Week Five
         </span>
         <button type="button" className="intro-skip" onClick={leave}>
@@ -321,39 +418,46 @@ export function IntroOverlay({ onImpact, onDone }: { onImpact?: () => void; onDo
         </button>
       </div>
 
-      <div ref={footRef} className="intro-foot">
-        {mode === "calm" ? (
-          <div className="intro-calm-controls">
-            {!last && (
-              <button type="button" onClick={() => setPaused((p) => !p)} aria-pressed={paused}>
-                {paused ? "Play" : "Pause"}
-              </button>
-            )}
-            {last ? (
-              <button type="button" className="intro-cta" onClick={leave}>
+      <div ref={footRef} className="intro-foot" data-ending={ending || undefined}>
+        <div className="intro-final" aria-hidden={!ending}>
+          <p className="intro-final-title">{curl(INTRO_FINAL)}</p>
+          <p className="intro-final-note">{INTRO_FINAL_NOTE}</p>
+        </div>
+        <div className="intro-hud">
+          <p className="intro-chapter" aria-hidden="true">
+            {ending ? "Your plan" : INTRO_BEATS[beat]!.chapter}
+          </p>
+          <div
+            ref={ticksRef}
+            className="intro-ticks"
+            aria-hidden="true"
+            style={mode === "calm" ? ({ "--on": Math.round(((beat + 1) / INTRO_BEATS.length) * TICKS) } as React.CSSProperties) : undefined}
+          >
+            {Array.from({ length: TICKS }, (_, i) => (
+              <i key={i} data-on={mode === "calm" && i < ((beat + 1) / INTRO_BEATS.length) * TICKS ? true : undefined} />
+            ))}
+          </div>
+          <div className="intro-actions">
+            {mode === "calm" && !last ? (
+              <>
+                <button type="button" className="intro-quiet" onClick={() => setPaused((p) => !p)} aria-pressed={paused}>
+                  {paused ? "Play" : "Pause"}
+                </button>
+                <button type="button" className="intro-quiet" onClick={() => step(1)}>
+                  Next
+                </button>
+              </>
+            ) : ending ? (
+              <button type="button" className="intro-cta" onClick={mode === "calm" ? leave : release}>
                 Let&apos;s set up your plan
               </button>
             ) : (
-              <button type="button" onClick={() => step(1)}>
-                Next
-              </button>
+              <p className="intro-hint" aria-hidden="true">
+                <ArrowDown size={16} />
+                {beat === 0 ? "Scroll to begin" : "Keep scrolling"}
+              </p>
             )}
           </div>
-        ) : atEnd ? (
-          <button type="button" className="intro-cta" onClick={release}>
-            Let&apos;s set up your plan
-          </button>
-        ) : (
-          <p className="intro-hint" aria-hidden="true">
-            <ArrowDown size={16} />
-            {beat === 0 ? "Scroll to begin" : "Keep scrolling"}
-          </p>
-        )}
-        <div className="intro-progress" aria-hidden="true">
-          <i
-            ref={progressRef}
-            style={mode === "calm" ? { transform: `scaleX(${(beat + 1) / INTRO_BEATS.length})` } : undefined}
-          />
         </div>
       </div>
 
@@ -361,8 +465,10 @@ export function IntroOverlay({ onImpact, onDone }: { onImpact?: () => void; onDo
       <div className="sr-only">
         <h1 id={headingId}>Before you start, six things worth knowing.</h1>
         <ol>
-          {INTRO_BEATS.map((text) => (
-            <li key={text}>{text}</li>
+          {INTRO_BEATS.map((b) => (
+            <li key={b.title}>
+              {b.title} {b.turn} {b.note}
+            </li>
           ))}
         </ol>
         <p>Use Skip intro, or press Enter at the end, to set up your plan.</p>
