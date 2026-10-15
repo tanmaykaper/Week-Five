@@ -10,3 +10,5 @@ artifacts/
 next-env.d.ts
 *.tsbuildinfo
 certificates/
+# Written by `next dev` (Next.js agent rules); not ours, and it uses dashes.
+AGENTS.md

@@ -51,6 +51,9 @@ export const TODAY = {
   takeDayOne: "Take day-one photos",
   takeWeek: (w: number) => `Week ${w} photos`,
   checkIn: "Check in",
+  writeNote: "Write your note",
+  talkToDoctor: "Talk to a doctor",
+  seeMap: "See your map",
   dayOne: "Day 1",
 };
 

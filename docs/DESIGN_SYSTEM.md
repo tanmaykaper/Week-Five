@@ -22,6 +22,8 @@ Treatment is one small drop a day, and nothing visible happens for a while. In v
 - **Other drops** land around yours: the people who started the same week.
 - **Setup is the map being drawn.** Each answer changes the water: the city puts rain on the right weeks, the start date lights your week, the briefing lights the weeks each card is about.
 - **Today is the map from above.** The progress ring is the rings themselves: weeks behind you firmer, your week lit, the shed window, rains and photo days on the water, and other people's drops landing once. A sheet rises over the water, like paper floating on it, with the day's routine and everything else.
+- **The map is the rings, travelled.** Stepping through the weeks moves the camera outward ring by ring and lights the one you chose. Week pages keep the same water (one pool for the map and its pages), so going from week 7 to week 8 is a camera move, not a page load.
+- **Before you stop puts day one back in the middle.** The day-one photo sits at the centre of the rings, where day one is; then the camera pulls back to show where you are and where week 24 is.
 - **Day one is the middle of the map.** The camera for the baseline photos is a round lens set exactly at the centre of the rings, seen from straight above; weeks 5 to 24 spread out around it. Keeping a photo drops it into the water and its ripple runs out across all 24 weeks.
 
 ## Principles
@@ -125,6 +127,13 @@ The sans line fits one line on desktop (copy is written to about 24 characters);
 | Slot row | Tone-stepped rows in `--sunk` (18 px outer corners); "Mark done" is a white pill that fills action blue with a tick and sends one ring out |
 | Photo pair | Two round photos overlapping by 14 px with a 5 px surface ring between them, like two ripples |
 | Supply level | 8 px pill: what is left in the accent, amber at 10 days or less |
+| Sheet | `Sheet` (`components/ui/Sheet.tsx`): the check-in, "Why am I seeing this?" and the note all use it. Native `<dialog>`, bottom on phones, right panel from 768 px |
+| Week picker | A glass panel on the water: 44 px previous and next, the week in the sans with tags, its turn in the serif, one line. 24 small bars under it (taller for the chosen week) as a pointer shortcut |
+| Week list | Tone-stepped rows grouped by phase; the shed window group has a dashed accent rule; your week tinted info blue |
+| The note | Serif italic on a `--sunk` paper sheet with the date under it. Sealed: an envelope in a 64 px drop; ready: the drop turns amber |
+| Breathing circle | 132 px soft accent disc that grows for 4 s and shrinks for 6 s, with "Breathe in" and "Breathe out" swapping. Still under reduced motion |
+| Stop options | Three identical rows (same size, tone and weight), the pause row opens a date field in place |
+| Doctor page | A white card with tone-stepped facts, a plain table of check-ins, questions and the disclaimer; prints on its own |
 | Check-in sheet | Native `<dialog>`: bottom sheet (28 px corners) on phones, a 500 px panel from the right on wide screens. Answers are pills; the scale deepens from ink to accent as it goes; red flags fill alert when ticked |
 
 ## The pool (3D)
@@ -156,6 +165,9 @@ The sans line fits one line on desktop (copy is written to about 24 characters);
 | Into the lens | Camera glides to straight above the rings, 1.3 s; lens fades and scales in from 0.94, 900 ms | You look down into the middle of your own map |
 | Timer | Each second: the numeral in the serif scales in from 1.18, a ring closes on the lens from 1.12 | The count is felt without reading it |
 | Shutter | A white flash, 420 ms | The photo was taken |
+| Map week step | Camera glides 1.2 s to frame the rings out to the chosen week; the ring lights | You travel outward through the plan |
+| Note opens | The paper unfolds slightly (700 ms, a small tilt) | A sealed thing being opened |
+| Breathe | 10 s loop, 4 in and 6 out | Paced slower than a worried breath |
 | Today entrance | Rings spread from the centre (1.9 s), then six other drops land one after another (9 s, once) | The plan, then the people on it |
 | Check-in sheet | Rises 40 percent (420 ms) on phones, slides in from the right on wide screens | It comes from the bar you tapped |
 | Mark done | One ring leaves the button (560 ms) | The drop landed |

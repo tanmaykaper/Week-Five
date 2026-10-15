@@ -1,0 +1,955 @@
+[
+  {
+    "id": "calm-day-one",
+    "priority": 60,
+    "tone": "warm",
+    "when": {
+      "days": [
+        1,
+        1
+      ]
+    },
+    "refs": [
+      "aafp"
+    ],
+    "variants": [
+      "Day one. The clock has started. Nothing will look different for a while, and that's the plan.",
+      "Today counts. The first weeks are quiet on the outside. That's normal, not a problem."
+    ]
+  },
+  {
+    "id": "calm-photo-remembers",
+    "priority": 50,
+    "tone": "warm",
+    "when": {
+      "days": [
+        2,
+        14
+      ],
+      "baseline": true
+    },
+    "refs": [
+      "kahneman1979"
+    ],
+    "variants": [
+      "Nothing to see yet, and that is the plan. Your photo is doing the remembering for you.",
+      "Your scalp won't look different this week. Your day-one photo remembers how it looked, so you don't have to."
+    ],
+    "attach": "baseline"
+  },
+  {
+    "id": "calm-no-baseline",
+    "priority": 90,
+    "tone": "direct",
+    "when": {
+      "days": [
+        1,
+        21
+      ],
+      "baseline": false
+    },
+    "refs": [
+      "kahneman1979"
+    ],
+    "variants": [
+      "You haven't taken your day-one photos yet. Two minutes, and it's the most useful thing you'll do this month.",
+      "Take your three photos before anything changes. Future you will want something to compare against."
+    ],
+    "attach": "photos"
+  },
+  {
+    "id": "calm-habit",
+    "priority": 45,
+    "tone": "dry",
+    "when": {
+      "days": [
+        3,
+        10
+      ]
+    },
+    "refs": [
+      "odonoghue1999"
+    ],
+    "variants": [
+      "The hard part right now is boring: doing it every day at the times on your pack. Tie it to something you never skip.",
+      "Pair it with a habit you already have. Brush, then apply. Boring wins."
+    ]
+  },
+  {
+    "id": "calm-roots",
+    "priority": 40,
+    "tone": "warm",
+    "when": {
+      "days": [
+        5,
+        14
+      ]
+    },
+    "refs": [
+      "kaliyadan2013"
+    ],
+    "variants": [
+      "It works on the roots, not the hair you can see. The hair on your head today started growing months ago.",
+      "Think of it as working on next season's hair. This season's was already decided."
+    ]
+  },
+  {
+    "id": "calm-heads-up",
+    "priority": 70,
+    "tone": "direct",
+    "when": {
+      "days": [
+        10,
+        16
+      ]
+    },
+    "refs": [
+      "mcguire1961"
+    ],
+    "variants": [
+      "Heads up. Over the next few weeks, many people notice more hair in the shower. If that happens, it's the expected part.",
+      "Something to know before it happens: an early shed is common between about week two and week eight."
+    ],
+    "attach": "map"
+  },
+  {
+    "id": "calm-letter-unwritten",
+    "priority": 55,
+    "tone": "warm",
+    "when": {
+      "days": [
+        1,
+        14
+      ],
+      "letter": "none"
+    },
+    "refs": [
+      "odonoghue1999"
+    ],
+    "variants": [
+      "Write two lines to yourself for week five. You'll see why when you get there.",
+      "Future you is going to have a rough week around week five. Leave him a note."
+    ],
+    "attach": "letter"
+  },
+  {
+    "id": "calm-quick-commerce",
+    "priority": 65,
+    "tone": "dry",
+    "when": {
+      "days": [
+        1,
+        10
+      ],
+      "channel": "quick-commerce"
+    },
+    "refs": [
+      "mcguire1961"
+    ],
+    "variants": [
+      "You bought this in ten minutes, so nobody gave you the talk. Short version: expect a shed, judge at six months.",
+      "No doctor call came with your order, so here's the one line from it: a shed in the first two months is common."
+    ]
+  },
+  {
+    "id": "shed-open",
+    "priority": 60,
+    "tone": "direct",
+    "when": {
+      "days": [
+        15,
+        21
+      ]
+    },
+    "refs": [
+      "kaliyadan2013"
+    ],
+    "variants": [
+      "You're in the shed window now. More hair coming out over the next few weeks is the pattern most people describe.",
+      "The shed window opened this week. It's drawn on your ring so it doesn't sneak up on you."
+    ],
+    "attach": "map"
+  },
+  {
+    "id": "shed-high",
+    "priority": 80,
+    "tone": "calm",
+    "when": {
+      "days": [
+        14,
+        56
+      ],
+      "latest": {
+        "eitherMin": 3
+      }
+    },
+    "refs": [
+      "oliver1980"
+    ],
+    "variants": [
+      "This is the shed window. If more hair is coming out right now, that is the pattern most people describe. Here is your day-one photo to compare against.",
+      "More hair in the drain this week fits the timing. Look at your day-one photo next to today before you decide anything."
+    ],
+    "attach": "baseline"
+  },
+  {
+    "id": "shed-why",
+    "priority": 45,
+    "tone": "warm",
+    "when": {
+      "days": [
+        15,
+        56
+      ]
+    },
+    "refs": [
+      "bernstein"
+    ],
+    "variants": [
+      "Why shed at all? Older resting hairs get pushed out to make room for new growing ones. Out with the old, slowly.",
+      "The hairs falling now were already on their way out. The treatment just moved the date up."
+    ]
+  },
+  {
+    "id": "shed-week-five",
+    "priority": 75,
+    "tone": "warm",
+    "when": {
+      "days": [
+        29,
+        35
+      ]
+    },
+    "refs": [
+      "shadi2023"
+    ],
+    "variants": [
+      "Week five. The week most people find hardest, and the week a lot of people quit. You're still here.",
+      "Week five is where many people give up. The people who don't are the ones who get to see month six."
+    ]
+  },
+  {
+    "id": "shed-letter-ready",
+    "priority": 85,
+    "tone": "warm",
+    "when": {
+      "days": [
+        22,
+        35
+      ],
+      "letter": "sealed"
+    },
+    "refs": [
+      "odonoghue1999"
+    ],
+    "variants": [
+      "A few weeks ago you wrote something for this week. Want to read it?",
+      "Past you left a note for exactly this stretch. It's ready when you are."
+    ],
+    "attach": "letter"
+  },
+  {
+    "id": "shed-monsoon",
+    "priority": 78,
+    "tone": "calm",
+    "when": {
+      "days": [
+        15,
+        56
+      ],
+      "season": "overlap"
+    },
+    "refs": [
+      "kunz2009",
+      "hsiang2018"
+    ],
+    "variants": [
+      "Two sheds are overlapping. The season is part of this, not just the bottle.",
+      "Monsoon months bring their own hair fall. Right now you're getting that and the treatment shed at once. Both pass."
+    ],
+    "attach": "map"
+  },
+  {
+    "id": "shed-seasonal-peak",
+    "priority": 50,
+    "tone": "calm",
+    "when": {
+      "days": [
+        15,
+        56
+      ],
+      "season": "dry",
+      "startMonths": [
+        8,
+        9,
+        10
+      ]
+    },
+    "refs": [
+      "kunz2009"
+    ],
+    "variants": [
+      "Late summer and autumn are peak shedding months for most people, treated or not. Some of this is the calendar.",
+      "Hair fall has a season, and you started in it. Not everything you're seeing is the bottle."
+    ]
+  },
+  {
+    "id": "shed-counting",
+    "priority": 40,
+    "tone": "dry",
+    "when": {
+      "days": [
+        15,
+        56
+      ]
+    },
+    "refs": [
+      "taylor1978"
+    ],
+    "variants": [
+      "Counting hairs on the pillow is a reliable way to feel worse. Your photos measure the thing that matters.",
+      "Hair on the pillow is loud. Hair growing under the skin is silent. Trust the quiet one a bit more."
+    ]
+  },
+  {
+    "id": "shed-other-people",
+    "priority": 45,
+    "tone": "warm",
+    "when": {
+      "days": [
+        15,
+        56
+      ]
+    },
+    "refs": [
+      "cialdini1984"
+    ],
+    "variants": [
+      "If someone has commented on your hair lately, they're seeing week five, not month six. You can show them the plan.",
+      "A remark from someone at home isn't a verdict. They don't have your map."
+    ]
+  },
+  {
+    "id": "shed-cohort",
+    "priority": 40,
+    "tone": "warm",
+    "when": {
+      "days": [
+        22,
+        49
+      ]
+    },
+    "refs": [
+      "cialdini1984"
+    ],
+    "variants": [
+      "Plenty of people who started the same week as you are in this stretch right now. Nobody enjoys this part.",
+      "You're not the only one squinting at the shower drain this week."
+    ]
+  },
+  {
+    "id": "shed-quiet",
+    "priority": 45,
+    "tone": "warm",
+    "when": {
+      "days": [
+        15,
+        56
+      ],
+      "latest": {
+        "shedMax": 1,
+        "worryMax": 1
+      }
+    },
+    "refs": [
+      "kaliyadan2013"
+    ],
+    "variants": [
+      "Quiet week. Not everyone sheds much, and that's fine too. A small shed doesn't mean it isn't working.",
+      "No big shed so far? That happens. It isn't a sign of anything either way."
+    ]
+  },
+  {
+    "id": "shed-photo-week-four",
+    "priority": 82,
+    "tone": "direct",
+    "when": {
+      "photoWindow": 4
+    },
+    "refs": [
+      "kivetz2006"
+    ],
+    "variants": [
+      "First monthly photo day. Same spot, same light, same time as day one. Expect no visible change yet.",
+      "Week four photos tonight. These won't show growth. They're for week twelve to compare against."
+    ],
+    "attach": "photos"
+  },
+  {
+    "id": "shed-peak",
+    "priority": 50,
+    "tone": "calm",
+    "when": {
+      "days": [
+        36,
+        49
+      ]
+    },
+    "refs": [
+      "kaliyadan2013"
+    ],
+    "variants": [
+      "For many people the shed peaks around now and then eases. You're closer to the end of this part than the start.",
+      "If this is your peak, it's the peak. It usually gets easier from here."
+    ]
+  },
+  {
+    "id": "shed-more-isnt-faster",
+    "priority": 35,
+    "tone": "direct",
+    "when": {
+      "days": [
+        15,
+        56
+      ]
+    },
+    "refs": [
+      "aafp"
+    ],
+    "variants": [
+      "Tempted to use more to speed it up? More doesn't make it faster and can irritate your scalp. Stick to your pack.",
+      "Extra doesn't mean extra results. Same amount, same times, every day."
+    ]
+  },
+  {
+    "id": "shed-kept-going",
+    "priority": 72,
+    "tone": "warm",
+    "when": {
+      "keptGoingWithinDays": 7
+    },
+    "refs": [
+      "kivetz2006"
+    ],
+    "variants": [
+      "You thought about stopping this week and kept going. That was the hard bit.",
+      "You had the stopping thought and didn't act on it. Most of this treatment is exactly that."
+    ]
+  },
+  {
+    "id": "settle-open",
+    "priority": 55,
+    "tone": "calm",
+    "when": {
+      "days": [
+        57,
+        63
+      ]
+    },
+    "refs": [
+      "kaliyadan2013"
+    ],
+    "variants": [
+      "The shed window is closing. For many people hair fall eases over the next few weeks.",
+      "Two months in. The loudest part is usually behind you now."
+    ]
+  },
+  {
+    "id": "settle-photo-week-eight",
+    "priority": 82,
+    "tone": "direct",
+    "when": {
+      "photoWindow": 8
+    },
+    "refs": [
+      "kivetz2006"
+    ],
+    "variants": [
+      "Week eight photos tonight. Compare with day one, not with yesterday.",
+      "Two months of data. Same spot, same light. Your future self is keeping score."
+    ],
+    "attach": "photos"
+  },
+  {
+    "id": "settle-boring",
+    "priority": 35,
+    "tone": "dry",
+    "when": {
+      "days": [
+        64,
+        84
+      ]
+    },
+    "refs": [],
+    "variants": [
+      "This part is boring. Boring is good. Nothing dramatic is meant to happen yet.",
+      "No news is the news this month. Keep going."
+    ]
+  },
+  {
+    "id": "settle-still-heavy",
+    "priority": 80,
+    "tone": "serious",
+    "when": {
+      "days": [
+        57,
+        84
+      ],
+      "latest": {
+        "shedMin": 3
+      }
+    },
+    "refs": [
+      "aafp"
+    ],
+    "variants": [
+      "Still shedding a lot past week eight? It can take a while to settle, especially in a rainy season. If it's still heavy by week twelve, check in with a doctor.",
+      "Heavy shedding this late can still be normal, but it's worth watching. If it hasn't eased by week twelve to sixteen, a doctor should take a look."
+    ],
+    "attach": "doctor"
+  },
+  {
+    "id": "settle-halfway",
+    "priority": 65,
+    "tone": "warm",
+    "when": {
+      "days": [
+        84,
+        90
+      ]
+    },
+    "refs": [
+      "kivetz2006"
+    ],
+    "variants": [
+      "Halfway to judgement day. Half the waiting is done, and none of it was wasted.",
+      "Day 84. Halfway. The second half tends to be the one with something to look at."
+    ]
+  },
+  {
+    "id": "fine-week-twelve",
+    "priority": 82,
+    "tone": "direct",
+    "when": {
+      "photoWindow": 12
+    },
+    "refs": [
+      "aafp"
+    ],
+    "variants": [
+      "Week twelve photos. Some people see a little, many see nothing yet. Both are on schedule.",
+      "Three months. Take your photos and compare with day one, side by side, same light."
+    ],
+    "attach": "photos"
+  },
+  {
+    "id": "fine-hairs",
+    "priority": 60,
+    "tone": "warm",
+    "when": {
+      "days": [
+        100,
+        130
+      ]
+    },
+    "refs": [
+      "bernstein"
+    ],
+    "variants": [
+      "The first fine hairs often show up around now. Retake your photos tonight.",
+      "Look closely at your hairline in good light. New hairs start thin and light, easy to miss."
+    ],
+    "attach": "photos"
+  },
+  {
+    "id": "fine-growth-rate",
+    "priority": 40,
+    "tone": "calm",
+    "when": {
+      "days": [
+        85,
+        126
+      ]
+    },
+    "refs": [
+      "bernstein"
+    ],
+    "variants": [
+      "Hair grows about a centimetre a month. New hairs need a few months to be long enough to notice.",
+      "A new hair started in month two is barely a centimetre long now. Patience is just arithmetic here."
+    ]
+  },
+  {
+    "id": "fine-not-late",
+    "priority": 70,
+    "tone": "calm",
+    "when": {
+      "days": [
+        90,
+        126
+      ],
+      "latest": {
+        "worryMin": 3
+      }
+    },
+    "refs": [
+      "aafp"
+    ],
+    "variants": [
+      "If you can't see a difference yet, you're not late. The fair point to judge is around week 24.",
+      "Nothing visible yet is still on schedule. Most visible change shows up between month four and six."
+    ]
+  },
+  {
+    "id": "fine-week-sixteen",
+    "priority": 82,
+    "tone": "direct",
+    "when": {
+      "photoWindow": 16
+    },
+    "refs": [
+      "kivetz2006"
+    ],
+    "variants": [
+      "Week sixteen photos. This is often the first comparison where people spot something.",
+      "Four months in. Same spot, same light, and look at the hairline and crown closely."
+    ],
+    "attach": "photos"
+  },
+  {
+    "id": "build-long-middle",
+    "priority": 35,
+    "tone": "dry",
+    "when": {
+      "days": [
+        127,
+        150
+      ]
+    },
+    "refs": [],
+    "variants": [
+      "The long middle. Nobody writes songs about month five. Keep going anyway.",
+      "Month five. Less drama, more routine. That's exactly how it should feel."
+    ]
+  },
+  {
+    "id": "build-week-twenty",
+    "priority": 82,
+    "tone": "direct",
+    "when": {
+      "photoWindow": 20
+    },
+    "refs": [
+      "kivetz2006"
+    ],
+    "variants": [
+      "Week twenty photos. One more set after this, and then you get to judge properly.",
+      "Twenty weeks of photos. Line them up and look at the trend, not one picture."
+    ],
+    "attach": "photos"
+  },
+  {
+    "id": "build-almost",
+    "priority": 55,
+    "tone": "warm",
+    "when": {
+      "days": [
+        150,
+        165
+      ]
+    },
+    "refs": [
+      "kivetz2006"
+    ],
+    "variants": [
+      "Two weeks to judgement day. Plan a proper photo session: same spot, same light, no rush.",
+      "Almost there. Your week 24 photos are the ones that count, so pick a good light."
+    ]
+  },
+  {
+    "id": "build-consistency",
+    "priority": 40,
+    "tone": "warm",
+    "when": {
+      "days": [
+        127,
+        167
+      ],
+      "consistent": true
+    },
+    "refs": [],
+    "variants": [
+      "Five months of showing up. That consistency is most of the work.",
+      "You've done the boring part for months. That's the bit most people don't manage."
+    ]
+  },
+  {
+    "id": "judge-day",
+    "priority": 85,
+    "tone": "calm",
+    "when": {
+      "days": [
+        165,
+        175
+      ]
+    },
+    "refs": [
+      "aafp"
+    ],
+    "variants": [
+      "Week 24. Time to judge fairly: day one next to today. If you're not sure what you're seeing, a doctor can read it with you.",
+      "Judgement week. Look at all six sets of photos in order. The trend tells you more than any single one."
+    ],
+    "attach": "baseline"
+  },
+  {
+    "id": "beyond-keep",
+    "priority": 45,
+    "tone": "calm",
+    "when": {
+      "days": [
+        176,
+        9999
+      ]
+    },
+    "refs": [
+      "aafp"
+    ],
+    "variants": [
+      "Many people keep going past six months, because the full effect can take closer to a year.",
+      "Six months is when you can judge. A year is often when it's fully showing. Your call, with your doctor."
+    ]
+  },
+  {
+    "id": "missed-few",
+    "priority": 74,
+    "tone": "warm",
+    "when": {
+      "latest": {
+        "missedMin": 3,
+        "missedMax": 6
+      }
+    },
+    "refs": [
+      "odonoghue1999"
+    ],
+    "variants": [
+      "Missed a few days? It happens. Pick it up again tonight. No catching up, no doubling, just carry on.",
+      "A few gaps don't undo anything. Start again at your next usual time."
+    ]
+  },
+  {
+    "id": "missed-many",
+    "priority": 76,
+    "tone": "calm",
+    "when": {
+      "latest": {
+        "missedMin": 7
+      }
+    },
+    "refs": [
+      "kaliyadan2013"
+    ],
+    "variants": [
+      "Life got in the way for a bit. When you restart, you may see a small shed again. That's normal, not a step back.",
+      "Been off it for a while? Restart at your usual times. A second, smaller shed after a restart is common."
+    ]
+  },
+  {
+    "id": "night-worry",
+    "priority": 88,
+    "tone": "calm",
+    "when": {
+      "night": true,
+      "latest": {
+        "worryMin": 3
+      }
+    },
+    "refs": [],
+    "variants": [
+      "It's late, and hair always looks worse at this hour. Breathe with the circle for a minute. Look again in daylight.",
+      "Nothing about your hair will change before morning. Breathe with the circle. Sleep is good for it too."
+    ],
+    "attach": "breathe",
+    "noNumbers": true
+  },
+  {
+    "id": "restart-after-pause",
+    "priority": 77,
+    "tone": "calm",
+    "when": {
+      "restartedWithinDays": 21
+    },
+    "refs": [
+      "kaliyadan2013"
+    ],
+    "variants": [
+      "Welcome back. Restarting can bring a second, smaller shed. Same process, not a new problem.",
+      "You're back on it. If you shed again in the next few weeks, that's the restart, not a failure."
+    ]
+  },
+  {
+    "id": "no-checkin-week",
+    "priority": 58,
+    "tone": "dry",
+    "when": {
+      "days": [
+        8,
+        9999
+      ],
+      "noCheckinDays": 7
+    },
+    "refs": [],
+    "variants": [
+      "No check-in for a week. Thirty seconds, the bar at the bottom.",
+      "How's it going up there? Tap the bar at the bottom and tell us."
+    ],
+    "attach": "checkin"
+  },
+  {
+    "id": "photo-overdue",
+    "priority": 68,
+    "tone": "direct",
+    "when": {
+      "photoOverdue": true
+    },
+    "refs": [
+      "kivetz2006"
+    ],
+    "variants": [
+      "Your week {w} photos are a few days late. Tonight works. Same spot, same light.",
+      "Missed photo day. No harm done, just take them when you're next by that window."
+    ],
+    "attach": "photos"
+  },
+  {
+    "id": "roller-night",
+    "priority": 52,
+    "tone": "direct",
+    "when": {
+      "product": "roller",
+      "rollerNight": true
+    },
+    "refs": [
+      "routine"
+    ],
+    "variants": [
+      "Roller night. Keep it apart from your solution tonight. Your Today card has the timing.",
+      "It's a roller night. Check the timing on your Today card before you start."
+    ]
+  },
+  {
+    "id": "gummies-food",
+    "priority": 30,
+    "tone": "dry",
+    "when": {
+      "product": "gummies",
+      "morning": true
+    },
+    "refs": [
+      "routine"
+    ],
+    "variants": [
+      "Gummies go down better with food. Breakfast is the easy anchor.",
+      "Take your gummies with a meal. Easier to remember, easier on the stomach."
+    ]
+  },
+  {
+    "id": "red-irritation",
+    "priority": 100,
+    "tone": "serious",
+    "when": {
+      "latest": {
+        "flags": [
+          "pain",
+          "burning",
+          "rash"
+        ]
+      }
+    },
+    "refs": [
+      "leaflet"
+    ],
+    "variants": [
+      "You mentioned pain, burning or a rash. Please speak to a doctor before your next application. Show them this list.",
+      "Pain, burning or a rash needs a doctor to look at it. Don't apply again until you've spoken to one."
+    ],
+    "attach": "doctor"
+  },
+  {
+    "id": "red-systemic",
+    "priority": 100,
+    "tone": "serious",
+    "when": {
+      "latest": {
+        "flags": [
+          "swelling",
+          "dizzy-or-racing-heart"
+        ]
+      }
+    },
+    "refs": [
+      "leaflet"
+    ],
+    "variants": [
+      "Dizziness, a racing heart, or swelling in your face, hands or feet needs a doctor today. Don't wait for the next check-in.",
+      "Please contact a doctor today about the dizziness, racing heart or swelling you mentioned."
+    ],
+    "attach": "doctor"
+  },
+  {
+    "id": "red-late-heavy",
+    "priority": 95,
+    "tone": "serious",
+    "when": {
+      "days": [
+        112,
+        9999
+      ],
+      "latest": {
+        "shedMin": 4
+      }
+    },
+    "refs": [
+      "aafp"
+    ],
+    "variants": [
+      "Heavy shedding this far in isn't the usual pattern. Book a doctor's appointment so someone can take a proper look.",
+      "Shedding this much after four months is worth a doctor's opinion. Book one this week."
+    ],
+    "attach": "doctor"
+  },
+  {
+    "id": "red-other",
+    "priority": 95,
+    "tone": "serious",
+    "when": {
+      "latest": {
+        "flags": [
+          "other-unusual"
+        ]
+      }
+    },
+    "refs": [],
+    "variants": [
+      "You noticed something unusual. Trust that. A doctor can tell you if it's related.",
+      "If something feels off, it's worth asking a doctor. Bring your check-in history."
+    ],
+    "attach": "doctor"
+  },
+  {
+    "id": "paused-now",
+    "priority": 86,
+    "tone": "calm",
+    "when": {
+      "paused": true
+    },
+    "refs": [
+      "kaliyadan2013"
+    ],
+    "variants": [
+      "You're paused until {restart}. Your map keeps its place, and day one stays day one.",
+      "Paused for now, restarting on {restart}. Nothing on your map moves while you're away."
+    ]
+  }
+]

@@ -9,8 +9,9 @@ test("demo, day 35: the shed window is reframed with the day-one photo and the m
   await page.goto("/home/");
   await expect(page.locator("#td-greeting")).toContainText("Week 5, the part everyone finds hardest.");
   await expect(page.getByRole("img", { name: /^Day 35 of 168\. 21 percent of the way to week 24/ })).toBeVisible();
-  await expect(page.getByText(/^This is the shed window\. If more hair is coming out right now/)).toBeVisible();
-  await expect(page.getByRole("link", { name: "Compare with day one" }).first()).toBeVisible();
+  // Week five: the note from day one (or the shed reframe once it's read), with the day-one photo beside it.
+  await expect(page.locator('.td-note[data-id="shed-high"], .td-note[data-id="shed-letter-ready"]')).toBeVisible();
+  await expect(page.locator(".td-note").getByRole("link", { name: "Compare with day one" }).first()).toBeVisible();
   // Sample drawings stand in for photos, and say so.
   await expect(page.getByRole("img", { name: /^Day 1, / })).toBeVisible();
   await expect(page.getByText("Sample drawings for the demo, not photos of anyone.")).toBeVisible();
@@ -22,7 +23,7 @@ test("demo, day 35: the shed window is reframed with the day-one photo and the m
 test("a fresh plan asks for day-one photos, and doses are one tap", async ({ page }) => {
   await seedPlan(page, { daysAgo: 2 });
   await page.goto("/home/");
-  await expect(page.getByText(/^You haven.t taken your day-one photos yet\./)).toBeVisible();
+  await expect(page.locator('.td-note[data-id="calm-no-baseline"]')).toBeVisible();
   await expect(page.getByRole("link", { name: "Take day-one photos" })).toHaveAttribute("href", /\/baseline\/?$/);
   await expect(page.getByText("No photos yet. Two minutes, and future you will thank you.")).toBeVisible();
 
@@ -53,7 +54,7 @@ test("the check-in sheet saves, answers, and Today listens", async ({ page }) =>
   await page.getByRole("button", { name: "Done", exact: true }).click();
   await expect(sheet(page)).toBeHidden();
   // High worry late at night gets the calm night card instead; both answer the check-in.
-  await expect(page.locator("#main").getByText(/^(This is the shed window\. If more hair is coming out right now|It.s late, and hair always looks worse at this hour)/)).toBeVisible();
+  await expect(page.locator('.td-note[data-id="shed-high"], .td-note[data-id="night-worry"]')).toBeVisible();
   const saved = await page.evaluate(() => JSON.parse(localStorage.getItem("weekfive:v1")!).checkins);
   expect(saved).toHaveLength(1);
   expect(saved[0]).toMatchObject({ day: 25, shed: 4, worry: 3, missedDoses: 1, redFlags: [] });
@@ -71,7 +72,8 @@ test("a red flag gets a doctor, not a pep talk, and Escape closes the sheet", as
   await expect(sheet(page).getByText(/Please speak to a doctor before your next application/)).toBeVisible();
   await page.keyboard.press("Escape");
   await expect(sheet(page)).toBeHidden();
-  await expect(page.locator("#main").getByText(/^You mentioned pain, burning or a rash\./)).toBeVisible();
+  await expect(page.locator('.td-note[data-id="red-irritation"]')).toBeVisible();
+  await expect(page.getByRole("link", { name: "Talk to a doctor" })).toHaveAttribute("href", /\/pause\/\?step=doctor$/);
 });
 
 test("reassurance first: no reorder prompt for a day after an uneasy check-in", async ({ page }) => {

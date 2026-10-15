@@ -168,3 +168,21 @@ export const TODAY_FRAME: Framing = {
   phoneShift: [0, -0.33],
   phoneZoom: 1.95,
 };
+
+/**
+ * The map: the camera pulls out ring by ring. For week n it frames the rings out to n (and a
+ * little beyond), from a slightly turned angle, so stepping through the weeks travels outward.
+ */
+export function weekFrame(n: number): Framing {
+  const r = ringRadius(Math.max(1, Math.min(24, n)));
+  const dist = 2.4 + r * 2.35;
+  const az = -0.42 + n * 0.035;
+  return {
+    cam: [Math.sin(az) * dist * 0.42, dist * 0.82, Math.cos(az) * dist * 0.56],
+    at: [0, 0, -0.15],
+    fov: 34,
+    shift: [0.24, 0.05],
+    phoneShift: [0, -0.3],
+    phoneZoom: 1.55,
+  };
+}

@@ -4,7 +4,6 @@ import { cohort, cohortGlance } from "@/lib/cohort";
 import { activeSlots, isDone, setDose, slotItems, streak } from "@/lib/doses";
 import { reorderAllowed, runway } from "@/lib/runway";
 import type { CheckIn, DoseLog } from "@/lib/storage/schema";
-import { todayNote, type NoteContext } from "@/lib/today-note";
 
 const at = (iso: string) => new Date(iso);
 
@@ -124,48 +123,5 @@ describe("the cohort", () => {
     expect(g.week).toBe(5);
     expect(g.startWeek.every((m) => Math.abs(m.offset) <= 3)).toBe(true);
     expect(g.event).toMatch(/^\w+ from [\w ]+ (took their week \d+ photos|finished week \d+|checked in today|starts in a few days)\.$/);
-  });
-});
-
-describe("today's note", () => {
-  const base: NoteContext = {
-    day: 35,
-    now: at("2026-10-14T10:00:00"),
-    channel: "assessment",
-    season: { months: [], weeks: null, overlapsShed: false },
-    checkins: [],
-    latest: null,
-    hasBaseline: true,
-    photoWeeks: [0, 4],
-  };
-
-  it("lets a recent red flag win over everything", () => {
-    const latest = ci({ at: "2026-10-13T10:00:00", redFlags: ["swelling"] });
-    expect(todayNote({ ...base, latest, checkins: [latest] })).toMatchObject({ id: "red", tone: "serious" });
-  });
-
-  it("reframes a high-shed check-in in the shed window with the day-one photo", () => {
-    const latest = ci({ at: "2026-10-13T10:00:00", shed: 3 });
-    expect(todayNote({ ...base, latest, checkins: [latest] })).toMatchObject({ id: "shed-high", attach: "baseline" });
-  });
-
-  it("asks for day-one photos first when there are none", () => {
-    expect(todayNote({ ...base, day: 3, hasBaseline: false, photoWeeks: [] })).toMatchObject({ id: "calm-no-baseline", attach: "photos" });
-  });
-
-  it("knows week five, the rains and the photo days", () => {
-    expect(todayNote({ ...base, latest: ci({ at: "2026-10-13T10:00:00" }) }).id).toBe("shed-week-five");
-    expect(todayNote({ ...base, day: 40, season: { months: [6, 7, 8, 9], weeks: [1, 6], overlapsShed: true }, latest: ci({ at: "2026-10-13T10:00:00" }) }).id).toBe("shed-monsoon");
-    expect(todayNote({ ...base, day: 28, photoWeeks: [0], latest: ci({ at: "2026-10-13T10:00:00" }) })).toMatchObject({ id: "photo-due", attach: "photos" });
-  });
-
-  it("forgets check-ins older than a week, and nudges for a new one", () => {
-    const old = ci({ at: "2026-10-01T10:00:00", shed: 4 });
-    expect(todayNote({ ...base, day: 45, latest: old, checkins: [old] }).id).toBe("no-checkin-week");
-  });
-
-  it("has something to say before the start and long after it", () => {
-    expect(todayNote({ ...base, day: -2 }).id).toBe("not-started");
-    expect(todayNote({ ...base, day: 200, latest: ci({ at: "2026-10-13T10:00:00" }) }).id).toBe("beyond-keep");
   });
 });

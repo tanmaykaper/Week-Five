@@ -84,6 +84,7 @@ Idea: goal-gradient (Kivetz et al. 2006). Show the distance covered, not just th
 
 ### F7. The map (`/map`, `/map/week/[n]`)
 Idea: expectation confirmation (Oliver 1980). Tell them what normal looks like before it happens.
+- Built in Phase 6 on the pool (design v3): the 24 rings are the map. A week picker (previous and next, arrow keys, or the 24 small bars) moves the camera outward ring by ring and lights the chosen ring; "Read week n" opens its page. The rains are said in words under it, with a legend for the rings. Below, a sheet lists all 24 weeks grouped by phase, with the note to week five and the way out beside it. `/map` and the week pages share one pool (a nested layout), so the camera travels between them. Week copy lives in `src/content/weeks.ts`.
 - 24 weeks as the same strip used on Today (compact on phones, labelled on desktop), plus a week-by-week list. Phases labelled, "You are here" marker, monthly photo dots, the letter's week marked.
 - Season overlay band where the shed window overlaps the user's monsoon, with its own explanation.
 - Each week page (static params 1 to 24): what commonly happens, what to do this week, what is not a reason to worry, when to see a doctor, references.
@@ -95,6 +96,7 @@ Idea: the right sentence on the right day, like a cycle tracker.
 - "Why am I seeing this?" sheet shows the plain-language trigger ("You're on day 34 and said hair fall is more than usual") and the reference.
 - Red-flag cards have no cheerful framing, no bounce, coral accent, and a direct "Talk to a doctor" action.
 - Night (22:00 to 05:00) with worry 3+: calm card with a breathing circle (4 s in, 6 s out), no numbers.
+- Built in Phase 6: 52 cards in `src/content/insights.json`, each with a structured trigger (`when`), refs, an optional action (`attach`) and two variants. `src/lib/insights.ts` picks: red flags outright, then priority; cards under priority 80 rest for 7 days after showing (today's pick stays all day); a hash of the date and the id picks the variant. Today logs one pick a day in `insightLog`. A paused plan gets its own card ("paused-now").
 
 ### F9. Check-in (`/checkin` and the capsule sheet)
 Idea: give the feeling somewhere to go, and answer it with evidence.
@@ -107,6 +109,7 @@ Idea: give the feeling somewhere to go, and answer it with evidence.
 Idea: pre-commitment against present bias (O'Donoghue and Rabin 1999).
 - Written during onboarding (optional) or later from Journey. Up to 400 characters. Set in the serif.
 - Hidden until day 22 (start of week 4) or until the user opens the pause flow, whichever comes first. Reveal is a deliberate tap, with the date it was written.
+- Built in Phase 6: written in setup or on the map (sealed straight away), shown sealed with its opening date, then "Your note is ready" with **Read your note**, which opens it in a sheet and records `revealedAt` and `revealedIn`. On Today, weeks four and five lead with the note, the day-one photo beside it.
 
 ### F11. Wait, before you stop (`/pause`)
 Idea: put evidence next to the feeling, then respect the decision.
@@ -114,6 +117,7 @@ Idea: put evidence next to the feeling, then respect the decision.
 - Shows, in order: their day-one photo, where they are on the map, their letter, a neutral fact box ("Most people who feel this way are in weeks 3 to 7"), then three equal options: keep going, pause with a restart date, talk to a doctor.
 - No guilt copy, no countdown, no hidden option. Choice is logged locally as an intercept.
 - Pause sets a restart date, adds it to the .ics and adjusts insight cards ("Restarting can bring a second, smaller shed").
+- Built in Phase 6 on the pool: the day-one photo sits at the centre of the rings (as the lens did), the camera pulls back to "you are here" and "week 24", the note opens over the water, then the fact and three equal options. Pause offers a one-event calendar file for the restart (Phase 8 builds the full set). "Talk to a doctor" opens a one-page printable summary, also reachable as `/pause/?step=doctor` from red-flag notes without logging a choice.
 
 ### F12. Reorder and runway (`/reorder`, Home card)
 Idea: ask for the reorder after reassurance, never during doubt.

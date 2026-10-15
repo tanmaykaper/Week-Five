@@ -16,3 +16,15 @@ export const REFERENCES = [
 ] as const;
 
 export type ReferenceKey = (typeof REFERENCES)[number]["key"];
+
+/** Sources that aren't papers: the product's own leaflet and this app's routine table. */
+const OTHER_SOURCES: Record<string, string> = {
+  leaflet: "The pack leaflet that comes with your product: its warnings are the ones to act on.",
+  routine: "Week Five's general routine guidance. Not medical advice; your pack leaflet and your doctor come first.",
+};
+
+/** The full citation for a reference key, or null if there is none. */
+export function citationFor(key: string): string | null {
+  const ref = REFERENCES.find((r) => r.key === key);
+  return ref ? ref.citation : (OTHER_SOURCES[key] ?? null);
+}

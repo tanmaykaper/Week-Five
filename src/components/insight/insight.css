@@ -1,0 +1,130 @@
+/* "Why am I seeing this?" and the night card's breathing circle. */
+
+.why-link {
+  min-height: 44px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-2);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--ink) 25%, transparent);
+  text-underline-offset: 4px;
+}
+.why-link:hover {
+  color: var(--ink);
+  text-decoration-color: currentColor;
+}
+.why-sheet {
+  display: grid;
+  gap: 22px;
+  justify-items: start;
+}
+.why-title {
+  font-size: clamp(1.75rem, 1.4rem + 1.2vw, 2.375rem);
+  padding-right: 48px;
+}
+.why-reason {
+  font-size: var(--t-statement);
+  line-height: 1.45;
+  letter-spacing: -0.01em;
+  max-width: 34ch;
+}
+.why-h {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-2);
+  margin-bottom: 8px;
+}
+.why-sources {
+  display: grid;
+  gap: 8px;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--text-2);
+  max-width: 52ch;
+}
+
+/* Breathe: the ring grows for four seconds and shrinks for six. */
+.breathe {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 132px;
+  height: 132px;
+  flex: none;
+}
+.breathe-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--accent) 22%, transparent) 0 55%, transparent 70%);
+  box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--accent) 45%, transparent);
+  transform: scale(0.7);
+}
+.breathe-words {
+  position: relative;
+  display: grid;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-align: center;
+  color: var(--text-2);
+}
+.breathe-words > span {
+  grid-area: 1 / 1;
+}
+.breathe-words > [data-phase="in"],
+.breathe-words > [data-phase="out"] {
+  opacity: 0;
+}
+.breathe-words > [data-phase="still"] {
+  max-width: 11ch;
+  font-size: 0.75rem;
+  line-height: 1.35;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .breathe-ring {
+    animation: breathe 10s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  }
+  .breathe-words > [data-phase="still"] {
+    display: none;
+  }
+  .breathe-words > [data-phase="in"] {
+    animation: breathe-in 10s var(--ease-swell) infinite;
+  }
+  .breathe-words > [data-phase="out"] {
+    animation: breathe-out 10s var(--ease-swell) infinite;
+  }
+}
+@keyframes breathe {
+  0% {
+    transform: scale(0.7);
+  }
+  40% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0.7);
+  }
+}
+@keyframes breathe-in {
+  0%,
+  36% {
+    opacity: 1;
+  }
+  40%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes breathe-out {
+  0%,
+  38% {
+    opacity: 0;
+  }
+  42%,
+  96% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}

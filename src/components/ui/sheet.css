@@ -1,0 +1,107 @@
+/* A modal sheet (components/ui/Sheet.tsx): from the bottom on phones, from the right on
+   wide screens. Native <dialog>, so focus, Escape and focus return come with the platform. */
+
+.sheet {
+  position: fixed;
+  inset: auto 0 0 0;
+  width: 100%;
+  max-width: 100%;
+  max-height: 92dvh;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 28px 28px 0 0;
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: var(--float-shadow);
+  overflow: hidden;
+}
+.sheet::backdrop {
+  background: rgba(10, 18, 30, 0.38);
+}
+@media (min-width: 768px) {
+  .sheet {
+    inset: 0 0 0 auto;
+    width: min(500px, 100vw);
+    height: 100dvh;
+    max-height: 100dvh;
+    border-radius: 28px 0 0 28px;
+  }
+}
+html:has(.sheet[open]) {
+  overflow: hidden;
+}
+.sheet-body {
+  position: relative;
+  max-height: inherit;
+  height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 28px var(--gutter) calc(28px + env(safe-area-inset-bottom));
+}
+@media (min-width: 768px) {
+  .sheet-body {
+    padding: 40px 40px 40px;
+  }
+}
+.sheet-grip {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  width: 40px;
+  height: 4px;
+  margin-left: -20px;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--ink) 16%, transparent);
+}
+@media (min-width: 768px) {
+  .sheet-grip {
+    display: none;
+  }
+}
+.sheet-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ink) 6%, transparent);
+  z-index: 1;
+}
+.sheet-close:hover {
+  background: color-mix(in srgb, var(--ink) 11%, transparent);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .sheet[open] {
+    animation: sheet-up 420ms var(--ease-settle);
+  }
+  .sheet[open]::backdrop {
+    animation: sheet-fade 300ms var(--ease-settle);
+  }
+  @media (min-width: 768px) {
+    .sheet[open] {
+      animation-name: sheet-in;
+    }
+  }
+}
+@keyframes sheet-up {
+  from {
+    transform: translateY(40%);
+    opacity: 0;
+  }
+}
+@keyframes sheet-in {
+  from {
+    transform: translateX(30%);
+    opacity: 0;
+  }
+}
+@keyframes sheet-fade {
+  from {
+    opacity: 0;
+  }
+}
+

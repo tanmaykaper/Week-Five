@@ -6,7 +6,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { HeadGhost } from "@/components/heads/HeadGhost";
 import { usePool, usePoolPose, type Pose } from "@/components/pool/controller";
 import { DOT_ANGLE, LABEL_ANGLE_PHONE, onRing } from "@/components/pool/geometry";
-import { BASELINE_FRAMES, frame, landscapeness, lensRig } from "@/components/pool/poses";
+import { BASELINE_FRAMES, frame, landscapeness } from "@/components/pool/poses";
+import { useLensAnchor } from "@/components/pool/useLensAnchor";
 import { Gate } from "@/components/shell/Gate";
 import { Button, ButtonLink, curl, Pair } from "@/components/ui/primitives";
 import { CAPTURE, DONE, INTRO, LIGHT, VIEW_COPY, VIEW_LABEL, VIEWS } from "@/content/baseline";
@@ -66,7 +67,6 @@ function Baseline() {
   const [masked, setMasked] = useState<Partial<Record<View, boolean>>>({});
   const [step, setStep] = useState<Step | null>(null);
   const [said, setSaid] = useState("");
-  const lensRef = useRef<HTMLDivElement>(null);
   const labelsRef = useRef<HTMLDivElement>(null);
   const urls = useRef(new Set<string>());
 
@@ -118,9 +118,8 @@ function Baseline() {
   const ready = step !== null && shots !== null;
   const kind = step?.kind ?? "intro";
   const lensStep = kind === "capture" || kind === "painter";
-  /** The screen shift the lens pose was built with; scrolling and layout changes are offsets from it. */
-  const anchor = useRef({ x: 0, y: 0 });
-  const offset = useRef({ x: 0, y: 0 });
+  // The rings stay centred on the lens while the page scrolls or reflows.
+  const { ref: lensRef, rig: lensAt } = useLensAnchor(pool, lensStep);
 
   const make = useCallback(
     (aspect: number): Pose => {
@@ -138,46 +137,15 @@ function Baseline() {
         seasonTo: season.weeks?.[1] ?? 0,
         idle: 1,
       };
-      if (lensStep && lensRef.current) {
-        const r = lensRef.current.getBoundingClientRect();
-        const rig = lensRig(r.left + r.width / 2, r.top + window.scrollY + r.height / 2, r.width / 2, window.innerWidth, window.innerHeight);
-        anchor.current = { x: rig.shiftX, y: rig.shiftY };
-        return { ...rig, ...scene, labels: 0, focus: 0, focusFrom: 0, focusTo: 0, idle: 0.6, dots: 0.55 };
-      }
+      const rig = lensStep ? lensAt() : null;
+      if (rig) return { ...rig, ...scene, labels: 0, focus: 0, focusFrom: 0, focusTo: 0, idle: 0.6, dots: 0.55 };
       if (kind === "done") return { ...frame(BASELINE_FRAMES.done, aspect), ...scene, labels: 1, focus: 1, focusFrom: next.week, focusTo: next.week };
       return { ...frame(BASELINE_FRAMES.intro, aspect), ...scene, labels: 1, focus: 0, focusFrom: 0, focusTo: 0 };
     },
-    [kind, lensStep, week, season, next.week],
+    [kind, lensStep, lensAt, week, season, next.week],
   );
   // The key changes once the saved photos have loaded, so the first pose lands whichever arrives first, the pool or the photos.
   usePoolPose(step ? make : null, step ? `${kind}|${week}|${next.week}` : "loading", { enter: { map: 0, ripple: 0.4 }, ms: 1300 });
-
-  // Keep the rings centred on the lens while the page scrolls or reflows.
-  useEffect(() => {
-    if (!pool || !lensStep) return;
-    const sync = () => {
-      const el = lensRef.current;
-      if (!el) return;
-      const r = el.getBoundingClientRect();
-      const x = (r.left + r.width / 2) / window.innerWidth - 0.5 - anchor.current.x;
-      const y = (r.top + r.height / 2) / window.innerHeight - 0.5 - anchor.current.y;
-      offset.current = { x, y };
-      pool.setOffset(x, y);
-    };
-    sync();
-    window.addEventListener("scroll", sync, { passive: true });
-    const ro = new ResizeObserver(sync);
-    ro.observe(document.body);
-    return () => {
-      window.removeEventListener("scroll", sync);
-      ro.disconnect();
-      // Fold the offset into the camera so leaving the lens doesn't jump.
-      const o = offset.current;
-      if (o.x || o.y) pool.set({ shiftX: pool.rig.shiftX + o.x, shiftY: pool.rig.shiftY + o.y });
-      pool.setOffset(0, 0);
-      offset.current = { x: 0, y: 0 };
-    };
-  }, [pool, lensStep]);
 
   // Labels on the rings: the photo days on the intro, the next photos at the close.
   useEffect(() => {

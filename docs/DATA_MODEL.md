@@ -71,6 +71,8 @@ interface CheckIn {
 
 interface Letter { text: string; writtenAt: ISODateTime; revealedAt?: ISODateTime; revealedIn?: "week-4" | "pause" }
 
+// Phase 6: intercepts are written by the stop flow ("closed" when it is left without a choice);
+// a pause's restartDate drives the paused and restart notes. Day counts never reset.
 interface Intercept {
   id: string;
   at: ISODateTime;

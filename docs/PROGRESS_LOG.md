@@ -136,3 +136,23 @@
 - Phone hero copy is tight when the note is long and the day-one photo sits beside it (checked at 390 by 844).
 
 **Next step:** Tanmay reviews Phase 5. On "go", Phase 6: the map, week pages, the reassurance engine, the stop flow and the letter.
+
+## 2026-10-15, Phase 6: the map, the engine, the note and "Before you stop"
+
+**Done**
+- Reassurance engine: 52 cards in `src/content/insights.json` (the content bank's 51 with both variants, plus "paused-now"), structured triggers, red flags first, seven-day rest for ambient cards, a daily variant, a daily log. Today now uses it, with "Why am I seeing this?" (reasons from the trigger, full sources), the breathing circle and no numbers for the night card, a doctor link on red flags, and the note with day one beside it in weeks four and five.
+- The map on the pool: a week picker that moves the camera ring by ring and lights the chosen ring, the rains in words, a legend, and a sheet with all 24 weeks by phase, the note, and the way out. Week pages for all 24 weeks (what often happens, what to do, not a reason to worry, when to see a doctor, sources) share the map's pool.
+- The note: write and seal it on the map, sealed until day 22, then read on purpose in a sheet; revealed in the stop flow whenever that is reached.
+- "Before you stop": day one at the centre of the rings, where you are, the note, the fact, three equal options. Pause with a date and a calendar file; keep going; a printable page for the doctor (also linked from red-flag notes). Every choice, and closing without one, is logged.
+- Shared `Sheet` and `useLensAnchor`; a small `.ics` builder for Phase 8 to extend.
+
+**Checks:** `pnpm check` passes (lint, types, 103 unit tests, copy check, build). End-to-end: 9 new tests (map picker and week pages, all sections, sealed and read note, writing a note, why sheet, the stop flow's keep going, pause with calendar, close, doctor page), Today tests updated for the engine's variants, sideways-scroll and phase screenshots extended to the new routes; 116 end-to-end tests pass across phone, tablet and desktop, 1 skipped by design, plus 78 phase screenshots. The map holds 60 fps, p95 16.7 ms, at 4x CPU throttle and stops drawing once scrolled. Frames at 1440, 1024 and 390 in `artifacts/v3/journey-final/`.
+
+**Decisions:** 117 to 132.
+
+**Known issues**
+- The Desktop folder syncs to iCloud; a rebuild once left duplicate "… 2" folders in `out/` until a clean rebuild (DECISIONS 132). Worth excluding the project from iCloud.
+- Adding a layout needs a fresh `pnpm build` before `pnpm typecheck`, or stale generated route types fail it.
+- Monthly photo links on Today still go to the Mirror placeholder (Phase 7).
+
+**Next step:** Tanmay reviews Phase 6. On "go", Phase 7: the mirror and the projection.

@@ -15,7 +15,6 @@ import { WeekTicks } from "@/components/ui/WeekTicks";
 import { VIEW_COPY } from "@/content/baseline";
 import { PRODUCT_WORDS, TODAY } from "@/content/today";
 import { painterView } from "@/lib/baseline";
-import { latestCheckin } from "@/lib/checkin";
 import { cohortGlance } from "@/lib/cohort";
 import { ensureDemoPhotos } from "@/lib/demo/photos";
 import { activeSlots, isDone, setDose, slotItems, streak, type Slot } from "@/lib/doses";
@@ -26,7 +25,11 @@ import { seasonFor } from "@/lib/season";
 import type { Mode } from "@/lib/storage/keys";
 import { listPhotos, type PhotoRecord, type View } from "@/lib/storage/photos";
 import { useApp } from "@/lib/storage/store";
-import { todayNote, type Note } from "@/lib/today-note";
+import { Breathe, WhyLink } from "@/components/insight/WhyAndBreathe";
+import { LetterReadButton } from "@/components/letter/Letter";
+import { cityById } from "@/content/cities";
+import { logInsight, pickInsight, type Insight } from "@/lib/insights";
+import { letterStatus } from "@/lib/letter";
 import { addDays, dateOfDay, greetingWord, nextPhotoWeek, phasePhrase, progress, timeOfDay, toISODate, TOTAL_DAYS, weekOf } from "@/lib/time/journey";
 import "./today.css";
 
@@ -86,22 +89,36 @@ function Today() {
   // Only what has happened by now (demo mode carries the whole plan).
   const seen = useMemo(() => (shots ?? []).filter((s) => Date.parse(s.rec.takenAt) <= now.getTime()), [shots, now]);
   const season = useMemo(() => seasonFor(profile.startDate, profile.cityId, profile.seasonOverride), [profile.startDate, profile.cityId, profile.seasonOverride]);
-  const latest = useMemo(() => latestCheckin(data.checkins, now), [data.checkins, now]);
   const hasBaseline = seen.some((s) => s.rec.week === 0);
   const note = useMemo(
     () =>
-      todayNote({
+      pickInsight({
         day,
         now,
+        startDate: profile.startDate,
         channel: profile.channel,
+        products: profile.products,
+        cityName: cityById(profile.cityId)?.name ?? null,
         season,
         checkins: data.checkins,
-        latest,
+        // Until the photos have loaded, assume they exist rather than nag for them.
         hasBaseline: shots === null ? true : hasBaseline,
         photoWeeks: [...new Set(seen.map((s) => s.rec.week))],
+        letter: data.letter,
+        intercepts: data.intercepts,
+        insightLog: data.insightLog,
+        rollerNights: data.routine.rollerNights,
       }),
-    [day, now, profile.channel, season, data.checkins, latest, hasBaseline, seen, shots],
+    [day, now, profile, season, data.checkins, data.letter, data.intercepts, data.insightLog, data.routine.rollerNights, hasBaseline, seen, shots],
   );
+
+  // Remember what was shown today, so ambient notes rest for a week (once the photos are known).
+  const today = toISODate(now);
+  const logged = data.insightLog.some((l) => l.id === note.id && l.on === today);
+  useEffect(() => {
+    if (shots === null || logged) return;
+    update((s) => ({ ...s, insightLog: logInsight(s.insightLog, note.id, new Date(now)) }));
+  }, [shots, logged, note.id, now, update]);
 
   // The mirror shows the area they worry about: day one next to the latest photo of it.
   const view: View = painterView(profile.worries);
@@ -129,8 +146,9 @@ function Today() {
             className="td-pair reveal"
             style={{ "--i": 1 } as React.CSSProperties}
           />
-          <Progress day={day} />
-          <NoteBlock note={note} first={first} week={week} />
+          {/* The night card for a worried mind carries no numbers. */}
+          {note.noNumbers ? null : <Progress day={day} />}
+          <NoteBlock note={note} first={first} hasBaseline={shots === null || hasBaseline} letterReady={letterStatus(data.letter, day) === "ready"} />
         </div>
       </section>
 
@@ -198,42 +216,80 @@ function Progress({ day }: { day: number }) {
   );
 }
 
-function NoteBlock({ note, first, week }: { note: Note; first: Shot | null; week: number }) {
-  const photoWeek = nextPhotoWeek(Math.max(1, week * 7 - 6));
+function NoteBlock({ note, first, hasBaseline, letterReady }: { note: Insight; first: Shot | null; hasBaseline: boolean; letterReady: boolean }) {
+  const action = (() => {
+    switch (note.attach) {
+      case "baseline":
+        return first ? (
+          <ButtonLink variant="quiet" href="#td-mirror" className="h-11 px-5">
+            {TODAY.compare}
+          </ButtonLink>
+        ) : null;
+      case "photos":
+        return hasBaseline ? (
+          <ButtonLink variant="quiet" href="/mirror" className="h-11 px-5">
+            {note.photoWeek ? TODAY.takeWeek(note.photoWeek) : TODAY.openMirror}
+          </ButtonLink>
+        ) : (
+          <ButtonLink href="/baseline" className="h-11 px-5">
+            {TODAY.takeDayOne}
+          </ButtonLink>
+        );
+      case "letter":
+        // Week five's moment: the note, with day one beside it to compare against.
+        return letterReady ? (
+          <>
+            <LetterReadButton variant="primary" className="h-11 px-5" />
+            {first ? (
+              <ButtonLink variant="quiet" href="#td-mirror" className="h-11 px-5">
+                {TODAY.compare}
+              </ButtonLink>
+            ) : null}
+          </>
+        ) : (
+          <ButtonLink variant="quiet" href="/map#letter" className="h-11 px-5">
+            {TODAY.writeNote}
+          </ButtonLink>
+        );
+      case "checkin":
+        return (
+          <Button variant="quiet" className="h-11 px-5" onClick={() => checkinSheet.open()}>
+            {TODAY.checkIn}
+          </Button>
+        );
+      case "doctor":
+        return (
+          <ButtonLink variant="danger-quiet" href="/pause/?step=doctor" className="h-11 px-5">
+            {TODAY.talkToDoctor}
+          </ButtonLink>
+        );
+      case "map":
+        return (
+          <ButtonLink variant="quiet" href="/map" className="h-11 px-5">
+            {TODAY.seeMap}
+          </ButtonLink>
+        );
+      default:
+        return null;
+    }
+  })();
   return (
-    <div className="td-note reveal" data-tone={note.tone} style={{ "--i": 3 } as React.CSSProperties} aria-live="polite">
-      {note.attach === "baseline" && first ? (
+    <div className="td-note reveal" data-tone={note.tone} data-id={note.id} style={{ "--i": 3 } as React.CSSProperties} aria-live="polite">
+      {(note.attach === "baseline" || (note.attach === "letter" && letterReady)) && first ? (
         <a href="#td-mirror" className="td-note-disc" aria-label={TODAY.compare}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={first.url} alt="" width={160} height={160} />
           <span>{TODAY.dayOne}</span>
         </a>
+      ) : note.attach === "breathe" ? (
+        <Breathe />
       ) : null}
       <div className="td-note-body">
         <p className="td-note-text">{curl(note.text)}</p>
-        {note.attach ? (
-          <div className="td-note-actions">
-            {note.attach === "baseline" ? (
-              <ButtonLink variant="quiet" href="#td-mirror" className="h-11 px-5">
-                {TODAY.compare}
-              </ButtonLink>
-            ) : note.attach === "photos" ? (
-              first ? (
-                <ButtonLink variant="quiet" href="/mirror" className="h-11 px-5">
-                  {TODAY.takeWeek(photoWeek ?? 4)}
-                </ButtonLink>
-              ) : (
-                <ButtonLink href="/baseline" className="h-11 px-5">
-                  {TODAY.takeDayOne}
-                </ButtonLink>
-              )
-            ) : (
-              <Button variant="quiet" className="h-11 px-5" onClick={() => checkinSheet.open()}>
-                {TODAY.checkIn}
-              </Button>
-            )}
-          </div>
-        ) : null}
+        <div className="td-note-actions">
+          {action}
+          <WhyLink insight={note} />
+        </div>
       </div>
     </div>
   );

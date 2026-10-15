@@ -1,3 +1,4 @@
+import { LetterDialog } from "@/components/letter/Letter";
 import { CheckinBar } from "@/components/shell/CheckinBar";
 import { SiteFooter } from "@/components/shell/SiteFooter";
 import { SiteHeader } from "@/components/shell/SiteHeader";
@@ -19,6 +20,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       </main>
       <SiteFooter />
       <CheckinBar />
+      <LetterDialog />
       <TabBar />
     </>
   );

@@ -318,10 +318,22 @@ Format: `id` | when | priority | tone | ref. Then variant A and variant B. Day i
    A: "You noticed something unusual. Trust that. A doctor can tell you if it's related."
    B: "If something feels off, it's worth asking a doctor. Bring your check-in history."
 
+### Paused (added in Phase 6)
+52. `paused-now` | paused, before the restart date | 86 | calm | kaliyadan2013
+   A: "You're paused until {restart}. Your map keeps its place, and day one stays day one."
+   B: "Paused for now, restarting on {restart}. Nothing on your map moves while you're away."
+
 ### "Why am I seeing this?" sheet
 Pattern: "You're seeing this because {reasons}." Reasons are joined from the card's conditions in plain words: "you're on day {d}", "you said hair fall is {shedWord}", "you're in {city}'s monsoon months", "you bought on a quick-commerce app", "it's late at night". Then: "Where this comes from: {reference}." Close: **Got it**.
 
 Shed words: 0 barely any, 1 a few, 2 normal for me, 3 more than usual, 4 handfuls. Worry words: 0 calm, 1 a little, 2 some, 3 a lot, 4 very.
+
+Built: link **Why am I seeing this?** under every note; sheet title **Why this note?** *Because of what you told us.*; "Where this comes from" lists the full citations (the leaflet and the routine table have their own lines). Close **Got it**. The night card's circle: "Breathe in", "Breathe out"; under reduced motion "Breathe in slowly, then out even more slowly."
+
+## The map and the week pages (Phase 6)
+- Map: **Your 24 weeks.** *A ring for each one.* "What's normal, week by week, drawn before it happens." Picker: "Week {n}" with tags **You are here**, **Photos**, **Rains**, the week's turn and one line, **Read week {n}**. Rains: "Rains on weeks {a} to {b}, on top of the shed window. Some of the hair fall then is the season, not the bottle." / "... clear of the shed window." / "No rainy months inside your 24 weeks." Legend: Shed window, Photo days, Rains, You are here. List title **Week by week**, groups Quiet start, The shed window, Settling, First fine hairs, The long middle, A fair verdict.
+- Week pages: **Week {n}.** with its turn, then **What often happens**, **What to do this week**, **Not a reason to worry**, **When to see a doctor** (alert tone), **Sources**. Tags: "You're in this week.", "A photo week: same spot, same light, same time as day one.", "Your rains fall on this week." All 24 weeks of text are in `src/content/weeks.ts` (phase text plus each week's own turn and line, and its own sections where it matters: weeks 3, 4, 5, 8, 12, 16, 20, 24).
+- The note: **Write a note for week five.** *Your own words will land better than ours.* **Seal it**. Sealed: **Your note is sealed.** *It opens on {date}.* "You'll get it at the start of week four, or sooner if you ever open "Before you stop"." Ready: **Your note is ready.** *You wrote it for this stretch.* **Read your note**. Read: **From you, on day one.** with "You wrote this on {date}."
 
 ## Check-in
 
@@ -347,6 +359,10 @@ Shed words: 0 barely any, 1 a few, 2 normal for me, 3 more than usual, 4 handful
 Any red flag replaces the response with the matching red-flag card.
 
 ## Wait, before you stop
+
+Built (Phase 6, source `src/content/journey.ts`). Step chapters: Day one, Where you are, Your note, Your choice. Titles in two voices: **This was day one.** *Before you decide, here's where you started.* / **You're on day {d}, week {w}.** *The shed window runs to about week eight. Fair judgement is week 24.* / **You wrote this on {date}.** *To whoever you'd be this week.* / **Most people who feel this way are in weeks three to seven.** *It's the most common time to stop, and the least informative time to judge.* Outcomes: **Kept going.** *That was the hard bit.* / **Paused until {date}.** *Restarting can bring a small shed again.* "That's expected. Your map keeps its place, and day one stays day one." **Add the restart to my calendar**, **Back to Today**. Closing: **Close without choosing**. No photo: "No day-one photo was taken. That's all right; the map still holds."
+
+For your doctor (one page): **For your doctor.** *One page, from this phone.* "Show this to a dermatologist or your GP. It has your dates, what you use and how the weeks have felt, and nothing else." Rows: Started, Today, Using, Bought through, Flagged ("Nothing flagged."). Check-ins table (date, hair fall, worry, missed). Questions worth asking: "Is what I'm seeing the usual shed, or something else?", "Is this the right product and routine for me?", "When should I judge whether it's working?" Disclaimer: "Week Five is not medical advice and doesn't diagnose anything. This page is a summary of what you entered." **Print this page**.
 
 - Entry: **I'm thinking of stopping**
 - Step 1: **This was day one.** (their crown photo) "Before you decide, here's where you started."

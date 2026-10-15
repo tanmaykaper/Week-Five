@@ -187,45 +187,31 @@ then
 ```
 Desktop: thinking orb centred; result as side by side images with the label beneath, never overlapping the image.
 
-## `/map` (nav label: Map)
-Phone (vertical track)
+## `/map` (nav label: Map), v3
+Captures: `artifacts/v3/journey-final/` (run `node artifacts/tools/v3-journey.mjs <dir> <base> <desk|tab|phone>`).
 ```
-+------------------------------+
-| Your 24 weeks                |
-| { Monsoon overlap: weeks 3 to 8 } |
-|  1  .  quiet start           |
-|  2  .                        |
-|  3 ~~~ shed window opens     |
-|  4 ~*~ photos, letter        |
-|  5 ~o~ you are here          |
-|  6 ~~~                       |
-|  7 ~~~                       |
-|  8 ~*~ photos                |
-|  9  .  settling              |
-| ...                          |
-| 24  *  judgement week        |
-| ( Write your letter )        |
-| I'm thinking of stopping     |
-+------------------------------+
+Your 24 weeks.                                    (rings from above, the chosen ring lit,
+A ring for each one.        (serif)                 "Week 8" and "You are here, week 5" labels)
+What's normal, week by week, drawn before it happens.
+{ (<)  Week 8  [Photos]                        (>) }
+{      Photos, and the window starts to close.     }
+{      Photo week. The shed window starts to close. }
+:::::|::::::::::::::::::   (24 bars, the chosen one tall)
+[ Read week 8 ]
+(o) Rains on weeks 1 to 3, on top of the shed window...
+(:) Shed window  (*) Photo days  (o) Rains  (o) You are here
+.------------------------------------------------------------------.
+| Week by week                       | Your note is ready.           |
+| Quiet start            Weeks 1 to 2| You wrote it for this stretch.|
+| { 1  The clock starts...   Rains } | [ Read your note ]            |
+| The shed window        Weeks 3 to 8| { Thinking of stopping?       |
+| { 5  The week most... You are here, Your note } ( I'm thinking of stopping ) } |
+'------------------------------------------------------------------'
 ```
-Desktop: the same 24-cell strip as Today at full width with phase labels, then the week list below as a two-column table (week, what commonly happens). Season overlap is a hatched band under the strip with its own one-line explanation.
+Phones: the rings on top, the picker in the thumb zone, the list and the note stacked below.
 
-## `/map/week/[n]`
-Phone
-```
-+------------------------------+
-| (Back)  Week 5               |
-| The part everyone finds      |
-| hardest.                     |
-| What often happens           |
-| What to do this week         |
-| Not a reason to worry        |
-| When to see a doctor         |
-| Sources                      |
-| ( Week 4 )        ( Week 6 ) |
-+------------------------------+
-```
-Desktop: reading column max 640 with a sticky mini track on the left.
+## `/map/week/[n]`, v3
+The camera on ring n. Hero: ( < Your 24 weeks ), **Week n.** *its turn*, tags. Sheet: What often happens, What to do this week, Not a reason to worry, When to see a doctor (alert tone), Sources, then ( < Week n-1 ) ( Week n+1 > ).
 
 ## `/checkin` (also the capsule sheet), v3
 ```
@@ -243,30 +229,13 @@ Anything else? (optional)  { ...... }
 ```
 The answer replaces the form: "Check-in saved.", the two-voice title, the sentence, then the day-one photo and the 24 ticks when they help, or the doctor card with the ticked list. Sheet: bottom on phones, right panel from 768 px. `/checkin` shows the same form as a page.
 
-## `/pause`
-Phone, one step per screen, vertical progress dots
-```
-+------------------------------+
-| (Close)                      |
-| This was day one.            |
-| +--------------------------+ |
-| |   crown photo            | |
-| +--------------------------+ |
-| Before you decide, here's    |
-| where you started.           |
-| [          Next          ]   |
-+------------------------------+
-...
-+------------------------------+
-| Most people who feel this    |
-| way are in weeks three to    |
-| seven.                       |
-| [       Keep going       ]   |
-| [   Pause with a plan    ]   |  equal weight
-| [   Talk to a doctor     ]   |
-+------------------------------+
-```
-Desktop: the four parts on one screen as a calm two-column spread, options at the bottom.
+## `/pause`, v3
+One step per screen on the pool, HUD with back, "1 of 4", the chapter, ticks and a close button (close without choosing).
+1. **This was day one.** The day-one photo, round, at the centre of the rings.
+2. **You're on day 35, week 5.** The rings from above, "You are here, week 5" and "Week 24, a fair verdict", the 24 ticks.
+3. **You wrote this on 11 September.** The note on paper, low over the water (only if there is a note; reaching it reveals it).
+4. **Most people who feel this way are in weeks three to seven.** Three equal rows: Keep going / Pause with a plan (opens a date) / Talk to a doctor. Then "Close without choosing".
+Outcomes: Kept going; Paused until {date} with the calendar file; For your doctor (one printable page). `/pause/?step=doctor` opens the doctor page directly.
 
 ## `/mates`
 Phone

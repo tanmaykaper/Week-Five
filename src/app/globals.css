@@ -363,3 +363,26 @@
   stroke-width: 1.8;
 }
 
+
+/* Printing (the doctor page): only the sheet, black on white. */
+@media print {
+  header,
+  nav,
+  footer,
+  .pool,
+  .pool-label,
+  .checkin-bar,
+  .pf-hud,
+  .no-print {
+    display: none !important;
+  }
+  html,
+  body {
+    background: #fff !important;
+    color: #000;
+  }
+  .print-sheet {
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+}

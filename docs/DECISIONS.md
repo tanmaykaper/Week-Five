@@ -133,3 +133,21 @@ One line each: the decision, then why. Newest at the bottom.
 114. **The cohort is seeded from the start date** (40 fictional people within two weeks, first names and cities only). Phase 9 wraps it in the CohortProvider; Today shows the count in your start week and one event.
 115. **Other people's drops land once on Today, on their own clock** (`landCohort`), after the rings spread. Nothing under reduced motion.
 116. **The night card says "breathe slowly"** until Phase 6 brings the breathing circle the content bank describes.
+
+## Phase 6 (2026-10-15)
+117. **Insight cards are data with structured triggers** (`insights.json`: `when`, `refs`, `attach`, two variants), parsed from the content bank so the copy stays in one editable file. The engine only interprets triggers; it holds no copy.
+118. **Ambient cards (priority under 80) rest for seven days after being shown; situational ones (80 and up) can repeat.** Red flags, photo weeks, high-shed reframes and night cards should show whenever they apply; "why shed at all?" should not greet someone every morning. Today's pick never changes during the day.
+119. **Variants are picked by a hash of the date and the card**, so the same card reads the same all day and can change the next.
+120. **"Why am I seeing this?" builds its sentence from the card's own trigger and the person's data**, not from hand-written reasons, so it can't drift from the rules. Sources print in full; the leaflet and the routine table get their own lines.
+121. **The note leads Today in weeks four and five while it's sealed (priority 85), with the day-one photo and "Compare with day one" beside it.** That one screen is the definition of done's "baseline, map and letter".
+122. **The map is the pool; the picker moves the camera ring by ring.** Previous and next buttons and arrow keys are the accessible way; the 24 bars are a pointer shortcut. One pool is shared by `/map` and the week pages through a nested layout.
+123. **Week copy is phase text plus each week's own turn and line**, with full sections only where the week matters (3, 4, 5, 8, 12, 16, 20, 24). Hedged ("commonly", "for many people"); the doctor section always lists the red flags.
+124. **The note opens in a sheet that lives in the app layout.** Reading it changes the screen that held the button, so the sheet can't belong to the button.
+125. **Reaching the note in "Before you stop" reveals it, whatever the week** (`revealedIn: "pause"`): that is the moment it was written for.
+126. **The three stop options are identical in size, tone and weight**, with "Close without choosing" under them. Every choice and the close are logged as intercepts; none of them nags later.
+127. **A pause never resets the clock.** It adds the "paused-now" card until the restart date, then "restart-after-pause" for three weeks. "Keep going" clears a pause.
+128. **The restart reminder is a one-event .ics built on the device** (floating local time at the morning routine time). Phase 8 extends `src/lib/ics.ts` to every reminder.
+129. **"Talk to a doctor" is a one-page summary**: dates, product names (no amounts), how they bought, recent check-ins, anything flagged, three questions, a disclaimer, and a print stylesheet. Red-flag notes link to it directly without logging a stop choice.
+130. **The lens anchor became a shared hook** (`useLensAnchor`) used by day-one photos and the stop flow, and it re-syncs its offset right after anchoring.
+131. **`AGENTS.md` is ignored.** `next dev` writes it (Next's own agent notes, with dashes); it isn't ours.
+132. **The project sits in an iCloud-synced Desktop folder.** A fast rebuild of `out/` once produced "home 2"-style duplicate folders and 404s; a clean rebuild fixed it. Excluding the folder from iCloud (for example renaming it `week-five.nosync` with a `week-five` link) would stop it for good; that is Tanmay's call.

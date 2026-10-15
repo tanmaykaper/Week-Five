@@ -1,0 +1,258 @@
+/* Wait, before you stop: calm, one thing per screen, on the water. No bounce, no countdown.
+   The day-one photo sits at the centre of the rings, where day one is on the map. */
+
+.pf-page {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  min-height: calc(100svh - var(--header-h));
+  padding-bottom: calc(var(--tabs-h) + 32px + env(safe-area-inset-bottom));
+}
+@media (min-width: 768px) {
+  .pf-page {
+    padding-bottom: 48px;
+  }
+}
+.pf-hud {
+  position: relative;
+  z-index: 3;
+}
+.pf-spacer {
+  width: 44px;
+  height: 44px;
+  flex: none;
+}
+.pf-close {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ink) 6%, transparent);
+}
+.pf-hud .ob-ticks {
+  margin-left: auto;
+}
+.pf-hud .pf-close {
+  margin-left: 14px;
+}
+.pf-hud > .ob-count {
+  flex: 1;
+}
+
+.pf-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding-top: clamp(96px, 22svh, 260px);
+}
+@media (min-width: 960px) {
+  .pf-body {
+    justify-content: center;
+    padding-block: 24px 64px;
+  }
+}
+.pf-words {
+  max-width: 600px;
+}
+.pf-q {
+  font-size: clamp(2rem, 1.2rem + 2.2vw, 3.25rem);
+  outline: none;
+}
+.pf-lead {
+  margin-top: 18px;
+  max-width: 44ch;
+  font-size: var(--t-lead);
+  line-height: 1.55;
+  color: var(--text-2);
+}
+.pf-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 28px;
+}
+.pf-ticks {
+  max-width: 420px;
+  margin-top: 28px;
+}
+
+/* Day one: the photo at the centre of the rings. */
+.pf-split {
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
+.pf-photo-wrap {
+  order: -1;
+  display: grid;
+  place-items: center;
+}
+.pf-photo {
+  position: relative;
+  width: min(calc(100vw - 2 * var(--gutter)), 36svh, 460px);
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--surface) 80%, transparent);
+  box-shadow:
+    0 0 0 6px color-mix(in srgb, var(--surface) 55%, transparent),
+    0 40px 80px -40px rgba(10, 18, 30, 0.45);
+}
+.pf-photo img,
+.pf-photo svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+@media (min-width: 960px) {
+  .pf-split {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+    align-items: center;
+  }
+  .pf-photo-wrap {
+    order: 0;
+  }
+  .pf-photo {
+    width: min(56svh, 38vw, 520px);
+  }
+}
+.pf-split .pf-body,
+.pf-body:has(.pf-split) {
+  padding-top: 8px;
+}
+
+/* Three equal options: same size, same tone, same weight. */
+.pf-options {
+  display: grid;
+  gap: 8px;
+  margin-top: 28px;
+}
+.pf-option {
+  display: grid;
+  gap: 2px;
+  padding: 16px 20px;
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--surface) 86%, transparent);
+  text-align: left;
+  font-size: 1.0625rem;
+  transition: background-color 200ms var(--ease-settle);
+}
+button.pf-option:hover,
+.pf-option-head:hover {
+  background: var(--surface);
+}
+.pf-option-head {
+  display: grid;
+  gap: 2px;
+  text-align: left;
+  width: 100%;
+}
+.pf-option-note {
+  font-size: 0.9375rem;
+  color: var(--text-2);
+}
+.pf-pick {
+  display: grid;
+  gap: 14px;
+  margin-top: 14px;
+  justify-items: start;
+}
+.pf-skip {
+  min-height: 44px;
+  margin-top: 16px;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--text-2);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--ink) 25%, transparent);
+  text-underline-offset: 4px;
+}
+
+/* For your doctor. */
+.pf-doctor {
+  justify-content: flex-start;
+  padding-top: 24px;
+}
+.dr {
+  display: grid;
+  gap: 20px;
+  max-width: 720px;
+  padding: clamp(24px, 4vw, 40px);
+  border-radius: 28px;
+  background: var(--surface);
+  box-shadow: var(--float-shadow);
+}
+.dr-title {
+  font-size: clamp(2rem, 1.3rem + 2vw, 3rem);
+  outline: none;
+}
+.dr-lead {
+  max-width: 52ch;
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--text-2);
+}
+.dr-facts {
+  display: grid;
+  gap: 3px;
+}
+.dr-facts > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 16px;
+  background: var(--sunk);
+  border-radius: 6px;
+}
+.dr-facts > div:first-child {
+  border-radius: 16px 16px 6px 6px;
+}
+.dr-facts > div:last-child {
+  border-radius: 6px 6px 16px 16px;
+}
+.dr-facts dt {
+  color: var(--text-2);
+}
+.dr-facts dd {
+  font-weight: 500;
+  text-align: right;
+}
+.dr-h {
+  font-size: 1.125rem;
+  font-weight: 500;
+  margin-top: 8px;
+}
+.dr-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+}
+.dr-table th {
+  text-align: left;
+  font-weight: 500;
+  color: var(--text-2);
+  padding: 6px 8px 8px 0;
+}
+.dr-table td {
+  padding: 8px 8px 8px 0;
+  border-top: 1px solid var(--line);
+}
+.dr-questions {
+  display: grid;
+  gap: 6px;
+  padding-left: 20px;
+  list-style: disc;
+  color: var(--text-2);
+}
+.dr-fine {
+  font-size: 0.8125rem;
+  color: var(--text-3);
+}
+.dr > button {
+  justify-self: start;
+}
