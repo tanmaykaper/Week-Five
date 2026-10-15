@@ -1,6 +1,6 @@
-import { mulberry32, hashString } from "@/lib/cohort";
+import { hashString, mulberry32 } from "@/lib/rng";
 import { sampleLuminance } from "@/lib/camera";
-import { deletePhotoDatabase, listPhotos, putPhoto, type View } from "@/lib/storage/photos";
+import { deletePhotoDatabase, getMask, listPhotos, putMask, putPhoto, type View } from "@/lib/storage/photos";
 import { dateOfDay, PHOTO_WEEKS } from "@/lib/time/journey";
 import type { Persona } from "./personas";
 
@@ -30,6 +30,12 @@ const LOOK: Record<Persona, { skin: [string, string]; hair: number; wall: [strin
 
 const idFor = (persona: Persona, view: View, week: number) => `demo-${persona}-${view}-w${week}`;
 
+/** The area each sample person watches: what painterView() picks from their worries in personas.ts. */
+const AREA: Record<Persona, View> = { steady: "hairline", worried: "hairline", "monsoon-quick-commerce": "crown" };
+
+/** The worried sample person took one set at night under a bathroom bulb: the mirror's lighting warning, shown honestly. */
+const dimSet = (persona: Persona, week: number) => persona === "worried" && week === 8;
+
 function strand(g: CanvasRenderingContext2D, x: number, y: number, dir: number, len: number, bend: number, w: number, tone: number) {
   g.strokeStyle = `rgb(${tone}, ${tone - 6}, ${tone - 10})`;
   g.lineWidth = w;
@@ -39,7 +45,7 @@ function strand(g: CanvasRenderingContext2D, x: number, y: number, dir: number, 
   g.stroke();
 }
 
-function drawHead(g: CanvasRenderingContext2D, view: View, density: number, persona: Persona, week: number) {
+function drawHead(g: CanvasRenderingContext2D, view: View, density: number, persona: Persona, week: number, dim = false) {
   const look = LOOK[persona];
   const rnd = mulberry32(hashString(`${persona}:${view}`));
   const jitter = mulberry32(hashString(`${persona}:${view}:${week}`));
@@ -156,12 +162,55 @@ function drawHead(g: CanvasRenderingContext2D, view: View, density: number, pers
     g.restore();
   }
 
-  // Window light from the top left.
+  // Window light from the top left, or a warm bulb overhead at night.
+  if (dim) {
+    g.fillStyle = "rgba(38, 26, 10, 0.42)";
+    g.fillRect(0, 0, S, S);
+    return;
+  }
   const light = g.createRadialGradient(S * 0.15, S * 0.05, 10, S * 0.15, S * 0.05, S);
   light.addColorStop(0, "rgba(255, 250, 240, 0.25)");
   light.addColorStop(1, "rgba(255, 250, 240, 0)");
   g.fillStyle = light;
   g.fillRect(0, 0, S, S);
+}
+
+/** A soft round stamp, as the painter draws them. */
+function stamp(g: CanvasRenderingContext2D, x: number, y: number, r: number) {
+  const s = g.createRadialGradient(x, y, 0, x, y, r);
+  s.addColorStop(0, "rgba(34, 84, 138, 0.42)");
+  s.addColorStop(0.55, "rgba(34, 84, 138, 0.26)");
+  s.addColorStop(1, "rgba(34, 84, 138, 0)");
+  g.fillStyle = s;
+  g.beginPath();
+  g.arc(x, y, r, 0, Math.PI * 2);
+  g.fill();
+}
+
+/** The painted area for a sample person's day-one drawing: their temples and hairline, or their crown. */
+async function demoMask(view: View): Promise<Blob | null> {
+  const M = 512;
+  const c = document.createElement("canvas");
+  c.width = M;
+  c.height = M;
+  const g = c.getContext("2d");
+  if (!g) return null;
+  if (view === "hairline") {
+    // Along the hairline, heavier at the temples.
+    for (let i = 0; i <= 16; i++) {
+      const t = i / 8 - 1;
+      stamp(g, 256 + t * 112, 192 + t * t * 26, 38);
+    }
+    for (const side of [-1, 1]) for (let i = 0; i < 4; i++) stamp(g, 256 + side * 116, 206 + i * 6, 44);
+  } else {
+    // Round the crown's whorl.
+    for (let i = 0; i < 22; i++) {
+      const a = (i / 22) * Math.PI * 2;
+      stamp(g, 266 + Math.cos(a) * 52, 214 + Math.sin(a) * 48, 52);
+    }
+    stamp(g, 266, 214, 70);
+  }
+  return new Promise((resolve) => c.toBlob(resolve, "image/png"));
 }
 
 /** Makes sure the demo photo database holds this persona's drawings, replacing another persona's. */
@@ -181,7 +230,7 @@ export async function ensureDemoPhotos(persona: Persona, startDate: string): Pro
   for (const [i, week] of DEMO_WEEKS.entries()) {
     for (const view of VIEWS) {
       if (have.some((p) => p.view === view && p.week === week)) continue;
-      drawHead(g, view, DENSITY[persona][i]!, persona, week);
+      drawHead(g, view, DENSITY[persona][i]!, persona, week, dimSet(persona, week));
       const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.86));
       if (!blob) continue;
       const taken = dateOfDay(startDate, Math.max(1, week * 7));
@@ -197,5 +246,11 @@ export async function ensureDemoPhotos(persona: Persona, startDate: string): Pro
         luminance: Math.round(sampleLuminance(canvas)),
       });
     }
+  }
+  // The area they watch, so the week-24 illustration works in the demo without painting first.
+  const base = idFor(persona, AREA[persona], 0);
+  if (!(await getMask("demo", base))) {
+    const blob = await demoMask(AREA[persona]);
+    if (blob) await putMask("demo", { photoId: base, blob });
   }
 }

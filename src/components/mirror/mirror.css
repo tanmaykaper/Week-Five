@@ -1,0 +1,847 @@
+/* The mirror and the week-24 illustration. Day one sits in a round lens at the centre of the
+   rings; the later photo shares the lens behind a divider. Words on the left on wide screens,
+   under the lens on phones. Then a sheet with every photo day. Same grammar as Today and the map. */
+
+.mr,
+.pj {
+  position: relative;
+}
+
+/* ---------- the lens ---------- */
+.mr-lens-col,
+.pj-lens-col {
+  --d: min(calc(100vw - 2 * var(--gutter)), 44svh, 520px);
+  order: -1;
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+}
+@media (min-width: 768px) {
+  .mr-lens-col,
+  .pj-lens-col {
+    --d: min(calc(100vw - 2 * var(--gutter)), 50svh, 560px);
+  }
+}
+@media (min-width: 960px) {
+  .mr-lens-col,
+  .pj-lens-col {
+    --d: min(64svh, 42vw, 620px);
+    order: 0;
+  }
+}
+
+.cmp {
+  --p: 50%;
+  position: relative;
+  width: min(var(--d, 480px), 100%);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.cmp[data-comparing] {
+  /* Sideways drags compare; up and down still scroll the page. */
+  touch-action: pan-y;
+  cursor: ew-resize;
+}
+.cmp-glass {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--surface) 78%, transparent);
+  /* A glass rim, and the one shadow on this screen: the lens floats on the water. */
+  box-shadow:
+    0 0 0 6px color-mix(in srgb, var(--surface) 55%, transparent),
+    0 0 0 7px color-mix(in srgb, var(--ink) 6%, transparent),
+    0 40px 80px -40px rgba(10, 18, 30, 0.45);
+  isolation: isolate;
+}
+.cmp-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+.cmp-drawing {
+  position: absolute;
+  inset: 12%;
+  width: 76%;
+  height: 76%;
+}
+/* The later photo, to the right of the divider. */
+.cmp-after {
+  position: absolute;
+  inset: 0;
+  clip-path: inset(0 0 0 var(--p));
+}
+.cmp-ghost {
+  opacity: 0.35;
+}
+.cmp-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--p);
+  width: 2px;
+  margin-left: -1px;
+  background: #fff;
+  box-shadow: 0 0 0 1px rgba(15, 30, 51, 0.16);
+  pointer-events: none;
+}
+.cmp-handle {
+  position: absolute;
+  top: 50%;
+  left: var(--p);
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: var(--float-shadow);
+  transform: translate(-50%, -50%);
+  transition: transform 160ms var(--ease-settle);
+}
+.cmp-handle:active {
+  transform: translate(-50%, -50%) scale(0.94);
+}
+.cmp-handle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 999px;
+}
+/* The illustration's reveal: the divider glides in from the right. Dragging is immediate. */
+.cmp[data-glide] .cmp-after {
+  transition: clip-path 1100ms var(--ease-swell);
+}
+.cmp[data-glide] .cmp-line,
+.cmp[data-glide] .cmp-handle {
+  transition: left 1100ms var(--ease-swell);
+}
+
+/* The painted area, while the illustration is drawn: a wash in the accent, through the mask. */
+.cmp-mark {
+  position: absolute;
+  inset: 0;
+  background: var(--accent);
+  opacity: 0;
+  -webkit-mask-image: var(--mark);
+  mask-image: var(--mark);
+  -webkit-mask-size: cover;
+  mask-size: cover;
+  transition: opacity 700ms var(--ease-settle);
+  pointer-events: none;
+}
+.cmp[data-phase="marking"] .cmp-mark {
+  opacity: 0.5;
+}
+.cmp[data-phase="estimating"] .cmp-mark {
+  opacity: 0.22;
+}
+/* Reading: a band of light passes over the photo. */
+.cmp-scan {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, transparent 38%, rgba(255, 255, 255, 0.5) 50%, transparent 62%);
+  background-size: 260% 100%;
+  background-position: 100% 0;
+  pointer-events: none;
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* The entrance sits on the lens itself and the breathing on its glass, so ending one never restarts the other. */
+  .cmp {
+    animation: cmp-in 900ms var(--ease-settle) both;
+  }
+  .cmp-scan {
+    opacity: 1;
+    animation: cmp-scan 1150ms var(--ease-swell) both;
+  }
+  /* While the illustration is drawn, the lens breathes once per stage. */
+  .cmp[data-phase="reading"] .cmp-glass,
+  .cmp[data-phase="marking"] .cmp-glass,
+  .cmp[data-phase="estimating"] .cmp-glass {
+    animation: cmp-breathe 1200ms var(--ease-swell) infinite;
+  }
+  .cmp[data-phase="marking"] .cmp-mark {
+    animation: cmp-mark 1200ms var(--ease-swell) infinite;
+  }
+}
+@keyframes cmp-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+}
+@keyframes cmp-scan {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: 0% 0;
+  }
+}
+@keyframes cmp-breathe {
+  50% {
+    transform: scale(1.012);
+  }
+}
+@keyframes cmp-mark {
+  50% {
+    opacity: 0.32;
+  }
+}
+
+/* ---------- the mirror's hero, on the water ---------- */
+.mr-hero,
+.pj-page {
+  position: relative;
+  display: grid;
+  align-content: center;
+  min-height: calc(100svh - var(--header-h));
+  padding: 20px 0 calc(var(--tabs-h) + 104px + env(safe-area-inset-bottom));
+}
+@media (min-width: 768px) {
+  .mr-hero,
+  .pj-page {
+    min-height: calc(100svh - var(--header-h) - 48px);
+    padding-bottom: 120px;
+  }
+}
+@media (min-width: 960px) {
+  .mr-hero,
+  .pj-page {
+    padding: 24px 0 112px;
+  }
+}
+.mr-stage,
+.pj-stage {
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
+@media (min-width: 960px) {
+  .mr-stage,
+  .pj-stage {
+    display: grid;
+    grid-template-columns: minmax(0, 0.92fr) minmax(0, 1fr);
+    align-items: center;
+    gap: clamp(32px, 4vw, 72px);
+  }
+}
+.mr-words,
+.pj-words {
+  min-width: 0;
+  max-width: 540px;
+}
+.mr-pair,
+.pj-pair {
+  font-size: clamp(2.375rem, 1.5rem + 2.7vw, 3.75rem);
+  outline: none;
+}
+.mr-lead,
+.pj-time {
+  margin-top: 16px;
+  max-width: 40ch;
+  font-size: var(--t-lead);
+  line-height: 1.55;
+  color: var(--text-2);
+}
+
+.mr-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 24px;
+}
+.mr-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface) 82%, transparent);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  transition:
+    background-color 220ms var(--ease-settle),
+    color 220ms var(--ease-settle),
+    transform 140ms var(--ease-settle);
+}
+.mr-chip:hover {
+  background: var(--surface);
+}
+.mr-chip:active {
+  transform: scale(0.97);
+}
+.mr-chip[aria-checked="true"] {
+  background: var(--ink);
+  color: var(--bg);
+}
+
+/* The six photo weeks: the flat twin of the amber dots on the rings. */
+.mr-strip {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 22px;
+  max-width: 440px;
+}
+.mr-pick {
+  display: grid;
+  justify-items: center;
+  width: 100%;
+  padding: 4px 0;
+  border-radius: 14px;
+  text-align: center;
+}
+.mr-pick-disc {
+  display: grid;
+  place-items: center;
+  width: min(100%, 56px);
+  aspect-ratio: 1;
+  margin-bottom: 6px;
+  overflow: hidden;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--surface) 70%, transparent);
+  box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--ink) 12%, transparent);
+  transition:
+    transform 220ms var(--ease-settle),
+    box-shadow 220ms var(--ease-settle);
+}
+.mr-pick-disc img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+button.mr-pick:hover .mr-pick-disc,
+a.mr-pick:hover .mr-pick-disc {
+  transform: scale(1.05);
+}
+button.mr-pick[aria-pressed="true"] .mr-pick-disc {
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--surface) 92%, transparent),
+    0 0 0 5px var(--accent);
+}
+.mr-pick-name {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+.mr-pick-sub {
+  font-size: 0.75rem;
+  line-height: 1.3;
+  color: var(--text-3);
+  white-space: nowrap;
+}
+@media (max-width: 479px) {
+  .mr-strip {
+    gap: 4px;
+  }
+  .mr-pick-name {
+    font-size: 0.75rem;
+    letter-spacing: -0.01em;
+  }
+  .mr-pick-sub {
+    font-size: 0.6875rem;
+  }
+}
+.mr-pick[data-state="due"] .mr-pick-disc {
+  background: var(--today-bg);
+  color: var(--today);
+  box-shadow: inset 0 0 0 1.5px var(--today-dot);
+}
+.mr-pick[data-state="due"] .mr-pick-sub {
+  color: var(--today);
+  font-weight: 500;
+}
+.mr-pick[data-state="upcoming"] .mr-pick-disc,
+.mr-pick[data-state="missed"] .mr-pick-disc,
+.mr-pick[data-state="early"] .mr-pick-disc {
+  background: transparent;
+  box-shadow: none;
+  outline: 1.5px dashed color-mix(in srgb, var(--ink) 22%, transparent);
+  outline-offset: -1.5px;
+}
+.mr-pick[data-state="upcoming"] .mr-pick-name,
+.mr-pick[data-state="missed"] .mr-pick-name,
+.mr-pick[data-state="early"] .mr-pick-name {
+  color: var(--text-2);
+}
+.mr-strip-skel {
+  height: 92px;
+  max-width: 440px;
+  margin-top: 22px;
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--ink) 5%, transparent);
+}
+
+.mr-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  margin-top: 18px;
+  padding: 0 16px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ink) 6%, transparent);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  transition:
+    background-color 220ms var(--ease-settle),
+    color 220ms var(--ease-settle);
+}
+.mr-toggle:hover {
+  background: color-mix(in srgb, var(--ink) 11%, transparent);
+}
+.mr-toggle[aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--bg);
+}
+
+.mr-take {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  max-width: 440px;
+  margin-top: 22px;
+  padding: 14px 18px;
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--surface) 84%, transparent);
+}
+.mr-take-dot {
+  flex: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--today-dot);
+  transform: translateY(-1px);
+}
+.mr-take-body {
+  margin-top: 2px;
+  font-size: 0.9375rem;
+  color: var(--text-2);
+}
+.mr-next {
+  max-width: 44ch;
+  margin-top: 22px;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--text-2);
+}
+.mr-actions,
+.pj-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+/* Under the lens: what each side is, and the honest small print. */
+.mr-caps {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  width: min(var(--d), 100%);
+  font-size: 0.875rem;
+  line-height: 1.35;
+}
+.mr-caps p {
+  display: grid;
+}
+.mr-caps .num {
+  color: var(--text-2);
+}
+.mr-light {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  width: min(var(--d), 100%);
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: var(--today-bg);
+  color: var(--today);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+.mr-fine {
+  width: min(var(--d), 100%);
+  font-size: 0.8125rem;
+  color: var(--text-3);
+}
+
+/* ---------- the sheet ---------- */
+.mr-sheet {
+  position: relative;
+  z-index: 3;
+  margin-inline: calc(50% - 50vw);
+  margin-bottom: calc(var(--section) * -1);
+  padding-block: clamp(44px, 6vw, 80px) calc(var(--section) + 32px);
+  border-radius: 32px 32px 0 0;
+  background: var(--surface);
+  box-shadow:
+    0 -1px 0 color-mix(in srgb, var(--ink) 6%, transparent),
+    0 -40px 80px -56px rgba(10, 18, 30, 0.45);
+}
+.mr-grid {
+  display: grid;
+  gap: clamp(56px, 7vw, 96px);
+}
+@media (min-width: 1100px) {
+  .mr-grid {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    align-items: start;
+  }
+  .mr-side {
+    position: sticky;
+    top: calc(var(--header-h) + 32px);
+  }
+}
+.mr-side {
+  display: grid;
+  gap: 48px;
+}
+.mr-h {
+  margin-bottom: 20px;
+  font-size: 1.125rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+.mr-body {
+  max-width: 44ch;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: var(--text-2);
+}
+
+.mr-days {
+  display: grid;
+  gap: 3px;
+}
+.mr-day {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "name discs"
+    "end end";
+  align-items: center;
+  gap: 12px 16px;
+  padding: 14px 16px;
+  border-radius: 6px;
+  background: var(--sunk);
+}
+.mr-days > li:first-child {
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+}
+.mr-days > li:last-child {
+  border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 16px;
+}
+.mr-day-name {
+  grid-area: name;
+  display: grid;
+  line-height: 1.35;
+}
+.mr-day-date {
+  font-size: 0.875rem;
+  color: var(--text-2);
+}
+.mr-day-discs {
+  grid-area: discs;
+  display: flex;
+  gap: 6px;
+}
+.mr-day-disc {
+  width: 44px;
+  height: 44px;
+  overflow: hidden;
+  border-radius: 50%;
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+.mr-day-disc img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.mr-day-disc[data-empty] svg {
+  width: 100%;
+  height: 100%;
+  padding: 7px;
+  opacity: 0.38;
+}
+.mr-day-tag {
+  justify-self: start;
+  margin-top: 6px;
+}
+.mr-day-end {
+  grid-area: end;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.mr-day-end:empty {
+  display: none;
+}
+@media (min-width: 640px) {
+  .mr-day {
+    grid-template-columns: 10.5rem auto minmax(0, 1fr);
+    grid-template-areas: "name discs end";
+  }
+  .mr-day-end {
+    justify-content: flex-end;
+  }
+}
+.mr-tag {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 9px;
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text-2);
+  font-size: 0.75rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.mr-tag[data-tone="ok"] {
+  background: var(--ok-bg);
+  color: var(--ok);
+}
+.mr-tag[data-tone="amber"] {
+  background: var(--today-bg);
+  color: var(--today);
+}
+.mr-days-skel {
+  height: 420px;
+  border-radius: 16px;
+  background: var(--sunk);
+}
+
+.mr-proj {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: 20px;
+  padding: 24px;
+  border-radius: 22px;
+  background: var(--sunk);
+}
+.mr-proj .mr-h {
+  margin-bottom: 8px;
+}
+.mr-proj-disc {
+  width: 88px;
+  height: 88px;
+  overflow: hidden;
+  border-radius: 50%;
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+.mr-proj-disc img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.mr-proj-disc svg {
+  width: 100%;
+  height: 100%;
+  padding: 12px;
+  opacity: 0.6;
+}
+.mr-tips {
+  display: grid;
+  gap: 3px;
+}
+.mr-tips li {
+  padding: 12px 16px;
+  border-radius: 6px;
+  background: var(--sunk);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+.mr-tips li:first-child {
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+}
+.mr-tips li:last-child {
+  border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 16px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .mr-strip-skel,
+  .mr-days-skel {
+    animation: mr-pulse 1400ms var(--ease-swell) infinite;
+  }
+}
+@keyframes mr-pulse {
+  50% {
+    opacity: 0.55;
+  }
+}
+
+/* ---------- the week-24 illustration ---------- */
+@media (max-width: 767px) {
+  .pj-lens-col {
+    --d: min(calc(100vw - 2 * var(--gutter)), 36svh, 420px);
+  }
+  .pj-pair {
+    font-size: clamp(2rem, 1.4rem + 2.4vw, 2.375rem);
+  }
+  .pj-steps {
+    margin-top: 20px;
+    gap: 8px;
+  }
+  .pj-step {
+    font-size: 1rem;
+  }
+}
+.pj-page {
+  grid-template-rows: auto minmax(0, 1fr);
+  align-content: stretch;
+  padding-top: 0;
+}
+.pj-hud {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 60px;
+}
+.pj-back {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ink) 6%, transparent);
+  transition: background-color 200ms var(--ease-settle);
+}
+.pj-back:hover {
+  background: color-mix(in srgb, var(--ink) 11%, transparent);
+}
+.pj-chapter {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+.pj-stage {
+  align-self: center;
+}
+.pj-steps {
+  display: grid;
+  gap: 12px;
+  margin-top: 28px;
+  max-width: 420px;
+}
+.pj-step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1.0625rem;
+  color: var(--text-3);
+  transition: color 300ms var(--ease-settle);
+}
+.pj-step[data-state="now"],
+.pj-step[data-state="done"] {
+  color: var(--ink);
+}
+.pj-step-mark {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--ink) 22%, transparent);
+  transition:
+    background-color 300ms var(--ease-settle),
+    box-shadow 300ms var(--ease-settle);
+}
+.pj-step[data-state="now"] .pj-step-mark {
+  box-shadow: inset 0 0 0 6px var(--accent);
+}
+.pj-step[data-state="done"] .pj-step-mark {
+  background: var(--ink);
+  color: var(--bg);
+  box-shadow: none;
+}
+.pj-week {
+  margin-left: auto;
+  font-size: 0.875rem;
+  color: var(--text-2);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .pj-step[data-state="now"] .pj-step-mark {
+    animation: pj-dot 1200ms var(--ease-swell) infinite;
+  }
+}
+@keyframes pj-dot {
+  50% {
+    box-shadow: inset 0 0 0 3px var(--accent);
+  }
+}
+
+/* The label that always travels with the picture, under it and never on it. */
+.pj-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  width: min(var(--d), 100%);
+  padding: 12px 16px;
+  border-radius: 16px;
+  background: var(--info-bg);
+  color: var(--info);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.4;
+}
+.pj-label svg {
+  flex: none;
+  margin-top: 1px;
+}
+.pj-how {
+  max-width: 44ch;
+  margin-top: 22px;
+}
+.pj-how summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  cursor: pointer;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--text-2);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--ink) 25%, transparent);
+  text-underline-offset: 4px;
+  list-style: none;
+}
+.pj-how summary::-webkit-details-marker {
+  display: none;
+}
+.pj-how p {
+  margin-top: 6px;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: var(--text-2);
+}
+.pj-problem {
+  margin-top: 18px;
+  max-width: 44ch;
+  color: var(--alert);
+}

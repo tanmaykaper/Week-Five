@@ -137,12 +137,15 @@ Idea: goal-gradient plus honest comparison.
 - Before and after slider (drag, arrow keys, 0 to 100 percent) with an optional baseline ghost overlay at 35 percent.
 - Lighting difference warning when mean luminance differs by more than 25.
 - Caveat: "These photos are for you. Light and angle change how hair looks."
+- Built in Phase 7 on the pool: day one in a round lens at the centre of the rings, the later photo behind a divider (drag anywhere on the lens, or keys on the handle), the outline toggle, the views, captions with dates, the lighting warning, and a turn line that sets the expectation for the week compared ("Four weeks in. Expect no change yet."). Choosing a later week raises the camera so the weeks in between pass under the lens and that week's ring sits lit at its rim. A strip of the six photo weeks under the headline; a sheet with every photo day (three photos, status, Take photos, Retake, Compare) and tips. Rules in `src/lib/mirror.ts`: due from two days before the photo week to five after, a few days late for ten more, then missed; weeks under 14 days after a late day one are skipped.
+- Monthly photos use the day-one capture at `/baseline/?week=N`: week N's ring at the lens's rim, day one laid at 30 percent over the camera to line up with, no painter, then "Compare with day one".
 
 ### F15. Projection (`/mirror/projection`)
 - `PredictionProvider` with `LocalSimulationProvider` (default, on device) and `RemoteModelProvider` (stub, disabled).
 - Thinking state about 3.5 s: orb pulse, then "Reading your baseline", "Marking the area", "Estimating a typical outcome".
 - Always labelled "An illustration of a typical outcome, not a promise. Results vary." Copy next to it talks about time, not hype.
 - Needs a baseline photo and a painted area; if missing, the empty state explains and links to the painter.
+- Built in Phase 7: `src/lib/providers/prediction/`. The thinking is three stages of 1.2 s on the pool, each sending a ripple out from under the lens, never shown ahead of the provider's progress; during the last the camera rises until week 24's ring sits at the rim. The result shares the mirror's compare lens (day one left, the illustration right), with the label under the lens and "How this picture is made". One illustration per photo is kept on the device and shown on Today and the mirror; repainting the area deletes it. "Change the marked area" opens the painter at `/baseline/?step=paint&then=projection` and comes back.
 
 ### F16. Journey mates (`/mates`)
 Idea: social proof (Cialdini 1984) without comparison.
@@ -350,9 +353,11 @@ interface PredictionProvider {
   available(): Promise<boolean>;
   predict(input: PredictionInput, onStage?: (stage: "reading" | "marking" | "estimating") => void): Promise<PredictionResult>;
 }
-// LocalSimulationProvider: canvas pipeline. Inside the mask: lift and darken sparse scalp pixels
-// slightly (strength 0.18), draw seeded fine strands that follow a flow field from the parting,
-// feather the mask edge 24 px. Deterministic for the same input. No network.
+// LocalSimulationProvider: canvas pipeline around the pure sim-core.ts. The painted area is feathered
+// (about 24 px at 512). Inside it, and only on the head (skin by chroma, or hair): bare skin moves a
+// little towards the hair's colour, and seeded fine hairs are drawn along the photo's own hair
+// direction (structure tensor) blended with a default per view, at a fixed strength of 0.18.
+// Deterministic for the same input, time-sliced so frames keep coming, no network.
 // RemoteModelProvider: available() returns false. Documents the POST contract for a future server
 // that would need explicit consent and would break the "stays on this phone" promise, so it ships off.
 

@@ -156,3 +156,24 @@
 - Monthly photo links on Today still go to the Mirror placeholder (Phase 7).
 
 **Next step:** Tanmay reviews Phase 6. On "go", Phase 7: the mirror and the projection.
+
+## 2026-10-15, Phase 7: the mirror and the week-24 illustration
+
+**Done**
+- The mirror on the pool: day one in a round lens at the centre of the rings, the later photo behind a divider (drag, or keys on the handle), "Show day-one outline", the views, captions with dates, a lighting warning, and a turn line that sets the expectation for each week. Choosing a later week raises the camera so the weeks in between pass under the lens and that week's ring sits lit at the rim.
+- The six photo weeks as a strip of round photos (the flat twin of the amber dots) and, on the sheet, every photo day with its three photos, status (saved, due now, a few days late, missed, too soon after day one), Take photos, Retake and Compare. Tips for photos that compare. The prompt when a week is due.
+- Monthly photos through the day-one capture (`/baseline/?week=N`): week N's ring at the lens's rim, day one laid faintly over the camera, a close that goes to the comparison. Today's "Week N photos" opens it directly.
+- The week-24 illustration: `PredictionProvider` with `LocalSimulationProvider` (on the device, deterministic, time-sliced, limited to the head) and a disabled `RemoteModelProvider` that records the contract. Thinking in three stages over about 3.6 s, with the camera rising until week 24's ring sits at the rim, then the illustration beside day one in the same lens, its label under it, the time copy, "How this picture is made". Empty states for no photos and no painted area; the painter comes back to the illustration. Today and the mirror show the latest illustration.
+- Demo: painted areas for each sample person, the worried person's week 8 under a bathroom bulb, photos dated by the demo clock.
+- Pool: opt-in fog scale, lens framing by rim week (`rimBelow`), shared `useLensAnchor` rim argument.
+
+**Checks:** `pnpm check` passes (lint, types, 123 unit tests, copy check, build). End-to-end: 134 pass across phone, tablet and desktop, 1 skipped by design, 18 of them new (mirror compare and keys, lighting warning, empty mirror, monthly photos with the fake camera, the illustration and its storage, the painter round trip), plus the new routes in the sideways-scroll test; 96 phase screenshots (light and dark). With the CPU slowed 4x at 60 Hz the mirror holds 60 fps (p95 16.7 ms) and the illustration's sequence 59.4 fps (p95 16.7 ms); its only long task is the 54 ms route load. Frames at 1440, 1024 and 390 in `artifacts/v3/mirror3/` and `mirror4/` (`node artifacts/tools/v3-mirror.mjs <dir> http://localhost:4400 [desk|tab|phone]`).
+
+**Decisions:** 133 to 152.
+
+**Known issues**
+- The illustration has only been seen on the demo drawings and a test drawing: no real photos are allowed in the repo. Worth trying on your own photos locally.
+- On battery under 20 percent, Chrome's Energy Saver caps every page at 30 fps, and the intro's frame-rate tests fail. Measure on mains power (or with `--disable-frame-rate-limit` for a rough check).
+- The Desktop folder still syncs to iCloud (decision 132).
+
+**Next step:** Tanmay reviews Phase 7. On "go", Phase 8: routine, reorder and reminders.

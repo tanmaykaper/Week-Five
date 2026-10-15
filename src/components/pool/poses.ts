@@ -1,5 +1,5 @@
 import type { PoolState, Rig } from "./engine";
-import { ringRadius } from "./geometry";
+import { DR, R0, ringRadius } from "./geometry";
 
 /**
  * Camera framings and scene states, by name. Framings are written for a landscape
@@ -65,6 +65,7 @@ export const BASE_STATE: PoolState = {
   cohort: 0,
   labels: 0,
   idle: 1,
+  fog: 1,
 };
 
 /** The intro's camera, beat by beat. */
@@ -135,17 +136,19 @@ export const BASELINE_FRAMES = {
   done: step([0.3, 10.6, 4.2], [0, 0, -0.2], { fov: 34, phoneShift: [-0.12, -0.27], phoneZoom: 1.45 }),
 } satisfies Record<string, Framing>;
 
-/** The lens's rim sits between weeks 4 and 5: the rings from week 5 out show around it. */
-const LENS_EDGE = ringRadius(4.5);
+/** By default the lens's rim sits between weeks 4 and 5: the rings from week 5 out show around it. */
+export const LENS_RIM_WEEK = 4.5;
 
 /**
  * Looking straight down on the rings, with their centre under a round element on the page
- * (the camera lens), scaled so the lens covers the first four weeks. `cy` is measured as
- * if the page were not scrolled; the scroll is applied separately as an offset.
+ * (the camera lens), scaled so the lens covers the weeks up to `rimWeek` (by default the
+ * first four). The mirror raises the rim to the week a photo was taken, so everything up
+ * to then sits under the lens and that week's ring hugs its edge. `cy` is measured as if
+ * the page were not scrolled; the scroll is applied separately as an offset.
  */
-export function lensRig(cx: number, cy: number, radius: number, width: number, height: number): Rig {
+export function lensRig(cx: number, cy: number, radius: number, width: number, height: number, rimWeek = LENS_RIM_WEEK): Rig {
   const fov = 30;
-  const dist = (height * LENS_EDGE) / (Math.max(40, radius) * 2 * Math.tan((fov * Math.PI) / 360));
+  const dist = (height * ringRadius(rimWeek)) / (Math.max(40, radius) * 2 * Math.tan((fov * Math.PI) / 360));
   return {
     camX: 0,
     camY: dist,
@@ -158,6 +161,19 @@ export function lensRig(cx: number, cy: number, radius: number, width: number, h
     shiftY: cy / height - 0.5,
   };
 }
+
+/**
+ * The rim week that leaves `week`'s ring about `gapPx` outside a lens of `radiusPx`, so the
+ * ring stays visible beside the glass at any scale (half a week would vanish under the rim
+ * once the rings are small).
+ */
+export function rimBelow(week: number, radiusPx: number, gapPx = 24): number {
+  const r = ringRadius(week) / (1 + gapPx / Math.max(40, radiusPx));
+  return Math.max(1, 1 + (r - R0) / DR);
+}
+
+/** Fog reach for a camera this high: none of the usual fade until the camera is past the usual range. */
+export const fogFor = (rig: Pick<Rig, "camY">) => Math.max(1, rig.camY / 10);
 
 /** Today: the plan seen from above and a little in front, the rings spread on the right. */
 export const TODAY_FRAME: Framing = {

@@ -82,6 +82,11 @@ export interface PoolState {
   labels: number;
   /** Small idle ripples on the surface, 0 to 1. */
   idle: number;
+  /**
+   * Stretches the fog's reach (1 is the usual 9 to 34 units from the camera). Views from
+   * high above the rings raise it, so the water far below doesn't fade into the ground.
+   */
+  fog: number;
 }
 
 export interface Label {
@@ -130,7 +135,7 @@ const FRAG = /* glsl */ `
 precision highp float;
 varying vec3 vWorld;
 uniform vec3 uCam;
-uniform float uTime, uRipple, uMap, uWeek, uShed, uDots, uIdle, uCalm, uFocus;
+uniform float uTime, uRipple, uMap, uWeek, uShed, uDots, uIdle, uCalm, uFocus, uFog;
 uniform vec2 uSeason, uFocusWeeks;
 uniform vec3 uSrc[6];
 uniform vec3 uShadow;
@@ -256,7 +261,7 @@ void main() {
 
   // Fog into the page ground, so the water has no edge.
   float dist = length(vWorld - uCam);
-  col = mix(col, uBg, smoothstep(9.0, 34.0, dist));
+  col = mix(col, uBg, smoothstep(9.0 * uFog, 34.0 * uFog, dist));
 
   gl_FragColor = vec4(col, 1.0);
   #include <colorspace_fragment>
@@ -373,6 +378,7 @@ export class PoolEngine {
       uSeason: { value: new Vector2() },
       uFocusWeeks: { value: new Vector2() },
       uFocus: { value: 0 },
+      uFog: { value: 1 },
       uSrc: { value: Array.from({ length: 6 }, () => new Vector3()) },
       uShadow: { value: new Vector3() },
       uBg: { value: new Color(palette.ground) },
@@ -753,6 +759,7 @@ export class PoolEngine {
     (u.uSeason!.value as Vector2).set(s.seasonFrom, s.seasonTo);
     (u.uFocusWeeks!.value as Vector2).set(s.focusFrom, s.focusTo);
     u.uFocus!.value = s.focus;
+    u.uFog!.value = Math.max(1, s.fog || 1);
     const shadowStrength = this.dropper.visible ? Math.max(0, 1 - (this.tip.y - 0.2) / 3.2) : 0;
     (u.uShadow!.value as Vector3).set(this.tip.x, this.tip.z, shadowStrength);
 

@@ -65,6 +65,8 @@ export interface InsightContext {
   hasBaseline: boolean;
   /** Weeks that already have photos. */
   photoWeeks: number[];
+  /** The first photo week that counts (a late day one skips the weeks right after it). Default 4. */
+  firstPhotoWeek?: number;
   letter: Letter | null;
   intercepts: Intercept[];
   insightLog: { id: string; on: ISODate }[];
@@ -99,11 +101,13 @@ function derive(c: InsightContext) {
   const latest = past[past.length - 1] ?? null;
   const recent = latest && t - Date.parse(latest.at) < 7 * DAY ? latest : null;
   const pause = pauseState(c.intercepts, c.now);
-  const dueWeek = photoWeekDue(c.day);
+  const first = c.firstPhotoWeek ?? PHOTO_WEEKS[0];
+  const due = photoWeekDue(c.day);
+  const dueWeek = due !== null && due >= first ? due : null;
   const overdueWeek =
     PHOTO_WEEKS.find((w) => {
       const { to } = photoWindow(w);
-      return c.day > to && c.day <= to + 10 && !c.photoWeeks.includes(w);
+      return w >= first && c.day > to && c.day <= to + 10 && !c.photoWeeks.includes(w);
     }) ?? null;
   return { latest, recent, last2: past.slice(-2), pause, dueWeek, overdueWeek, startMonth: parseISODate(c.startDate).getMonth() + 1 };
 }

@@ -6,7 +6,8 @@ import { lensRig } from "./poses";
 
 /**
  * Keeps the rings' centre under a round element on the page (a lens, a photo), while the
- * page scrolls or reflows. `rig()` builds the camera for the element as it is now and
+ * page scrolls or reflows. `rig(rim?)` builds the camera for the element as it is now (the rim
+ * week can depend on the element's radius, see rimBelow) and
  * remembers the shift it used; the effect then offsets the picture so the centre follows
  * the element, and folds that offset back into the camera when the anchor ends, so
  * nothing jumps.
@@ -17,11 +18,12 @@ export function useLensAnchor(pool: PoolEngine | null, active: boolean) {
   const offset = useRef({ x: 0, y: 0 });
   const resync = useRef<(() => void) | null>(null);
 
-  const rig = useCallback(() => {
+  const rig = useCallback((rim?: number | ((radiusPx: number) => number)) => {
     const el = ref.current;
     if (!el) return null;
     const r = el.getBoundingClientRect();
-    const out = lensRig(r.left + r.width / 2, r.top + window.scrollY + r.height / 2, r.width / 2, window.innerWidth, window.innerHeight);
+    const rimWeek = typeof rim === "function" ? rim(r.width / 2) : rim;
+    const out = lensRig(r.left + r.width / 2, r.top + window.scrollY + r.height / 2, r.width / 2, window.innerWidth, window.innerHeight, rimWeek);
     anchor.current = { x: out.shiftX, y: out.shiftY };
     // The anchor moved: line the offset up with it on the next frame.
     requestAnimationFrame(() => resync.current?.());

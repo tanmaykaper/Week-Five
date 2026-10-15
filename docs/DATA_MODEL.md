@@ -93,6 +93,9 @@ interface Photo {               // IndexedDB "photos"
 
 interface Mask { photoId: string; blob: Blob }            // IndexedDB "masks", 512px PNG with alpha = painted area; one per photo
 interface Projection { id: string; photoId: string; createdAt: ISODateTime; provider: "local-sim" | "remote"; strength: number; blob: Blob }
+// Phase 7: one projection per photo (a new one replaces the old); saving or deleting the photo's mask
+// deletes its projection, since it was drawn from the old area. Photos are dated by the journey
+// clock (`effectiveNow`), so demo days see what was taken "today"; screens ignore photos dated after it.
 
 interface Settings {
   lang: "en" | "hinglish";

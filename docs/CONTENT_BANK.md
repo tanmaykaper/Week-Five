@@ -387,6 +387,16 @@ For your doctor (one page): **For your doctor.** *One page, from this phone.* "S
 - Empty, no mask: "Paint the area you're watching first. Takes ten seconds."
 - Empty, no photo: "Take your day-one photos first."
 
+Phase 7 (source `src/content/mirror.ts`, monthly capture in `src/content/baseline.ts`):
+- Mirror turn by the week compared: 4 "Four weeks in. Expect no change yet." / 8 "Eight weeks in. Still early to judge." / 12 "Twelve weeks in. Look, don't measure." / 16 "Sixteen weeks in. Fine hairs come first." / 20 "Twenty weeks in. Nearly a fair test." / 24 "Twenty four weeks. Now it's a fair test." Only day one: "Day one, on its own for now." No photos: "Day one comes first." with "No photos yet. Two minutes, and future you will thank you." and **Take day-one photos**.
+- Strip: "Compare with week {w}, {date}", "Take week {w} photos", "Week {w} photos, around {date}", "Due", "Late", "Missed", "Not needed".
+- Due prompt: "Week {w} photos are due." / "Week {w} photos are a few days late." / "The rest of your week {w} photos." then "Same spot as day one, around {9 pm}. Tonight works." Buttons **Take week {w} photos**, **Take the rest**. Otherwise "Your first monthly photos are in week {w}, around {date}." or "Next photos in week {w}, around {date}."
+- Photo days: "Saved", "{n} of 3", "Due now", "A few days late", "Missed, no harm done", "Too soon after day one", "Around {date}"; **Take photos**, **Retake**, **Compare**.
+- Photos that compare: "Same spot, same window, every time." / "Around {9 pm}, the hour of your day-one photos." / "Dry hair, combed the way you usually wear it." / "The camera shows day one faintly. Line up with it."
+- Illustration: chapter "Week 24 illustration"; thinking "Drawing week 24." / "On this phone, from your day-one photo."; result turn "One typical case, drawn on day one."; captions "Day one", "Week 24, illustration"; ring label "Week 24, an illustration"; **Done**, **Change the marked area**, **Mark the area**, **Try again**; "This phone couldn't draw the illustration. Try again, or come back to it later."
+- How this picture is made: "It's drawn on this phone from your day-one photo. Inside the area you marked, it adds fine hairs and lets a little less scalp show, always at the same small strength. Nothing is uploaded, and it isn't a medical image. It can't tell you what will happen to you."
+- Monthly photos: "Week {w} photos." / "Same three, same spot." / "Same spot and light as day one, around {9 pm}. The camera shows your day-one photo faintly, so you can line up with it." Switch **Day-one outline**, note "Your day-one photo is laid faintly over the camera. Line up with it." Close "Week {w}, recorded." / "See you in week {next}." (last: "That's the whole set.") with "They're next to day one in the mirror. Compare them there, not with yesterday." and **Compare with day one**.
+
 ## Journey mates (demo community)
 
 - Title: **People who started when you did.** Pill: **Demo community**.

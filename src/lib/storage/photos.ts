@@ -83,8 +83,14 @@ export async function deletePhoto(mode: Mode, id: string): Promise<void> {
   await tx.done;
 }
 
+/** Saves the painted area for a photo. An illustration drawn from the old area no longer fits, so it goes. */
 export async function putMask(mode: Mode, mask: MaskRecord): Promise<void> {
-  await (await photoDb(mode)).put("masks", mask);
+  const db = await photoDb(mode);
+  const tx = db.transaction(["masks", "projections"], "readwrite");
+  await tx.objectStore("masks").put(mask);
+  const stale = await tx.objectStore("projections").index("byPhoto").getAllKeys(mask.photoId);
+  await Promise.all(stale.map((key) => tx.objectStore("projections").delete(key)));
+  await tx.done;
 }
 
 export async function getMask(mode: Mode, photoId: string): Promise<MaskRecord | undefined> {
@@ -117,6 +123,13 @@ export async function baselinePhotos(mode: Mode): Promise<Partial<Record<View, P
   return out;
 }
 
+/** The photos kept for one week, one per view (the newest wins). */
+export async function photosOfWeek(mode: Mode, week: number): Promise<Partial<Record<View, PhotoRecord>>> {
+  const out: Partial<Record<View, PhotoRecord>> = {};
+  for (const p of await listPhotos(mode)) if (p.week === week) out[p.view] = p;
+  return out;
+}
+
 /**
  * Saves a photo as the one for its view and week, removing any earlier photo for the same
  * view and week (a retake), along with that photo's mask and projections.
@@ -128,5 +141,26 @@ export async function keepPhoto(mode: Mode, photo: PhotoRecord): Promise<void> {
 }
 
 export async function deleteMask(mode: Mode, photoId: string): Promise<void> {
-  await (await photoDb(mode)).delete("masks", photoId);
+  const db = await photoDb(mode);
+  const tx = db.transaction(["masks", "projections"], "readwrite");
+  await tx.objectStore("masks").delete(photoId);
+  const stale = await tx.objectStore("projections").index("byPhoto").getAllKeys(photoId);
+  await Promise.all(stale.map((key) => tx.objectStore("projections").delete(key)));
+  await tx.done;
+}
+
+/** Keeps one illustration per photo: a new one replaces the old. */
+export async function putProjection(mode: Mode, projection: ProjectionRecord): Promise<void> {
+  const db = await photoDb(mode);
+  const tx = db.transaction("projections", "readwrite");
+  const old = await tx.store.index("byPhoto").getAllKeys(projection.photoId);
+  await Promise.all(old.filter((key) => key !== projection.id).map((key) => tx.store.delete(key)));
+  await tx.store.put(projection);
+  await tx.done;
+}
+
+/** The illustration drawn most recently, if any. */
+export async function latestProjection(mode: Mode): Promise<ProjectionRecord | undefined> {
+  const all = await (await photoDb(mode)).getAll("projections");
+  return all.sort((a, b) => b.createdAt.localeCompare(a.createdAt))[0];
 }

@@ -162,6 +162,19 @@
   height: 100%;
   pointer-events: none;
 }
+/* Monthly photos: day one, faint, over the camera. */
+.bl-guide {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.3;
+  pointer-events: none;
+}
+.bl-guide[data-mirrored] {
+  transform: scaleX(-1);
+}
 .bl-paint {
   position: absolute;
   inset: 0;
@@ -341,7 +354,13 @@
   gap: 18px;
 }
 .bl-shoot > .bl-tool:first-child {
+  grid-row: 1;
+  grid-column: 1;
   justify-self: end;
+}
+.bl-shoot > .bl-shutter {
+  grid-row: 1;
+  grid-column: 2;
 }
 .bl-shoot > .bl-tool:nth-child(3),
 .bl-shoot > .bl-tool:nth-child(4) {
@@ -351,6 +370,14 @@
 }
 .bl-shoot > .bl-tool:nth-child(4) {
   margin-left: 62px;
+}
+/* The day-one outline switch sits left of "Choose a photo". */
+.bl-shoot > .bl-tool[data-guide] {
+  grid-row: 1;
+  grid-column: 1;
+  justify-self: end;
+  margin-left: 0;
+  margin-right: 62px;
 }
 
 .bl-tool {

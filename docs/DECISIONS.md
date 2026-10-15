@@ -151,3 +151,25 @@ One line each: the decision, then why. Newest at the bottom.
 130. **The lens anchor became a shared hook** (`useLensAnchor`) used by day-one photos and the stop flow, and it re-syncs its offset right after anchoring.
 131. **`AGENTS.md` is ignored.** `next dev` writes it (Next's own agent notes, with dashes); it isn't ours.
 132. **The project sits in an iCloud-synced Desktop folder.** A fast rebuild of `out/` once produced "home 2"-style duplicate folders and 404s; a clean rebuild fixed it. Excluding the folder from iCloud (for example renaming it `week-five.nosync` with a `week-five` link) would stop it for good; that is Tanmay's call.
+
+## Phase 7 (2026-10-15)
+133. **The mirror is a round lens at the centre of the rings, with day one in it**; the later photo shares the lens behind a divider. Day one is the middle of the map, as with the camera lens and the stop flow.
+134. **Choosing a later week raises the camera**: the weeks in between pass under the lens and that week's ring sits lit just outside its rim (`rimBelow()`, about 24 px out at any lens size, so it never hides under the glass). Time passing is a camera move, not a page change.
+135. **The pool has an opt-in fog scale** (`fog`, default 1), so views from high above don't fade into the ground. Every earlier pose is unchanged.
+136. **The compare slider:** drag anywhere on the lens (sideways only, so vertical scrolling still works on touch), or arrow keys, Page Up and Down, Home and End on the handle. Day one is on the left.
+137. **"Show day-one outline" lays day one at 35 percent over the later photo** (BUILD_DOC F14), off by default, to check the two line up.
+138. **A lighting warning when mean luminance differs by more than 25.** The worried sample person's week-8 set is drawn under a bathroom bulb so a reviewer can see it.
+139. **Each comparison's serif turn sets the expectation for that week** ("Four weeks in. Expect no change yet." up to "Now it's a fair test."), so the mirror keeps the app's one job: making the wait readable.
+140. **Photo weeks are due from two days before to five after, then "a few days late" for ten more** (the same window as the photos-late note), then missed. Weeks under 14 days after a late day one are "too soon" (decision 93), and Today's photo notes now follow the same rule.
+141. **Monthly photos reuse the day-one capture** (`/baseline/?week=N`): the same lens with week N's ring lit at its rim, day one laid at 30 percent over the camera (mirrored with the preview) in place of the outline drawing, no painter, and a close that goes to the comparison.
+142. **Photos are dated by the journey clock**, so a photo taken on demo day 27 counts on day 27. The capture flow ignores photos dated after the clock, since a demo plan holds all 24 weeks up front.
+143. **The projection is a PredictionProvider** with the LocalSimulationProvider on and the RemoteModelProvider off (it only records the contract). The pixel work is pure (`sim-core.ts`): it reads hair and scalp tones in the painted area, moves bare skin a little towards the hair's colour, and draws seeded fine hairs along the photo's own hair direction (a structure tensor) blended with a default per view. Deterministic and unit tested.
+144. **The illustration only touches the head.** A chroma test (YCbCr skin range) limits the softening to skin, and hairs are drawn only over skin or hair, so a rough area that spills onto the wall never grows hair there.
+145. **The strength is fixed and small**: fine hairs over about a quarter of the bare scalp, which closes about 11 percent of the gap between a thin patch and the hair around it in the unit test. One typical case, never a best case.
+146. **The pixel work is time-sliced** (a generator that yields between passes and every 24 hairs). With the CPU slowed 4x it adds no long task to the thinking sequence.
+147. **Thinking takes about 3.6 s**: three stages of 1.2 s (0.7 s under reduced motion), never shown ahead of the provider's real progress. Each stage sends one ripple out from under the lens; during "Estimating a typical outcome" the camera rises until week 24's ring sits at the rim, while the weeks count up beside the stage.
+148. **The illustration is shown in the same compare lens as the mirror**, sliding in from the right, with the permanent label under the lens (never on it) and captions naming both sides. This replaces the v2 side-by-side, so both pictures stay the same size and line up.
+149. **One illustration per photo**, kept on the device. Repainting the area deletes it. Today's and the mirror's "What week 24 can look like" show the latest one.
+150. **"Change the marked area" opens the existing painter** (`/baseline/?step=paint&then=projection`) and comes back, rather than embedding it in an app page, where its always-light controls would break the dark theme.
+151. **Demo plans carry a painted area for each sample person**, so the illustration works in the demo without painting first.
+152. **The mirror and the illustration share one pool** (`mirror/layout.tsx`), like the map and its weeks.

@@ -4,7 +4,7 @@ import { expect, test } from "@playwright/test";
 import { seedDemo, seedFresh, seedPlan } from "./helpers";
 
 const PHASE = process.env.PHASE ?? "1";
-const ROUTES: { slug: string; path: string; demo: boolean; intro?: boolean; plan?: boolean }[] = [
+const ROUTES: { slug: string; path: string; demo: boolean; intro?: boolean; plan?: boolean; ready?: string }[] = [
   { slug: "intro", path: "/start/", demo: false, intro: true },
   { slug: "start-qr", path: "/start/?sku=WF-SOL-60&reg=2026-10-01&batch=B1", demo: false },
   { slug: "onboarding", path: "/onboarding/?sku=WF-SOL-60&reg=2026-10-01", demo: false },
@@ -12,6 +12,9 @@ const ROUTES: { slug: string; path: string; demo: boolean; intro?: boolean; plan
   { slug: "home", path: "/home/", demo: true },
   { slug: "map", path: "/map/", demo: true },
   { slug: "week-5", path: "/map/week/5/", demo: true },
+  { slug: "mirror", path: "/mirror/", demo: true },
+  { slug: "projection", path: "/mirror/projection/", demo: true, ready: "An illustration of a typical outcome, not a promise. Results vary." },
+  { slug: "monthly", path: "/baseline/?week=8", demo: true },
   { slug: "pause", path: "/pause/", demo: true },
   { slug: "doctor", path: "/pause/?step=doctor", demo: true },
   { slug: "profile", path: "/profile/", demo: true },
@@ -28,6 +31,7 @@ for (const theme of ["light", "dark"] as const) {
       await (r.plan ? seedPlan(page) : r.demo ? seedDemo(page, theme) : seedFresh(page, theme, { introSeen: !r.intro }));
       await page.goto(r.path);
       await page.waitForLoadState("networkidle");
+      if (r.ready) await page.getByText(r.ready).waitFor({ timeout: 15000 });
       await page.evaluate(() => document.fonts.ready);
       await page.screenshot({ path: `artifacts/screens/phase-${PHASE}/${info.project.name}/${theme}-${r.slug}.png`, fullPage: true });
       expect(errors).toEqual([]);

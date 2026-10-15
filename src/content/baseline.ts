@@ -128,3 +128,23 @@ export const DONE = {
   installButton: "Add to home screen",
   installIos: "On iPhone: Share, then Add to Home Screen.",
 };
+
+/** Monthly photos (weeks 4 to 24): the same three views, lined up with day one. */
+export const MONTHLY = {
+  chapter: (week: number) => `Week ${week} photos`,
+  title: (week: number) => `Week ${week} photos.`,
+  turn: "Same three, same spot.",
+  lead: (hour: string | null) =>
+    `Same spot and light as day one${hour ? `, around ${hour}` : ""}. The camera shows your day-one photo faintly, so you can line up with it.`,
+  later: "I'll do it later",
+  guide: "Day-one outline",
+  guideNote: "Your day-one photo is laid faintly over the camera. Line up with it.",
+  doneTitle: (week: number) => `Week ${week}, recorded.`,
+  partialTitle: (week: number) => `Week ${week}, nearly recorded.`,
+  doneTurn: (next: number) => `See you in week ${next}.`,
+  lastTurn: "That's the whole set.",
+  doneLead: "They're next to day one in the mirror. Compare them there, not with yesterday.",
+  compare: "Compare with day one",
+  listLabel: (week: number) => `Your week ${week} photos`,
+  back: "Back to the mirror",
+};

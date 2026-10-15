@@ -21,10 +21,12 @@ export const Lens = forwardRef<
     count?: number | null;
     flash?: number;
     ghost?: boolean;
+    /** The day-one photo, laid faintly over the live camera for monthly photos (it replaces the outline). */
+    guide?: string | null;
     label: string;
     children?: ReactNode;
   }
->(function Lens({ view, videoRef, live = false, mirrored = false, still, count = null, flash = 0, ghost = true, label, children }, ref) {
+>(function Lens({ view, videoRef, live = false, mirrored = false, still, count = null, flash = 0, ghost = true, guide = null, label, children }, ref) {
   return (
     <div ref={ref} className="bl-lens" data-live={live || undefined} data-still={still ? true : undefined} role="img" aria-label={label}>
       <div className="bl-lens-glass">
@@ -37,7 +39,13 @@ export const Lens = forwardRef<
           <img key={still} src={still} alt="" className="bl-still" width={800} height={800} />
         ) : null}
         {children}
-        {ghost && !still ? <HeadGhost view={view} tone={live ? "video" : "ink"} className="bl-ghost" /> : null}
+        {guide && !still ? (
+          // Mirrored with the preview, so it lines up with what the person sees.
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={guide} alt="" className="bl-guide" data-mirrored={mirrored || undefined} width={800} height={800} />
+        ) : ghost && !still ? (
+          <HeadGhost view={view} tone={live ? "video" : "ink"} className="bl-ghost" />
+        ) : null}
         {count ? (
           <span key={count} className="bl-count" aria-hidden="true">
             {count}

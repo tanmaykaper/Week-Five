@@ -136,56 +136,45 @@ Day 35 of 168  ::::|::::::::::::::::::  21% of the way to a fair verdict
 ```
 Phones: the rings fill the top, the words end above the check-in bar and the tabs; the sheet stacks the sections in one column. Dark theme: the same on night water.
 
-## `/mirror`
-Phone
+## `/mirror`, v3
+Captures: `artifacts/v3/mirror3/` and `mirror4/` (run `node artifacts/tools/v3-mirror.mjs <dir> http://localhost:4400 [desk|tab|phone]` against the built site).
 ```
-+------------------------------+
-| Day one and now.             |
-| ( Crown ) ( Hairline ) (Part)|  segmented
-| +--------------------------+ |
-| | day one    |    week 4   | |  compare slider
-| |            ||            | |
-| +--------------------------+ |
-| ( Show day-one outline )     |
-| These photos are for you.    |
-| Light and angle change how   |
-| hair looks.                  |
-| Timeline                     |
-| [w0] [w4] [w8*] [ ] [ ] [ ]  |  next due in amber
-| [ Retake week 8 photos ]     |
-| { What week 24 can look like}|
-+------------------------------+
+Day one and now.                                   (   compare lens at the centre   )
+Four weeks in. Expect no change yet.   (serif)     (   of the rings: day one | wk 4 )   o Week 4 (label on the ring at the rim)
+These photos are for you. Light and angle...         Day one            Week 4
+( Crown ) ( Hairline ) ( Parting )                   11 September       8 October
+(w4) ( ) ( ) ( ) ( ) ( )   week and date under each  [ These two were taken in different light. ]
+( Show day-one outline )                             Sample drawings for the demo...
+{ * Week 8 photos are due. Same spot as day one... }
+[ Take week 8 photos ]  ( What week 24 can look like )
+.------------------------------------------------------------------.
+| Photo days                          | (disc) What week 24 can look like. |
+| { Day one  11 Sep  (c)(h)(p) Saved } |        An illustration... (See it) |
+| { Week 4   8 Oct   (c)(h)(p) Saved  Retake Compare }                       |
+| { Week 8   Around 5 Nov  ( )( )( ) } | Photos that compare                |
+'------------------------------------------------------------------'
 ```
-Desktop: slider left at 8 columns, timeline and actions right at 4.
+Phones: the lens on top, captions under it, then the words, strip and actions; the sheet stacks. Dark theme: the same on night water.
 
-## `/mirror/projection`
-Phone
+## `/mirror/projection`, v3
 ```
-+------------------------------+
-| (Back)                       |
-|        .-------.             |
-|       (  orb    )  thinking  |
-|        '-------'             |
-|  Reading your baseline       |  stages tick in
-|  Marking the area            |
-|  Estimating a typical outcome|
-+------------------------------+
+( < )  Week 24 illustration
+Drawing week 24.                                   (   day one in the lens,          )
+On this phone, from your day-one photo.  (serif)   (   the painted area washed blue  )
+(v) Reading your baseline
+(o) Marking the area
+( ) Estimating a typical outcome        Week 12    (the camera rises; the weeks pass under the lens)
 then
-+------------------------------+
-| What week 24 can look like.  |
-| +--------------------------+ |
-| |  day one  ||  illustration|
-| +--------------------------+ |
-| An illustration of a typical |
-| outcome, not a promise.      |
-| Results vary.                |
-| Most visible change, if it   |
-| comes, shows up between      |
-| month four and six.          |
-| ( Repaint area ) ( Done )    |
-+------------------------------+
+What week 24 can look like.                        (   day one | illustration       )   o Week 24, an illustration
+One typical case, drawn on day one.     (serif)      Day one        Week 24, illustration
+Most visible change, if it comes...                { (i) An illustration of a typical outcome, not a promise. Results vary. }
+[ Done ]  ( Change the marked area )
+How this picture is made  (opens a paragraph)
 ```
-Desktop: thinking orb centred; result as side by side images with the label beneath, never overlapping the image.
+Empty: "Take your day-one photos first." or "Paint the area you're watching first. Takes ten seconds." with **Mark the area**, which opens the painter and comes back.
+
+## `/baseline/?week=N` (monthly photos), v3
+The day-one capture with week N's copy ("Week 8 photos. Same three, same spot."), week N's ring lit at the lens's rim, day one at 30 percent over the camera ("Day-one outline" switch), no painter, and a close: "Week 8, recorded. See you in week 12." with **Compare with day one**.
 
 ## `/map` (nav label: Map), v3
 Captures: `artifacts/v3/journey-final/` (run `node artifacts/tools/v3-journey.mjs <dir> <base> <desk|tab|phone>`).

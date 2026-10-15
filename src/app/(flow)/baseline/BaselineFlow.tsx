@@ -1,16 +1,16 @@
 "use client";
 
-import { ArrowLeft, CameraRotate, Check, DeviceMobile, ImageSquare, LockSimple, Timer } from "@phosphor-icons/react/ssr";
-import { useRouter } from "next/navigation";
+import { ArrowLeft, CameraRotate, Check, DeviceMobile, ImageSquare, Intersect, LockSimple, Timer } from "@phosphor-icons/react/ssr";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { HeadGhost } from "@/components/heads/HeadGhost";
 import { usePool, usePoolPose, type Pose } from "@/components/pool/controller";
 import { DOT_ANGLE, LABEL_ANGLE_PHONE, onRing } from "@/components/pool/geometry";
-import { BASELINE_FRAMES, frame, landscapeness } from "@/components/pool/poses";
+import { BASELINE_FRAMES, fogFor, frame, landscapeness, rimBelow } from "@/components/pool/poses";
 import { useLensAnchor } from "@/components/pool/useLensAnchor";
 import { Gate } from "@/components/shell/Gate";
 import { Button, ButtonLink, curl, Pair } from "@/components/ui/primitives";
-import { CAPTURE, DONE, INTRO, LIGHT, VIEW_COPY, VIEW_LABEL, VIEWS } from "@/content/baseline";
+import { CAPTURE, DONE, INTRO, LIGHT, MONTHLY, VIEW_COPY, VIEW_LABEL, VIEWS } from "@/content/baseline";
 import { aboutHour, BASELINE_WEEK, nextPhotos, nextView, painterView, viewAfter } from "@/lib/baseline";
 import { encodeStill, lightStatus, photoId, stillFromFile, type Still } from "@/lib/camera";
 import { useJourney } from "@/lib/hooks/useJourney";
@@ -18,9 +18,10 @@ import { useReducedMotion } from "@/lib/hooks/useReducedMotion";
 import { useInstall } from "@/lib/install";
 import { seasonFor } from "@/lib/season";
 import type { Mode } from "@/lib/storage/keys";
-import { baselinePhotos, deletePhoto, getMask, keepPhoto, type PhotoRecord, type View } from "@/lib/storage/photos";
+import { baselinePhotos, deletePhoto, getMask, keepPhoto, photosOfWeek, type PhotoRecord, type View } from "@/lib/storage/photos";
 import { useApp } from "@/lib/storage/store";
-import { weekOf } from "@/lib/time/journey";
+import { effectiveNow } from "@/lib/time/clock";
+import { PHOTO_WEEKS, weekOf } from "@/lib/time/journey";
 import { Lens, LightMeter } from "./Lens";
 import { Painter } from "./Painter";
 import { useCamera, useLuminance, type Facing } from "./useCamera";
@@ -41,6 +42,10 @@ const fmtDay = (d: Date) => d.toLocaleDateString("en-GB", { day: "numeric", mont
  * Day-one photos (Phase 4): crown, hairline and parting through a round lens that sits at
  * the centre of the user's 24 rings, then an optional painter, then a short close. Every
  * kept photo lands like a drop and its ripple runs out over the whole plan.
+ *
+ * Monthly photos (Phase 7, `?week=8`): the same three views, with day one laid faintly over
+ * the camera and that week's ring lit at the lens's rim; no painter. `?step=paint` opens
+ * straight on the painter, and `then=projection` goes back to the illustration after it.
  */
 export function BaselineFlow() {
   return (
@@ -59,41 +64,69 @@ function Baseline() {
   const photoHour = useApp((s) => s.data.settings.photoHour);
   const update = useApp((s) => s.update);
   const router = useRouter();
+  const search = useSearchParams();
   const pool = usePool();
   const reduced = useReducedMotion();
   const { day, now } = useJourney();
+  const asked = Number(search.get("week"));
+  const photoWeek = (PHOTO_WEEKS as readonly number[]).includes(asked) ? asked : BASELINE_WEEK;
+  const monthly = photoWeek !== BASELINE_WEEK;
+  const paintFirst = !monthly && search.get("step") === "paint";
+  const then = !monthly && search.get("then") === "projection" ? "/mirror/projection/" : null;
 
   const [shots, setShots] = useState<Shots | null>(null);
   const [masked, setMasked] = useState<Partial<Record<View, boolean>>>({});
   const [step, setStep] = useState<Step | null>(null);
+  const [guides, setGuides] = useState<Partial<Record<View, string>>>({});
   const [said, setSaid] = useState("");
   const labelsRef = useRef<HTMLDivElement>(null);
   const urls = useRef(new Set<string>());
+  // The journey clock, read when the photos load: a demo plan holds photos dated after it.
+  const nowRef = useRef(now);
+  useEffect(() => {
+    nowRef.current = now;
+  });
 
   // What this namespace already holds: a return visit opens on the close, a half-done set on the intro.
   useEffect(() => {
     let cancelled = false;
     void (async () => {
-      const recs = await baselinePhotos(mode);
+      const recs = monthly ? await photosOfWeek(mode, photoWeek) : await baselinePhotos(mode);
       const found: Shots = {};
       const marks: Partial<Record<View, boolean>> = {};
       for (const v of VIEWS) {
         const rec = recs[v];
-        if (!rec) continue;
+        if (!rec || Date.parse(rec.takenAt) > nowRef.current.getTime()) continue;
         const url = URL.createObjectURL(rec.blob);
         urls.current.add(url);
         found[v] = { rec, url };
-        marks[v] = Boolean(await getMask(mode, rec.id));
+        if (!monthly) marks[v] = Boolean(await getMask(mode, rec.id));
+      }
+      // Monthly photos line up with day one: its photos go faintly over the camera.
+      const lineUp: Partial<Record<View, string>> = {};
+      if (monthly) {
+        const base = await baselinePhotos(mode);
+        for (const v of VIEWS) {
+          const rec = base[v];
+          if (!rec) continue;
+          const url = URL.createObjectURL(rec.blob);
+          urls.current.add(url);
+          lineUp[v] = url;
+        }
       }
       if (cancelled) return;
       setShots(found);
       setMasked(marks);
-      setStep((s) => s ?? (nextView(found) ? { kind: "intro" } : { kind: "done" }));
+      setGuides(lineUp);
+      setStep(
+        (s) =>
+          s ?? (paintFirst && VIEWS.some((v) => found[v]) ? { kind: "painter", back: "done" } : nextView(found) ? { kind: "intro" } : { kind: "done" }),
+      );
     })();
     return () => {
       cancelled = true;
     };
-  }, [mode]);
+  }, [mode, monthly, photoWeek, paintFirst]);
 
   useEffect(() => {
     const held = urls.current;
@@ -114,6 +147,9 @@ function Baseline() {
   );
   const hour = photoHour ?? now.getHours();
   const next = nextPhotos(profile.startDate, day ?? 1, hour);
+  /** After a set of monthly photos: the photo week that follows it, if any. */
+  const nextMonthly = PHOTO_WEEKS.find((w) => w > photoWeek) ?? null;
+  const nextRing = monthly ? (nextMonthly ?? 0) : next.week;
 
   const ready = step !== null && shots !== null;
   const kind = step?.kind ?? "intro";
@@ -137,15 +173,26 @@ function Baseline() {
         seasonTo: season.weeks?.[1] ?? 0,
         idle: 1,
       };
-      const rig = lensStep ? lensAt() : null;
-      if (rig) return { ...rig, ...scene, labels: 0, focus: 0, focusFrom: 0, focusTo: 0, idle: 0.6, dots: 0.55 };
-      if (kind === "done") return { ...frame(BASELINE_FRAMES.done, aspect), ...scene, labels: 1, focus: 1, focusFrom: next.week, focusTo: next.week };
-      return { ...frame(BASELINE_FRAMES.intro, aspect), ...scene, labels: 1, focus: 0, focusFrom: 0, focusTo: 0 };
+      // Monthly photos: this week's ring sits lit at the lens's rim, everything before it under the lens.
+      const rig = lensStep ? lensAt(monthly ? (radius: number) => rimBelow(photoWeek, radius) : undefined) : null;
+      if (rig)
+        return { ...rig, ...scene, ...(monthly ? { week: photoWeek } : {}), labels: 0, focus: 0, focusFrom: 0, focusTo: 0, idle: 0.6, dots: 0.55, fog: fogFor(rig) };
+      if (kind === "done")
+        return { ...frame(BASELINE_FRAMES.done, aspect), ...scene, labels: 1, focus: nextRing ? 1 : 0, focusFrom: nextRing, focusTo: nextRing, fog: 1 };
+      return {
+        ...frame(BASELINE_FRAMES.intro, aspect),
+        ...scene,
+        labels: 1,
+        focus: monthly ? 1 : 0,
+        focusFrom: monthly ? photoWeek : 0,
+        focusTo: monthly ? photoWeek : 0,
+        fog: 1,
+      };
     },
-    [kind, lensStep, lensAt, week, season, next.week],
+    [kind, lensStep, lensAt, week, season, nextRing, monthly, photoWeek],
   );
   // The key changes once the saved photos have loaded, so the first pose lands whichever arrives first, the pool or the photos.
-  usePoolPose(step ? make : null, step ? `${kind}|${week}|${next.week}` : "loading", { enter: { map: 0, ripple: 0.4 }, ms: 1300 });
+  usePoolPose(step ? make : null, step ? `${kind}|${week}|${nextRing}|${photoWeek}` : "loading", { enter: { map: 0, ripple: 0.4 }, ms: 1300 });
 
   // Labels on the rings: the photo days on the intro, the next photos at the close.
   useEffect(() => {
@@ -154,13 +201,13 @@ function Baseline() {
     const wide = landscapeness(pool.aspect) > 0.5;
     pool.setLabels([
       // Far enough out to read as a line of dots, near enough that the text stays on screen.
-      { el: el("photos"), at: onRing(wide ? 8 : 4, DOT_ANGLE), weight: () => (kind === "intro" ? 1 : 0) },
-      { el: el("next"), at: onRing(next.week, DOT_ANGLE), weight: () => (kind === "done" ? 1 : 0) },
-      { el: el("now"), at: onRing(Math.max(1, week), wide ? 0.55 : LABEL_ANGLE_PHONE + 3.4), weight: () => (kind === "done" && wide && week > 0 && week !== next.week ? 1 : 0) },
+      { el: el("photos"), at: onRing(monthly ? photoWeek : wide ? 8 : 4, DOT_ANGLE), weight: () => (kind === "intro" ? 1 : 0) },
+      { el: el("next"), at: onRing(Math.max(1, nextRing), DOT_ANGLE), weight: () => (kind === "done" && nextRing > 0 ? 1 : 0) },
+      { el: el("now"), at: onRing(Math.max(1, week), wide ? 0.55 : LABEL_ANGLE_PHONE + 3.4), weight: () => (kind === "done" && wide && week > 0 && week !== nextRing ? 1 : 0) },
     ]);
     return () => pool.setLabels([]);
     // `ready`: the label elements only exist once the saved photos have loaded.
-  }, [pool, ready, kind, next.week, week]);
+  }, [pool, ready, kind, nextRing, week, monthly, photoWeek]);
 
   const onKept = useCallback(
     (view: View, saved: Shot | null) => {
@@ -182,17 +229,21 @@ function Baseline() {
         update((s) => ({
           ...s,
           settings: s.settings.photoHour === undefined ? { ...s.settings, photoHour: new Date(saved.rec.takenAt).getHours() } : s.settings,
-          onboarding: complete && !s.onboarding.baselineDoneAt ? { ...s.onboarding, baselineDoneAt: new Date().toISOString() } : s.onboarding,
+          onboarding: complete && !monthly && !s.onboarding.baselineDoneAt ? { ...s.onboarding, baselineDoneAt: new Date().toISOString() } : s.onboarding,
         }));
         // With photos to protect, ask the browser not to clear this site's storage (DECISIONS 43).
         if (complete) void navigator.storage?.persist?.().catch(() => false);
       }
       const following = step.back === "done" ? null : viewAfter(view, after);
-      const target: Step = following ? { kind: "capture", view: following, back: step.back } : step.back === "done" ? { kind: "done" } : { kind: "painter", back: "flow" };
+      const target: Step = following
+        ? { kind: "capture", view: following, back: step.back }
+        : step.back === "done" || monthly
+          ? { kind: "done" }
+          : { kind: "painter", back: "flow" };
       // Let the still sink into the water before the next view opens.
       window.setTimeout(() => go(target), saved && !reduced ? 700 : 0);
     },
-    [step, shots, pool, update, go, reduced],
+    [step, shots, pool, update, go, reduced, monthly],
   );
 
   if (!shots || !step) return <div className="bl" aria-busy="true" />;
@@ -201,22 +252,25 @@ function Baseline() {
   const capIndex = step.kind === "capture" ? VIEWS.indexOf(step.view) : -1;
 
   const back = () => {
-    if (step.kind === "intro") return router.push(doneAt ? "/home/" : "/onboarding/?step=briefing");
+    if (step.kind === "intro") return router.push(monthly ? "/mirror/" : doneAt ? "/home/" : "/onboarding/?step=briefing");
     if (step.kind === "capture") {
       if (step.back === "done") return go({ kind: "done" });
       return go(capIndex > 0 ? { kind: "capture", view: VIEWS[capIndex - 1]!, back: "flow" } : { kind: "intro" });
     }
-    if (step.kind === "painter") return go(step.back === "done" ? { kind: "done" } : { kind: "capture", view: VIEWS[VIEWS.length - 1]!, back: "flow" });
+    if (step.kind === "painter") {
+      if (then) return router.push(then);
+      return go(step.back === "done" ? { kind: "done" } : { kind: "capture", view: VIEWS[VIEWS.length - 1]!, back: "flow" });
+    }
   };
 
   const hud =
     step.kind === "intro"
-      ? { count: `${taken} of 3`, chapter: INTRO.chapter }
+      ? { count: `${taken} of 3`, chapter: monthly ? MONTHLY.chapter(photoWeek) : INTRO.chapter }
       : step.kind === "capture"
         ? { count: `${capIndex + 1} of 3`, chapter: VIEW_COPY[step.view].name }
         : step.kind === "painter"
           ? { count: "Optional", chapter: "Your area" }
-          : { count: "All set", chapter: DONE.chapter };
+          : { count: "All set", chapter: monthly ? MONTHLY.chapter(photoWeek) : DONE.chapter };
 
   return (
     <section className="bl" data-step={step.kind} aria-labelledby="bl-title">
@@ -226,7 +280,7 @@ function Baseline() {
           className="ob-back"
           onClick={back}
           disabled={step.kind === "done"}
-          aria-label={step.kind === "intro" ? (doneAt ? "Back to Today" : "Back to the briefing") : "Back"}
+          aria-label={step.kind === "intro" ? (monthly ? MONTHLY.back : doneAt ? "Back to Today" : "Back to the briefing") : "Back"}
         >
           <ArrowLeft size={18} aria-hidden="true" />
         </button>
@@ -242,7 +296,11 @@ function Baseline() {
       </div>
 
       {step.kind === "intro" ? (
-        <Intro shots={shots} onStart={() => go({ kind: "capture", view: nextView(shots) ?? "crown", back: "flow" })} />
+        <Intro
+          shots={shots}
+          monthly={monthly ? { week: photoWeek, hour: photoHour === undefined ? null : aboutHour(photoHour) } : null}
+          onStart={() => go({ kind: "capture", view: nextView(shots) ?? "crown", back: "flow" })}
+        />
       ) : step.kind === "capture" ? (
         <Capture
           key={step.view}
@@ -250,6 +308,8 @@ function Baseline() {
           view={step.view}
           // Walking back through the set shows what was kept; "Retake" from the close goes straight to the camera.
           existing={step.back === "flow" ? (shots[step.view] ?? null) : null}
+          week={photoWeek}
+          guide={guides[step.view] ?? null}
           lensRef={lensRef}
           onKept={onKept}
         />
@@ -259,11 +319,12 @@ function Baseline() {
           shots={shots}
           first={painterView(profile.worries)}
           lensRef={lensRef}
-          onSkip={() => go({ kind: "done" })}
+          onSkip={() => (then ? router.push(then) : go({ kind: "done" }))}
           onDone={(painted) => {
             setMasked((m) => ({ ...m, ...painted }));
             setSaid(Object.values(painted).some(Boolean) ? "Area saved." : "");
-            go({ kind: "done" });
+            if (then) router.push(then);
+            else go({ kind: "done" });
           }}
         />
       ) : (
@@ -273,6 +334,7 @@ function Baseline() {
           masked={masked}
           next={next}
           hour={hour}
+          monthly={monthly ? { week: photoWeek, next: nextMonthly } : null}
           onRetake={(view) => go({ kind: "capture", view, back: "done" })}
           onPaint={() => go({ kind: "painter", back: "done" })}
           onDeleted={(view) => {
@@ -296,10 +358,10 @@ function Baseline() {
 
       <div ref={labelsRef} aria-hidden="true">
         <div className="pool-label" data-label="photos" data-tone="amber">
-          <span>Photos every four weeks</span>
+          <span>{monthly ? `Week ${photoWeek}, these photos` : "Photos every four weeks"}</span>
         </div>
         <div className="pool-label" data-label="next" data-tone="amber">
-          <span>Week {next.week}, next photos</span>
+          <span>Week {nextRing}, next photos</span>
         </div>
         <div className="pool-label" data-label="now" data-tone="accent">
           <span>{week > 0 ? `You are here, week ${week}` : ""}</span>
@@ -322,15 +384,22 @@ function Disc({ view, url, size = "sm" }: { view: View; url?: string; size?: "sm
   );
 }
 
-function Intro({ shots, onStart }: { shots: Shots; onStart: () => void }) {
+function Intro({ shots, monthly, onStart }: { shots: Shots; monthly: { week: number; hour: string | null } | null; onStart: () => void }) {
   const first = nextView(shots);
   const started = VIEWS.some((v) => shots[v]);
   return (
     <div className="bl-stage bl-open">
       <div className="bl-words">
-        <Pair id="bl-title" tabIndex={-1} title={INTRO.title} turn={INTRO.turn} className="ob-q ob-in" style={{ "--i": 0 } as React.CSSProperties} />
+        <Pair
+          id="bl-title"
+          tabIndex={-1}
+          title={monthly ? MONTHLY.title(monthly.week) : INTRO.title}
+          turn={monthly ? MONTHLY.turn : INTRO.turn}
+          className="ob-q ob-in"
+          style={{ "--i": 0 } as React.CSSProperties}
+        />
         <p className="bl-lead ob-in" style={{ "--i": 1 } as React.CSSProperties}>
-          {curl(INTRO.lead)}
+          {curl(monthly ? MONTHLY.lead(monthly.hour) : INTRO.lead)}
         </p>
         <ul className="bl-views ob-in" style={{ "--i": 2 } as React.CSSProperties} aria-label="The three photos">
           {VIEWS.map((v) => (
@@ -349,8 +418,8 @@ function Intro({ shots, onStart }: { shots: Shots; onStart: () => void }) {
         </ul>
         <div className="bl-actions ob-in" style={{ "--i": 3 } as React.CSSProperties}>
           <Button onClick={onStart}>{started && first ? INTRO.resume(VIEW_COPY[first].name) : INTRO.start}</Button>
-          <ButtonLink variant="quiet" href="/home/">
-            {curl(INTRO.later)}
+          <ButtonLink variant="quiet" href={monthly ? "/mirror/" : "/home/"}>
+            {curl(monthly ? MONTHLY.later : INTRO.later)}
           </ButtonLink>
         </div>
         <p className="bl-privacy ob-in" style={{ "--i": 4 } as React.CSSProperties}>
@@ -368,16 +437,25 @@ function Capture({
   mode,
   view,
   existing,
+  week,
+  guide,
   lensRef,
   onKept,
 }: {
   mode: Mode;
   view: View;
   existing: Shot | null;
+  /** 0 for day one, else the photo week. */
+  week: number;
+  /** For monthly photos: the day-one photo of this view, to line up with. */
+  guide: string | null;
   lensRef: React.RefObject<HTMLDivElement | null>;
   onKept: (view: View, saved: Shot | null) => void;
 }) {
   const copy = VIEW_COPY[view];
+  // Photos are dated by the journey clock, so a demo plan's day sees what was taken "today".
+  const startDate = useApp((s) => s.data.profile?.startDate ?? null);
+  const demoDay = useApp((s) => (s.mode === "demo" ? (s.data.demo?.day ?? null) : null));
   const [facing, setFacing] = useState<Facing>(copy.facing);
   const cam = useCamera(facing);
   const [pending, setPending] = useState<Pending | null>(
@@ -385,6 +463,7 @@ function Capture({
   );
   const [phase, setPhase] = useState<"live" | "count" | "review" | "saving">(existing ? "review" : "live");
   const [timer, setTimer] = useState(copy.timer);
+  const [guideOn, setGuideOn] = useState(true);
   const [count, setCount] = useState<number | null>(null);
   const [flash, setFlash] = useState(0);
   const [problem, setProblem] = useState<string | null>(null);
@@ -454,10 +533,10 @@ function Capture({
     if (pending.source === "saved" || !pending.still) return onKept(view, null);
     setPhase("saving");
     const rec: PhotoRecord = {
-      id: photoId(view, BASELINE_WEEK),
+      id: photoId(view, week),
       view,
-      week: BASELINE_WEEK,
-      takenAt: new Date().toISOString(),
+      week,
+      takenAt: effectiveNow(new Date(), startDate && demoDay ? { startDate, day: demoDay } : null).toISOString(),
       blob: pending.still.blob,
       width: pending.still.width,
       height: pending.still.height,
@@ -552,12 +631,19 @@ function Capture({
                   <span className="bl-tool-text">{CAPTURE.flip}</span>
                 </button>
               ) : null}
+              {guide ? (
+                <button type="button" className="bl-tool" data-guide aria-pressed={guideOn} onClick={() => setGuideOn((g) => !g)} disabled={phase === "count"}>
+                  <Intersect size={21} aria-hidden="true" />
+                  <span className="bl-tool-text">{MONTHLY.guide}</span>
+                </button>
+              ) : null}
             </>
           )}
         </div>
-        {!reviewing && !noCamera && timer ? (
+        {!reviewing && !noCamera && (timer || (guide && guideOn)) ? (
           <p className="bl-fine ob-in" style={{ "--i": 4 } as React.CSSProperties}>
-            {CAPTURE.timer} on. {CAPTURE.timerNote}
+            {guide && guideOn ? `${MONTHLY.guideNote} ` : ""}
+            {timer ? `${CAPTURE.timer} on. ${CAPTURE.timerNote}` : ""}
           </p>
         ) : reviewing && pending?.source === "file" ? (
           <p className="bl-fine">{CAPTURE.cropNote}</p>
@@ -589,9 +675,16 @@ function Capture({
           live={live && !reviewing}
           mirrored={cam.mirrored}
           still={reviewing ? (pending?.url ?? null) : null}
+          guide={guide && guideOn && live ? guide : null}
           count={count}
           flash={flash}
-          label={reviewing ? `Your ${copy.name.toLowerCase()} photo.` : `Camera view for your ${copy.name.toLowerCase()} photo, with an outline to line up with.`}
+          label={
+            reviewing
+              ? `Your ${copy.name.toLowerCase()} photo.`
+              : guide && guideOn
+                ? `Camera view for your ${copy.name.toLowerCase()} photo, with your day-one photo faintly over it.`
+                : `Camera view for your ${copy.name.toLowerCase()} photo, with an outline to line up with.`
+          }
         />
       </div>
     </div>
@@ -604,6 +697,7 @@ function Done({
   masked,
   next,
   hour,
+  monthly,
   onRetake,
   onPaint,
   onDeleted,
@@ -613,6 +707,7 @@ function Done({
   masked: Partial<Record<View, boolean>>;
   next: { week: number; at: Date };
   hour: number;
+  monthly: { week: number; next: number | null } | null;
   onRetake: (view: View) => void;
   onPaint: () => void;
   onDeleted: (view: View) => void;
@@ -634,15 +729,29 @@ function Done({
         <Pair
           id="bl-title"
           tabIndex={-1}
-          title={complete ? DONE.title : DONE.partialTitle}
-          turn={complete ? DONE.turn(next.week) : DONE.partialTurn}
+          title={monthly ? (complete ? MONTHLY.doneTitle(monthly.week) : MONTHLY.partialTitle(monthly.week)) : complete ? DONE.title : DONE.partialTitle}
+          turn={
+            monthly
+              ? complete
+                ? monthly.next
+                  ? MONTHLY.doneTurn(monthly.next)
+                  : MONTHLY.lastTurn
+                : DONE.partialTurn
+              : complete
+                ? DONE.turn(next.week)
+                : DONE.partialTurn
+          }
           className="ob-q ob-in"
           style={{ "--i": 0 } as React.CSSProperties}
         />
         <p className="bl-lead ob-in" style={{ "--i": 1 } as React.CSSProperties}>
-          {DONE.lead(fmtDay(next.at), aboutHour(hour))}
+          {monthly ? curl(MONTHLY.doneLead) : DONE.lead(fmtDay(next.at), aboutHour(hour))}
         </p>
-        <ul className="bl-views bl-views-done ob-in" style={{ "--i": 2 } as React.CSSProperties} aria-label="Your day-one photos">
+        <ul
+          className="bl-views bl-views-done ob-in"
+          style={{ "--i": 2 } as React.CSSProperties}
+          aria-label={monthly ? MONTHLY.listLabel(monthly.week) : "Your day-one photos"}
+        >
           {VIEWS.map((v) => (
             <li key={v}>
               <Disc view={v} url={shots[v]?.url} size="lg" />
@@ -678,14 +787,25 @@ function Done({
           ))}
         </ul>
         <div className="bl-actions ob-in" style={{ "--i": 3 } as React.CSSProperties}>
-          <ButtonLink href="/home/">{DONE.go}</ButtonLink>
-          {any ? (
-            <Button variant="quiet" onClick={onPaint}>
-              {anyMask ? DONE.repaint : DONE.paint}
-            </Button>
-          ) : null}
+          {monthly ? (
+            <>
+              <ButtonLink href={`/mirror/?week=${monthly.week}`}>{MONTHLY.compare}</ButtonLink>
+              <ButtonLink variant="quiet" href="/home/">
+                {DONE.go}
+              </ButtonLink>
+            </>
+          ) : (
+            <>
+              <ButtonLink href="/home/">{DONE.go}</ButtonLink>
+              {any ? (
+                <Button variant="quiet" onClick={onPaint}>
+                  {anyMask ? DONE.repaint : DONE.paint}
+                </Button>
+              ) : null}
+            </>
+          )}
         </div>
-        <InstallNudge />
+        {monthly ? null : <InstallNudge />}
       </div>
     </div>
   );

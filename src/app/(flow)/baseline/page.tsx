@@ -1,8 +1,13 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { BaselineFlow } from "./BaselineFlow";
 
-export const metadata: Metadata = { title: "Day-one photos" };
+export const metadata: Metadata = { title: "Photos" };
 
 export default function Page() {
-  return <BaselineFlow />;
+  return (
+    <Suspense>
+      <BaselineFlow />
+    </Suspense>
+  );
 }

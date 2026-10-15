@@ -2,7 +2,7 @@
 
 import { ArrowSquareOut, Check, Drop } from "@phosphor-icons/react/ssr";
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { checkinSheet } from "@/components/checkin/sheet";
 import { HeadGhost } from "@/components/heads/HeadGhost";
 import { usePool, usePoolPose, type Pose } from "@/components/pool/controller";
@@ -16,14 +16,14 @@ import { VIEW_COPY } from "@/content/baseline";
 import { PRODUCT_WORDS, TODAY } from "@/content/today";
 import { painterView } from "@/lib/baseline";
 import { cohortGlance } from "@/lib/cohort";
-import { ensureDemoPhotos } from "@/lib/demo/photos";
 import { activeSlots, isDone, setDose, slotItems, streak, type Slot } from "@/lib/doses";
 import { useJourney } from "@/lib/hooks/useJourney";
 import { useReducedMotion } from "@/lib/hooks/useReducedMotion";
 import { REORDER_PROMPT_DAYS, reorderAllowed, runway } from "@/lib/runway";
 import { seasonFor } from "@/lib/season";
-import type { Mode } from "@/lib/storage/keys";
-import { listPhotos, type PhotoRecord, type View } from "@/lib/storage/photos";
+import { useLatestProjection, usePhotos, type Shot } from "@/lib/hooks/usePhotos";
+import { baselineDay, firstPhotoWeek } from "@/lib/mirror";
+import type { View } from "@/lib/storage/photos";
 import { useApp } from "@/lib/storage/store";
 import { Breathe, WhyLink } from "@/components/insight/WhyAndBreathe";
 import { LetterReadButton } from "@/components/letter/Letter";
@@ -34,34 +34,6 @@ import { addDays, dateOfDay, greetingWord, nextPhotoWeek, phasePhrase, progress,
 import "./today.css";
 
 const fmtDay = (d: Date) => d.toLocaleDateString("en-GB", { day: "numeric", month: "long" });
-
-type Shot = { rec: PhotoRecord; url: string };
-
-/** Photos for Today, from this namespace. Demo mode draws its sample heads first, once. */
-function usePhotos(mode: Mode, persona: string | null, startDate: string): Shot[] | null {
-  const [shots, setShots] = useState<Shot[] | null>(null);
-  useEffect(() => {
-    let cancelled = false;
-    const urls: string[] = [];
-    void (async () => {
-      if (mode === "demo" && persona) await ensureDemoPhotos(persona as Parameters<typeof ensureDemoPhotos>[0], startDate);
-      const list = await listPhotos(mode);
-      if (cancelled) return;
-      setShots(
-        list.map((rec) => {
-          const url = URL.createObjectURL(rec.blob);
-          urls.push(url);
-          return { rec, url };
-        }),
-      );
-    })();
-    return () => {
-      cancelled = true;
-      urls.forEach((u) => URL.revokeObjectURL(u));
-    };
-  }, [mode, persona, startDate]);
-  return shots;
-}
 
 /**
  * Today (Phase 5): the plan seen from above on the pool, the greeting in two voices, the
@@ -85,6 +57,7 @@ function Today() {
   const day = rawDay ?? 1;
   const week = day >= 1 ? Math.min(24, weekOf(day)) : 0;
   const shots = usePhotos(mode, data.demo?.persona ?? null, profile.startDate);
+  const projection = useLatestProjection(mode);
 
   // Only what has happened by now (demo mode carries the whole plan).
   const seen = useMemo(() => (shots ?? []).filter((s) => Date.parse(s.rec.takenAt) <= now.getTime()), [shots, now]);
@@ -104,6 +77,7 @@ function Today() {
         // Until the photos have loaded, assume they exist rather than nag for them.
         hasBaseline: shots === null ? true : hasBaseline,
         photoWeeks: [...new Set(seen.map((s) => s.rec.week))],
+        firstPhotoWeek: firstPhotoWeek(baselineDay(seen.map((s) => s.rec), profile.startDate) ?? 1),
         letter: data.letter,
         intercepts: data.intercepts,
         insightLog: data.insightLog,
@@ -173,7 +147,7 @@ function Today() {
             }
           />
           <Mates startDate={profile.startDate} day={day} />
-          <Projection />
+          <Projection url={projection} />
           <section className="td-stop" aria-labelledby="td-stop">
             <div>
               <h2 id="td-stop" className="td-h">
@@ -227,7 +201,7 @@ function NoteBlock({ note, first, hasBaseline, letterReady }: { note: Insight; f
         ) : null;
       case "photos":
         return hasBaseline ? (
-          <ButtonLink variant="quiet" href="/mirror" className="h-11 px-5">
+          <ButtonLink variant="quiet" href={note.photoWeek ? `/baseline/?week=${note.photoWeek}` : "/mirror/"} className="h-11 px-5">
             {note.photoWeek ? TODAY.takeWeek(note.photoWeek) : TODAY.openMirror}
           </ButtonLink>
         ) : (
@@ -507,11 +481,17 @@ function Mates({ startDate, day }: { startDate: string; day: number }) {
   );
 }
 
-function Projection() {
+function Projection({ url }: { url: string | null }) {
   return (
     <section className="td-projection" aria-labelledby="td-projection">
-      <span className="td-proj-disc" aria-hidden="true">
-        <HeadGhost view="crown" />
+      <span className="td-proj-disc" data-photo={url ? true : undefined} aria-hidden="true">
+        {url ? (
+          // The illustration drawn on this device; the line under the title says what it is.
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={url} alt="" width={160} height={160} />
+        ) : (
+          <HeadGhost view="crown" />
+        )}
       </span>
       <h2 id="td-projection" className="td-h">
         {TODAY.projection}

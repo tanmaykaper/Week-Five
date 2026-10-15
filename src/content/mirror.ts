@@ -1,0 +1,102 @@
+/**
+ * The mirror and the week-24 illustration. Source of truth: docs/CONTENT_BANK.md,
+ * "Mirror and projection". Every turn line sets an expectation for the comparison it
+ * sits on: the app's whole job is to make the wait readable, not to sell the result.
+ */
+
+export const MIRROR = {
+  title: "Day one and now.",
+  /** The serif turn, by the photo week day one is compared with. */
+  turn: {
+    4: "Four weeks in. Expect no change yet.",
+    8: "Eight weeks in. Still early to judge.",
+    12: "Twelve weeks in. Look, don't measure.",
+    16: "Sixteen weeks in. Fine hairs come first.",
+    20: "Twenty weeks in. Nearly a fair test.",
+    24: "Twenty four weeks. Now it's a fair test.",
+  } as Record<number, string>,
+  turnAlone: "Day one, on its own for now.",
+  turnEmpty: "Day one comes first.",
+  empty: "No photos yet. Two minutes, and future you will thank you.",
+  takeDayOne: "Take day-one photos",
+  caveat: "These photos are for you. Light and angle change how hair looks.",
+  drag: (week: number) => `Drag to compare day one with week ${week}`,
+  ghost: "Show day-one outline",
+  light: "These two were taken in different light. Compare carefully.",
+  dayOne: "Day one",
+  week: (week: number) => `Week ${week}`,
+  sample: "Sample drawings for the demo, not photos of anyone.",
+  views: "Photo",
+
+  strip: "Compare day one with",
+  stripCompare: (week: number, date: string) => `Compare with week ${week}, ${date}`,
+  stripTake: (week: number) => `Take week ${week} photos`,
+  stripLater: (week: number, date: string) => `Week ${week} photos, around ${date}`,
+  stripMissed: (week: number) => `Week ${week} photos, missed`,
+  stripEarly: (week: number) => `Week ${week} photos, not needed`,
+  due: "Due",
+  late: "Late",
+  missed: "Missed",
+  notNeeded: "Not needed",
+
+  /** The prompt when a photo week is open. */
+  takeTitle: (week: number, status: "due" | "late" | "rest") =>
+    status === "late" ? `Week ${week} photos are a few days late.` : status === "rest" ? `The rest of your week ${week} photos.` : `Week ${week} photos are due.`,
+  takeBody: (hour: string | null) => (hour ? `Same spot as day one, around ${hour}. Tonight works.` : "Same spot and light as day one. Tonight works."),
+  take: (week: number) => `Take week ${week} photos`,
+  takeRest: "Take the rest",
+  firstNext: (week: number, date: string) => `Your first monthly photos are in week ${week}, around ${date}.`,
+  next: (week: number, date: string) => `Next photos in week ${week}, around ${date}.`,
+  projection: "What week 24 can look like",
+
+  // The sheet.
+  daysTitle: "Photo days",
+  saved: "Saved",
+  savedSome: (n: number) => `${n} of 3`,
+  dueNow: "Due now",
+  aFewDaysLate: "A few days late",
+  missedNoHarm: "Missed, no harm done",
+  tooSoon: "Too soon after day one",
+  around: (date: string) => `Around ${date}`,
+  compare: "Compare",
+  takePhotos: "Take photos",
+  retake: "Retake",
+  projectionTitle: "What week 24 can look like.",
+  projectionNote: "An illustration of a typical outcome, not a promise.",
+  seeProjection: "See the illustration",
+  tipsTitle: "Photos that compare",
+  tips: (hour: string | null) => [
+    "Same spot, same window, every time.",
+    hour ? `Around ${hour}, the hour of your day-one photos.` : "The same time of day as your day-one photos.",
+    "Dry hair, combed the way you usually wear it.",
+    "The camera shows day one faintly. Line up with it.",
+  ],
+};
+
+export const PROJECTION = {
+  chapter: "Week 24 illustration",
+  back: "Back to the mirror",
+  thinkingTitle: "Drawing week 24.",
+  thinkingTurn: "On this phone, from your day-one photo.",
+  stages: ["Reading your baseline", "Marking the area", "Estimating a typical outcome"] as const,
+  stageDone: "Done",
+  title: "What week 24 can look like.",
+  turn: "One typical case, drawn on day one.",
+  time: "Most visible change, if it comes, shows up between month four and six. This picture is to help you picture the wait, not to predict your result.",
+  drag: "Drag to compare day one with the illustration",
+  dayOne: "Day one",
+  illustration: "Week 24, illustration",
+  ringLabel: "Week 24, an illustration",
+  done: "Done",
+  repaint: "Change the marked area",
+  howTitle: "How this picture is made",
+  how: "It's drawn on this phone from your day-one photo. Inside the area you marked, it adds fine hairs and lets a little less scalp show, always at the same small strength. Nothing is uploaded, and it isn't a medical image. It can't tell you what will happen to you.",
+  emptyPhoto: "Take your day-one photos first.",
+  emptyMask: "Paint the area you're watching first. Takes ten seconds.",
+  markArea: "Mark the area",
+  takeDayOne: "Take day-one photos",
+  failed: "This phone couldn't draw the illustration. Try again, or come back to it later.",
+  retry: "Try again",
+  views: "Photo",
+  ready: "Illustration ready.",
+};

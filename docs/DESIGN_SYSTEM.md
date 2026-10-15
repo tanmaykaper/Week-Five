@@ -23,6 +23,7 @@ Treatment is one small drop a day, and nothing visible happens for a while. In v
 - **Setup is the map being drawn.** Each answer changes the water: the city puts rain on the right weeks, the start date lights your week, the briefing lights the weeks each card is about.
 - **Today is the map from above.** The progress ring is the rings themselves: weeks behind you firmer, your week lit, the shed window, rains and photo days on the water, and other people's drops landing once. A sheet rises over the water, like paper floating on it, with the day's routine and everything else.
 - **The map is the rings, travelled.** Stepping through the weeks moves the camera outward ring by ring and lights the one you chose. Week pages keep the same water (one pool for the map and its pages), so going from week 7 to week 8 is a camera move, not a page load.
+- **The mirror holds day one in the middle.** Day one sits in a round lens at the centre of the rings, the later photo beside it behind a divider. Choosing a later week raises the camera: the weeks in between pass under the lens and the chosen week's ring sits lit at its rim. The week-24 illustration is the same move taken to the end, until the whole plan is under the lens.
 - **Before you stop puts day one back in the middle.** The day-one photo sits at the centre of the rings, where day one is; then the camera pulls back to show where you are and where week 24 is.
 - **Day one is the middle of the map.** The camera for the baseline photos is a round lens set exactly at the centre of the rings, seen from straight above; weeks 5 to 24 spread out around it. Keeping a photo drops it into the water and its ripple runs out across all 24 weeks.
 
@@ -135,6 +136,11 @@ The sans line fits one line on desktop (copy is written to about 24 characters);
 | Stop options | Three identical rows (same size, tone and weight), the pause row opens a date field in place |
 | Doctor page | A white card with tone-stepped facts, a plain table of check-ins, questions and the disclaimer; prints on its own |
 | Check-in sheet | Native `<dialog>`: bottom sheet (28 px corners) on phones, a 500 px panel from the right on wide screens. Answers are pills; the scale deepens from ink to accent as it goes; red flags fill alert when ticked |
+| Compare lens | `CompareLens`: the camera lens's glass (6 px rim, the one shadow), `min(64svh, 42vw, 620px)` wide, `min(100vw minus gutters, 44svh, 520px)` on phones. Day one left, the later photo right of a 2 px white divider; a 48 px surface handle with two carets is the slider. Drag anywhere sideways; vertical drags still scroll. The outline lays day one at 35 percent over the right side |
+| Photo strip | Six round photos, 56 px (fluid on phones), one per photo week, the week and date under each. Chosen: an accent ring with a surface gap. Due: amber fill and ring with a plus. Upcoming, missed, too soon: a dashed outline |
+| Photo days | Tone-stepped rows like the week list: name and date, the three photos at 44 px (outline drawings at 38 percent when missing), a status tag (ok for saved, amber for due or late), then Take photos, Retake or Compare |
+| Thinking steps | Three rows with a 22 px mark: empty ring next, a pulsing accent ring now, an ink disc with a tick done. The week count runs beside the last stage |
+| Illustration label | Info tone pill under the lens, the full width of the lens, with an info icon: "An illustration of a typical outcome, not a promise. Results vary." Never on the picture |
 
 ## The pool (3D)
 
@@ -145,6 +151,7 @@ The sans line fits one line on desktop (copy is written to about 24 characters);
 - **State:** two plain objects, `rig` (camera) and `state` (dropper, drop, ripple, map, week, rain, focus, labels). GSAP scrubs them in the intro; pages glide between named poses with `usePoolPose`; the engine draws only when something changed or the water is meant to move.
 - **Budget:** pixel ratio capped at 1.5; transforms and one draw per frame; measured 60 fps average and a 16.8 ms p95 frame with the CPU slowed 4x, on phone and desktop sizes. The live lens (camera, light meter and pool together) measured 60 fps and a 16.7 ms p95 the same way.
 - **Today:** measured 60 fps and a 16.7 ms p95 frame with the CPU slowed 4x, on phone and desktop. `setPaused()` stops drawing whenever the sheet covers the water (zero draws once scrolled past the hero). `landCohort()` runs the cohort's drops on their own clock. `setPalette()` swaps day and night water.
+- **Added in Phase 7:** `fog` in the scene state (default 1) stretches the fog for views from high above; `lensRig()` takes the week at the lens's rim, and `rimBelow(week, radius)` picks the rim that leaves that week's ring about 24 px outside the glass at any size. The mirror holds 60 fps and the illustration's sequence 59.4 fps (p95 16.7 ms) with the CPU slowed 4x.
 - **Helpers added in Phase 4:** `lensRig()` aims the camera straight down with the rings' centre under an element on the page; `setOffset()` keeps it there while the page scrolls; `splash()` drops a ripple from the centre on its own clock; `reframe()` changes the framing on resize without stopping a glide.
 
 ## Motion
@@ -172,6 +179,9 @@ The sans line fits one line on desktop (copy is written to about 24 characters);
 | Check-in sheet | Rises 40 percent (420 ms) on phones, slides in from the right on wide screens | It comes from the bar you tapped |
 | Mark done | One ring leaves the button (560 ms) | The drop landed |
 | Keep (to 0.82, fading, 680 ms, `--ease-swell`) while `splash()` sends a ripple across the rings (about 2.5 s) | The photo lands like a drop on day one |
+| Mirror week change | Camera glides 1.3 s; the weeks in between pass under the lens, the chosen ring lands lit at the rim | Time passing is distance travelled |
+| Divider | Follows the pointer with no easing; the illustration's reveal glides it from the right edge to the middle, 1.1 s `--ease-swell` | Your hand moves it; the reveal shows what changed |
+| Thinking | Each of three stages (1.2 s) breathes the lens once (scale 1.012) and sends one ripple out from under it; reading passes a band of light over the photo; marking washes the painted area in the accent; estimating raises the camera (1.1 s) until week 24 sits at the rim | A pulse you can watch, built from the same drop and rings |
 
 Reduced motion: the intro becomes a calm sequence that cuts between the same 3D poses every 4 s with Pause, Next and Skip; the water stops moving; setup cuts between questions; everything renders at rest.
 
