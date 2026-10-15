@@ -437,3 +437,12 @@ Phase 7 (source `src/content/mirror.ts`, monthly capture in `src/content/baselin
 
 ## Reference keys
 kaliyadan2013, shadi2023, oliver1980, kahneman1979, odonoghue1999, kivetz2006, kunz2009, hsiang2018, taylor1978, cialdini1984, mcguire1961, bernstein, aafp, leaflet (the product's own pack leaflet), routine (the routine rule table). Full citations in `HANDOFF.md` section 12.
+
+## Added in the last run (Phases 8 to 12)
+The strings live with their screens; these files are the source of truth now:
+- Routine suggestions and labels: `src/content/routines.ts` (13 rules, always under "General guidance. Follow your pack leaflet or your doctor.").
+- Supply, the reorder and reminders: `src/content/supply.ts` and `REMINDER_COPY` in `src/lib/reminders.ts` (the 10-day and 3-day lines above are used as written).
+- Journey mates: `src/content/mates.ts` (the templates, phrases and production panel above, plus "started today" and the invite text).
+- You: `src/content/profile.ts`.
+- Hinglish: `src/content/hinglish.ts`, the nine setup questions and one line for each of the 52 insight cards (plus the fallback and not-started lines), in Roman script. Same rules: no dashes, no doses, short and kind.
+- Phone view: "Phone view. The same app, in one hand." and "It's live: tap around. It shares this window's data, and closing it brings the big screen to wherever the phone was."

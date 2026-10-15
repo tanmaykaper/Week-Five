@@ -226,7 +226,11 @@ One step per screen on the pool, HUD with back, "1 of 4", the chapter, ticks and
 4. **Most people who feel this way are in weeks three to seven.** Three equal rows: Keep going / Pause with a plan (opens a date) / Talk to a doctor. Then "Close without choosing".
 Outcomes: Kept going; Paused until {date} with the calendar file; For your doctor (one printable page). `/pause/?step=doctor` opens the doctor page directly.
 
-## `/mates`
+## `/mates`, v3 (built)
+Hero on the pool: "Mates" and the Demo community pill, "People who started when you did." with "8 of them are in week 5 with you." in the serif, initials in drops, Invite a friend; the cohort's drops land on the rings with four names. Sheet: "This fortnight" events with a Nudge each (round on phones) on the left, "How this would work for real." and the invite on the right. Captures: `node artifacts/tools/v3-rest.mjs <dir> <base> [desk|tab|phone] mates`.
+
+The v2 wireframe it replaced:
+
 Phone
 ```
 +------------------------------+
@@ -246,7 +250,11 @@ Phone
 ```
 Desktop: feed column left (7 cols, hairline rows), production notes as the one panel on the right (5 cols).
 
-## `/reorder`
+## `/reorder` (nav: from Today's Supply), v3 (built)
+Hero on the pool: "Supply" and the pack, "About 22 days left." with "Your regrowth solution runs out around 6 November." in the serif, the level with bought and runs-out dates, then the reorder (at 10 days or fewer), the held sentence, or "Nothing to do yet", and Add reminders to calendar; the rings light the weeks the pack covers. Sheet: Your packs and Add a pack on the left, Coming up on the right.
+
+The v2 wireframe it replaced:
+
 Phone
 ```
 +------------------------------+
@@ -264,7 +272,11 @@ Phone
 ```
 Desktop: centred column, max 640.
 
-## `/profile`
+## `/profile` (nav label: You), v3 (built)
+Hero on the pool: "Arjun." with "Day 35 of 168, all of it on this phone." in the serif, the lead, three facts (wide screens), Your plan and Export or delete. Sheet, left: Your plan (seven rows that open in place), Routine (times, gap, week strip, suggestions, guidance, daily times calendar). Right: Reminders, Look (theme, language), Sample data, More, Thinking of stopping.
+
+The v2 wireframe it replaced:
+
 Phone
 ```
 +------------------------------+
@@ -338,3 +350,17 @@ Independent concept line
  { Persona: ( Steady ) ( Worried ) ( Monsoon, quick-commerce ) }
  { ( Leave demo ) }
 ```
+
+## Phone view (wide screens, every page)
+```
++--------------------------------------------------------------------------+
+| Phone view.                                            ( x Back to full view )
+| The same app, in one hand.           .----------.
+| It's live: tap around...             | 9:41  == |
+| ( 360 |[390]| 430 ) (reload)         | Week Five|
+| 390 by 844                           |  ...     |   the live app at 390 wide
+|                                      |  tabs    |
+|                                      '----------'
++--------------------------------------------------------------------------+
+```
+Under 1100 px the caption is one row along the top and the phone sits under it. The tab that opens it is on the right edge, halfway down.

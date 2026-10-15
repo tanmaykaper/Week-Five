@@ -1,5 +1,6 @@
 import { RED_FLAG_LABELS, SHED_WORDS, WORRY_WORDS } from "@/content/checkin";
 import { PRODUCT_WORDS } from "@/content/today";
+import { INSIGHTS_HI, type Lang } from "@/content/hinglish";
 import RAW from "@/content/insights.json";
 import { daysSince, pauseState } from "@/lib/pause";
 import type { Season } from "@/lib/season";
@@ -71,6 +72,8 @@ export interface InsightContext {
   intercepts: Intercept[];
   insightLog: { id: string; on: ISODate }[];
   rollerNights: number[];
+  /** Hinglish swaps in the card's Hinglish line; the choice of card never changes. */
+  lang?: Lang;
 }
 
 export interface Insight {
@@ -229,7 +232,8 @@ export function pickInsight(c: InsightContext): Insight {
     const resting = restingIds(c.insightLog, c.now);
     card = serious ?? eligible.find((x) => x.priority >= 80 || !resting.has(x.id)) ?? eligible[0] ?? FALLBACK;
   }
-  const variant = card.variants[hash(`${today}:${card.id}`) % 2]!;
+  const english = card.variants[hash(`${today}:${card.id}`) % 2]!;
+  const variant = c.lang === "hinglish" ? (INSIGHTS_HI[card.id] ?? english) : english;
   const photoWeek = card.when.photoWindow ?? (card.when.photoOverdue ? d.overdueWeek : null);
   const text = variant
     .replace("{w}", String(photoWeek ?? ""))

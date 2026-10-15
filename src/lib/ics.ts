@@ -1,7 +1,7 @@
 /**
  * Calendar files (.ics) built on the device: no server, no account. Times are "floating"
  * (local wall-clock time), so 08:00 stays 08:00 wherever the phone is. Phase 5's pause
- * restart uses one event; Phase 8 adds the full set of reminders.
+ * restart uses one event; lib/reminders.ts builds the full set and the daily times.
  */
 
 export interface CalendarEvent {
@@ -11,6 +11,8 @@ export interface CalendarEvent {
   /** Local date and time. */
   start: Date;
   minutes?: number;
+  /** An RFC 5545 repeat rule, such as "FREQ=DAILY;COUNT=120". */
+  rrule?: string;
 }
 
 const pad = (n: number) => String(n).padStart(2, "0");
@@ -39,6 +41,7 @@ export function icsCalendar(events: CalendarEvent[], now = new Date()): string {
       `DTSTAMP:${utcStamp(now)}`,
       `DTSTART:${stamp(e.start)}`,
       `DTEND:${stamp(end)}`,
+      ...(e.rrule ? [`RRULE:${e.rrule}`] : []),
       fold(`SUMMARY:${escapeText(e.title)}`),
       ...(e.description ? [fold(`DESCRIPTION:${escapeText(e.description)}`)] : []),
       "END:VEVENT",

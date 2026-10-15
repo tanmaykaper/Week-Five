@@ -1,5 +1,6 @@
 import { LetterDialog } from "@/components/letter/Letter";
 import { CheckinBar } from "@/components/shell/CheckinBar";
+import { Reminders } from "@/components/shell/Reminders";
 import { SiteFooter } from "@/components/shell/SiteFooter";
 import { SiteHeader } from "@/components/shell/SiteHeader";
 import { TabBar } from "@/components/shell/TabBar";
@@ -15,6 +16,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         Skip to content
       </a>
       <SiteHeader />
+      <Reminders />
       <main id="main" className="wrap">
         {children}
       </main>

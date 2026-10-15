@@ -125,11 +125,13 @@ Idea: ask for the reorder after reassurance, never during doubt.
 - Banner at 10 days and 3 days left. `.ics` reminder events at the same points.
 - Sequencing rule: no reorder prompt on any screen that shows a check-in with shed or worry 3+, and no reorder prompt until 24 hours after such a check-in. Unit tested.
 - The action opens manmatters.com in a new tab (`rel="noopener noreferrer"`). No cart, no payments.
+- Built in Phase 8 (`/reorder`, nav label Supply, linked from Today): the hero on the pool lights the weeks the newest pack still covers, with the level, bought and runs-out dates, the reorder link (at 10 days or fewer, held with a plain sentence within 24 hours of an uneasy check-in, snooze for 3 days), and the calendar file. The sheet lists the packs (newest sets the runway, two-tap remove), adds one by hand, and shows what is coming up. Scanning a pack's QR after setup offers "Add this pack" on the welcome screen; its products join the routine.
 
 ### F13. Routine and timing (`/profile` routine section, Today card)
 - Suggestions from `src/content/routines.ts`: which slots, spacing between morning and evening, roller nights kept separate from the solution, gummies with food, travel day tips.
 - Always labelled "General guidance. Follow your pack leaflet or your doctor." with a link to talk to a doctor.
 - Never a dose, strength or prescription. Age band and city change copy and default times only.
+- Built in Phase 8: 13 rules in `src/content/routines.ts`, picked in `src/lib/routine.ts`. You shows the times (with the gap in hours), a Monday-first week strip with roller nights to tap, the suggestions, the guidance line with Talk to a doctor, and an opt-in calendar file of the daily times.
 
 ### F14. Monthly mirror (`/mirror`)
 Idea: goal-gradient plus honest comparison.
@@ -155,15 +157,22 @@ Idea: social proof (Cialdini 1984) without comparison.
 - Send a nudge: pick a phrase or emoji, plays a local animation, logged in `nudgesSent`.
 - Panel explaining how opt-in, nicknames and no photo sharing would work for real.
 - Invite a friend via Web Share API, with copy-link fallback.
+- Built in Phase 9 (`src/lib/providers/cohort/`, `/mates`): the hero on the pool lands the cohort's drops again every 16 s and names four of them as they land; the sheet has a fortnight of events (finished a week, took photos, checked in, wrote a note, started, the start week's count), a nudge sheet with four phrases and four emoji (your ripple goes out across the rings, logged in `nudgesSent`), the production panel and the invite.
 
 ### F17. Reminders
 - `.ics` download with check-ins (weekly), photo days, letter reveal, reorder points and a restart date if paused.
 - Notification API: permission asked only after the user switches it on in onboarding or Profile. Notifications fire while the app or installed PWA is open, plus an in-app banner on open for anything due. True scheduled push needs a server and is out of scope (logged in DECISIONS).
+- Built in Phase 8: `src/lib/reminders.ts` (schedule, calendar events, daily events, the due item), `src/lib/notify.ts`, `components/shell/Reminders.tsx` (banner and notifications) and a `notificationclick` handler in the service worker.
 
 ### F18. Profile, data and About
 - Edit every onboarding answer, routine times, reminders, theme, language.
 - Export JSON, delete everything (two-step).
 - About: the problem in three sentences, the two predictions Mosaic can test, references, "independent concept" line, medical disclaimer, replay intro.
+- Built in Phase 10: You on the pool with every setup answer editable in place, routine, reminders, theme, language (English or Hinglish for the setup story and the daily notes), sample data, links and the way out. Your data shows the storage used.
+
+### F20. Phone view
+- A side button on the right edge of every screen 768 px and wider opens a white page with the live app inside a phone at its centre (an iframe of the current page at 360, 390 or 430 wide, with a status bar and home strip that take the page's colours).
+- It shares the window's data; the big screen's pool pauses while it is open; Escape or "Back to full view" closes it and the big screen moves to wherever the phone was. Never shown inside the phone itself or on phones.
 
 ### F19. Demo mode
 - Switch on the welcome screen and in Profile, labelled "Try it with sample data". Loads one of three fictional personas into the separate demo namespace.

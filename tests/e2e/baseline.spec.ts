@@ -45,7 +45,7 @@ test.describe("with a camera", () => {
     await page.getByRole("button", { name: "Done", exact: true }).click();
 
     await expect(title(page)).toHaveText(/Day one, recorded\. See you in week 4\./);
-    await expect(page.getByText(/^Next photos around \d+ \w+, at about \d+ (am|pm)\. Same spot, same light\.$/)).toBeVisible();
+    await expect(page.getByText(/^Next photos around \d+ \w+, at about (\d+ (am|pm)|midday|midnight)\. Same spot, same light\.$/)).toBeVisible();
     expect(await horizontalOverflow(page)).toBeLessThanOrEqual(0);
     expect(await storedPhotos(page)).toEqual({
       photos: [

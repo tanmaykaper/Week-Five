@@ -47,7 +47,7 @@ export function DemoChip() {
         aria-expanded={open}
         aria-controls={panelId}
         onClick={() => setOpen((o) => !o)}
-        className="inline-flex h-9 items-center gap-2 rounded-md border border-line-strong px-3 text-sm font-medium text-text-2 transition-colors duration-150 ease-settle hover:border-text-3 hover:text-ink"
+        className="inline-flex h-9 items-center gap-2 rounded-md border whitespace-nowrap border-line-strong px-3 text-sm font-medium text-text-2 transition-colors duration-150 ease-settle hover:border-text-3 hover:text-ink"
       >
         <span className="size-1.5 rounded-full bg-today-dot" aria-hidden="true" />
         Demo, day <span className="num">{day}</span>

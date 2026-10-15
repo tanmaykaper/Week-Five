@@ -202,3 +202,23 @@ export function weekFrame(n: number): Framing {
     phoneZoom: 1.55,
   };
 }
+
+/** Mates: the rings from above and to one side, wide enough to see other people's drops land. */
+export const MATES_FRAME: Framing = {
+  cam: [3.2, 9.2, 6.4],
+  at: [0.2, 0, -0.1],
+  fov: 34,
+  shift: [0.24, 0.02],
+  phoneShift: [0, -0.3],
+  phoneZoom: 1.9,
+};
+
+/** You: the whole plan, calm, from a low angle on the right. */
+export const PROFILE_FRAME: Framing = {
+  cam: [-1.2, 4.6, 7.4],
+  at: [0.8, 0, -0.2],
+  fov: 32,
+  shift: [0.24, 0.08],
+  phoneShift: [0, -0.3],
+  phoneZoom: 1.6,
+};

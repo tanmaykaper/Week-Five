@@ -12,6 +12,9 @@ Everything is stored in the user's own browser. Nothing is sent anywhere. The ap
 | Intro seen flag | inside `settings` in the main document | | Per namespace |
 | Theme (`system`, `light`, `dark`) | localStorage | `weekfive:theme` | Read by an inline head script before first paint; shared by real and demo |
 | Active namespace (`real` or `demo`) | localStorage | `weekfive:mode` | Survives reloads, so a reviewer stays in demo |
+| Banners hidden today | localStorage | `weekfive:banners` (id to date) | A device convenience; only today's entries are kept |
+| Notifications already shown | localStorage | `weekfive:notified` (last 80 ids) | So a reminder notifies once per device |
+| Phone view width | localStorage | `weekfive:phone-size` | Remembers 360, 390 or 430 for the next time |
 
 On first run the app calls `navigator.storage.persist()` so the browser is less likely to evict data. See the risk list in BUILD_DOC for Safari's 7-day eviction rule.
 

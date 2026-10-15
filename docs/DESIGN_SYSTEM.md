@@ -1,6 +1,6 @@
 # Design system (v3, 14 October 2026)
 
-Phase 5 (Today) is the first app page on v3. v1 drew the app as a phone mockup with glow and glass; Tanmay rejected it. v2 was a calm document of hairlines and serif greetings; he found it plain and asked for an Awwwards-style, 3D, light design that flows like two references he picked: Turion Space (awwwards.com/sites/turion-space) and Morpho (morphowater.com). v3 is that direction, built and running for the intro, the welcome screen and setup. Today and the rest of the app move to v3 in their own phases (5 onward); until then they wear the v3 tokens, type and buttons on the v2 layouts.
+Every app page is on v3: Today, the map and its weeks, the mirror and the illustration, Before you stop, and (from the last run) Supply, Mates and You. Your data and About stay plain reading pages. v1 drew the app as a phone mockup with glow and glass; Tanmay rejected it. v2 was a calm document of hairlines and serif greetings; he found it plain and asked for an Awwwards-style, 3D, light design that flows like two references he picked: Turion Space (awwwards.com/sites/turion-space) and Morpho (morphowater.com). v3 is that direction, built and running for the intro, the welcome screen and setup. Today and the rest of the app move to v3 in their own phases (5 onward); until then they wear the v3 tokens, type and buttons on the v2 layouts.
 
 ## What the references taught
 
@@ -141,6 +141,15 @@ The sans line fits one line on desktop (copy is written to about 24 characters);
 | Photo days | Tone-stepped rows like the week list: name and date, the three photos at 44 px (outline drawings at 38 percent when missing), a status tag (ok for saved, amber for due or late), then Take photos, Retake or Compare |
 | Thinking steps | Three rows with a 22 px mark: empty ring next, a pulsing accent ring now, an ink disc with a tick done. The week count runs beside the last stage |
 | Illustration label | Info tone pill under the lens, the full width of the lens, with an info icon: "An illustration of a typical outcome, not a promise. Results vary." Never on the picture |
+| Stage page | `components/ui/stage.css` and `StagePool`: Supply, Mates and You. The hero on the water (kicker, two-voice title, one line or level, actions), then the sheet on a 7 + 5 grid with the side column sticky. On phones whatever the sheet repeats leaves the hero |
+| Level | 12 px pill: what is left of the pack in the accent (amber at 10 days or less). It drains in from full to where it is now (1.4 s) |
+| Rows | Tone-stepped `--sunk` rows (18 px outer corners) with a white mini pill on the right: packs, plan answers, events, settings |
+| Edit in place | A plan row opens into its editor (chips, select, date or text) with Save and Cancel; one open at a time |
+| Week strip | Seven days, Monday first: a blue dot for the morning, an ink dot for the evening, an R to tap for roller nights (info tint when on) |
+| Reminder banner | A white slip under the header (20 px corners, the float shadow), a tone dot, one sentence, a round action, hide until tomorrow. Arrives 1.1 s after the page; scrolls away with it |
+| Nudge sheet | The shared `Sheet`: phrases and emoji as chips; sent shows the phrase rising off two spreading rings and "Sent." in the serif |
+| Phone view tab | A 44 px wide tab on the right edge, vertical "Phone view" with a phone icon, frosted surface; slides out 3 px on hover like a side button being found |
+| Phone view | A white page; the caption top left (top row under 1100 px), the widths 360, 390 and 430 as a segmented control, reload, "Back to full view" top right; the phone centred: graphite frame, 58 px corners, island, side buttons, scaled to fit. It rises in over 820 ms after the page fades up |
 
 ## The pool (3D)
 
@@ -182,6 +191,10 @@ The sans line fits one line on desktop (copy is written to about 24 characters);
 | Mirror week change | Camera glides 1.3 s; the weeks in between pass under the lens, the chosen ring lands lit at the rim | Time passing is distance travelled |
 | Divider | Follows the pointer with no easing; the illustration's reveal glides it from the right edge to the middle, 1.1 s `--ease-swell` | Your hand moves it; the reveal shows what changed |
 | Thinking | Each of three stages (1.2 s) breathes the lens once (scale 1.012) and sends one ripple out from under it; reading passes a band of light over the photo; marking washes the painted area in the accent; estimating raises the camera (1.1 s) until week 24 sits at the rim | A pulse you can watch, built from the same drop and rings |
+| Supply level | Drains from full to what is left, 1.4 s after 0.4 s | The pack being used, not a static bar |
+| Mates | The cohort's drops land again every 16 s; each name appears as its drop lands; a nudge sends your own ripple across the rings | Other people are on the same water |
+| Reminder banner | Rises 10 px into place after 1.1 s, 640 ms | It arrives after the page has settled, like a note slid under the door |
+| Phone view | White page fades up (380 ms); the phone rises 36 px from 0.965 (820 ms, 70 ms delay); the caption follows (620 ms, 220 ms delay); closing drops it 14 px (260 ms) | Something set down on a table, then picked up |
 
 Reduced motion: the intro becomes a calm sequence that cuts between the same 3D poses every 4 s with Pause, Next and Skip; the water stops moving; setup cuts between questions; everything renders at rest.
 

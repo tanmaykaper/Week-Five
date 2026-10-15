@@ -177,3 +177,27 @@
 - The Desktop folder still syncs to iCloud (decision 132).
 
 **Next step:** Tanmay reviews Phase 7. On "go", Phase 8: routine, reorder and reminders.
+
+## 2026-10-15, Phases 8 to 12 in one run, plus the phone view
+
+Tanmay asked to finish the whole app in this run instead of phase by phase, and to add a button that shows the site inside a phone.
+
+**Done**
+- **Phone view:** a side button on the right edge of every wide screen opens a white page with the live app inside a phone at its centre (360, 390 or 430 wide, status bar and home strip in the page's colours, reload). It shares this window's data, the big screen's pool pauses underneath, and closing it brings the big screen to wherever the phone was. Hidden on phones and inside the phone itself.
+- **Phase 8, routine, supply and reminders:** the routine rule table and suggestions; Supply (`/reorder`) on the pool with the weeks the pack covers lit, the level, the reorder only after reassurance (held for 24 hours after an uneasy check-in, with a sentence saying so), snooze, packs (add by hand, remove, scan a second pack after setup), what is coming up; one reminder schedule for the calendar file, an opt-in daily-times calendar file with repeat rules, the in-app banner (one due thing at a time) and notifications while the app is open, with a tap opening the right page through the service worker.
+- **Phase 9, journey mates:** `CohortProvider` with `LocalSimCohort` and a switched-off `RemoteCohort`; Mates on the pool with the cohort's drops landing and their names, a fortnight of events, local nudges (your ripple crosses the rings), the production panel and invite (share sheet or copied link).
+- **Phase 10, You and data:** every setup answer editable in place, routine times, the week strip with roller nights, suggestions, reminders, theme, Hinglish for the setup story and the daily notes (also switchable on the welcome screen), sample data, storage used on Your data.
+- **Phase 11 and 12:** a shared stage grammar for app pages, the phone header holding at 360, README for judges, MIT licence, GitHub Pages workflow, docs updated. Not pushed.
+
+**Checks:** `pnpm check` (lint, types, 136 unit tests, copy check, build). End-to-end: 160 pass across phone, tablet and desktop (2 skipped by design), 13 of them new (supply runway and pack, the reorder hold, a second pack scan, mates and a nudge, editing an answer, Hinglish, routine times, the banner, the phone view), plus 108 phase screenshots in light and dark with no page errors. Frames for Supply, Mates, You and the phone view at 1440, 1024 and 390 in light and dark (`node artifacts/tools/v3-rest.mjs <dir> <base> [desk|tab|phone|all]`). Not measured this run: frame rates of the new pages (they reuse the pool and pause it under the sheet like Today).
+
+**Fixed on the way:** the welcome screen crashed on a first visit (a store selector returned a new empty list every render); a camera test assumed photo hours never land at midday.
+
+**Decisions:** 153 to 172.
+
+**Known issues**
+- The phone view needs a same-origin page, so it works locally and on GitHub Pages, not inside a third-party frame.
+- Notifications fire only while the app is open (by design: scheduled push needs a server).
+- The Desktop folder still syncs to iCloud (decision 132).
+
+**Next step:** Tanmay reviews the whole app and the phone view. Then push to GitHub and switch Pages to GitHub Actions.

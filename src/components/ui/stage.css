@@ -1,0 +1,467 @@
+/* App pages on the pool (Supply, Mates, You): the same grammar as Today and the map. A hero
+   on the water, words left and rings right, then a sheet that rises over it like paper.
+   Inside the sheet: open sections, tone-stepped rows, tone-filled controls, no boxes. */
+
+.st {
+  position: relative;
+}
+
+/* ---------- hero, on the water ---------- */
+.st-hero {
+  position: relative;
+  display: grid;
+  align-content: end;
+  min-height: calc(100svh - var(--header-h));
+  padding: clamp(150px, 32svh, 320px) 0 calc(var(--tabs-h) + 96px + env(safe-area-inset-bottom));
+}
+@media (min-width: 768px) {
+  .st-hero {
+    min-height: calc(100svh - var(--header-h) - 48px);
+    padding-bottom: 120px;
+  }
+}
+@media (min-width: 960px) {
+  .st-hero {
+    align-content: center;
+    padding: 24px 0 112px;
+  }
+}
+.st-words {
+  max-width: 560px;
+}
+@media (min-width: 960px) and (max-width: 1199px) {
+  .st-words {
+    max-width: 470px;
+  }
+}
+.st-kicker {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-2);
+}
+.st-pair {
+  margin-top: 12px;
+  font-size: clamp(2.375rem, 1.5rem + 2.7vw, 3.75rem);
+}
+.st-pair > span + span {
+  font-size: 0.9em;
+  max-width: 16em;
+}
+.st-lead {
+  margin-top: 18px;
+  max-width: 42ch;
+  font-size: var(--t-lead);
+  line-height: 1.55;
+  color: var(--text-2);
+}
+.st-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 26px;
+}
+.st-line {
+  margin-top: 18px;
+  max-width: 44ch;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--text-2);
+}
+
+/* ---------- the sheet ---------- */
+.st-sheet {
+  position: relative;
+  z-index: 3;
+  margin-inline: calc(50% - 50vw);
+  margin-bottom: calc(var(--section) * -1);
+  padding-block: clamp(44px, 6vw, 80px) calc(var(--section) + 32px);
+  border-radius: 32px 32px 0 0;
+  background: var(--surface);
+  box-shadow:
+    0 -1px 0 color-mix(in srgb, var(--ink) 6%, transparent),
+    0 -40px 80px -56px rgba(10, 18, 30, 0.45);
+}
+.st-grid {
+  display: grid;
+  gap: clamp(56px, 7vw, 96px);
+}
+@media (min-width: 960px) {
+  .st-grid {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    align-items: start;
+  }
+  .st-side {
+    position: sticky;
+    top: calc(var(--header-h) + 32px);
+  }
+}
+.st-main,
+.st-side {
+  display: grid;
+  gap: 56px;
+  min-width: 0;
+}
+.st-h {
+  font-size: 1.125rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+}
+.st-h + .st-body {
+  margin-top: 6px;
+}
+.st-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 16px;
+  margin-bottom: 18px;
+}
+.st-body {
+  max-width: 48ch;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: var(--text-2);
+}
+.st-fine {
+  margin-top: 12px;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--text-3);
+}
+.st-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--text-2);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--ink) 25%, transparent);
+  text-underline-offset: 4px;
+}
+.st-link:hover {
+  color: var(--ink);
+  text-decoration-color: currentColor;
+}
+.st-status {
+  min-height: 24px;
+  margin-top: 12px;
+  font-size: 0.875rem;
+  color: var(--text-2);
+}
+
+/* Tone-stepped rows: the first and last carry the big corners. */
+.st-rows {
+  display: grid;
+  gap: 3px;
+}
+.st-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 4px 16px;
+  min-height: 64px;
+  padding: 12px 12px 12px 18px;
+  border-radius: 6px;
+  background: var(--sunk);
+}
+.st-rows > :first-child {
+  border-top-left-radius: 18px;
+  border-top-right-radius: 18px;
+}
+.st-rows > :last-child {
+  border-bottom-left-radius: 18px;
+  border-bottom-right-radius: 18px;
+}
+.st-row-main {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+.st-row-title {
+  font-weight: 500;
+  line-height: 1.35;
+}
+.st-row-sub {
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: var(--text-2);
+}
+.st-row-end {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+.st-row[data-open] {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+/* A quiet panel for the one aside that needs a ground. */
+.st-panel {
+  padding: 26px 28px;
+  border-radius: 22px;
+  background: var(--sunk);
+}
+.st-panel .st-h {
+  margin-bottom: 10px;
+}
+
+/* Small pill buttons inside rows. */
+.st-mini {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 0.875rem;
+  font-weight: 500;
+  white-space: nowrap;
+  transition:
+    background-color 200ms var(--ease-settle),
+    color 200ms var(--ease-settle),
+    transform 140ms var(--ease-settle);
+}
+.st-mini:hover {
+  background: color-mix(in srgb, var(--ink) 6%, var(--surface));
+}
+.st-mini:active {
+  transform: scale(0.96);
+}
+.st-mini[data-tone="danger"] {
+  color: var(--alert);
+}
+.st-mini[data-tone="primary"] {
+  background: var(--action);
+  color: var(--on-action);
+}
+.st-mini[data-tone="primary"]:hover {
+  background: var(--action-hover);
+}
+.st-mini:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* ---------- fields and choices ---------- */
+.st-form {
+  display: grid;
+  gap: 14px;
+}
+.st-label {
+  display: grid;
+  gap: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-2);
+}
+.st-field {
+  width: 100%;
+  min-height: 52px;
+  padding: 0 16px;
+  border-radius: 16px;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 1rem;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ink) 10%, transparent);
+  transition: box-shadow 160ms var(--ease-settle);
+}
+.st-row .st-field,
+.st-panel .st-field {
+  background: var(--surface);
+}
+.st-field:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--accent);
+}
+select.st-field {
+  appearance: none;
+  padding-right: 44px;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--text-2) 50%),
+    linear-gradient(135deg, var(--text-2) 50%, transparent 50%);
+  background-position:
+    calc(100% - 22px) 50%,
+    calc(100% - 16px) 50%;
+  background-size: 6px 6px;
+  background-repeat: no-repeat;
+}
+.st-field[type="time"],
+.st-field[type="date"] {
+  font-variant-numeric: tabular-nums;
+}
+
+.st-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.st-chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ink) 10%, transparent);
+  transition:
+    background-color 200ms var(--ease-settle),
+    color 200ms var(--ease-settle),
+    transform 140ms var(--ease-settle);
+}
+.st-chip:active {
+  transform: scale(0.97);
+}
+.st-chip[aria-pressed="true"],
+.st-chip[aria-checked="true"] {
+  background: var(--ink);
+  color: var(--bg);
+  box-shadow: none;
+}
+
+/* A segmented choice: theme, language. */
+.st-seg {
+  display: inline-flex;
+  flex-wrap: wrap;
+  padding: 3px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ink) 6%, transparent);
+}
+.st-seg > button {
+  min-height: 40px;
+  padding: 0 16px;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-2);
+  transition:
+    background-color 200ms var(--ease-settle),
+    color 200ms var(--ease-settle);
+}
+.st-seg > button[aria-checked="true"] {
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: 0 1px 2px rgba(15, 30, 51, 0.12);
+}
+
+/* Switch: 46 by 28, action blue when on. */
+.st-switch {
+  position: relative;
+  flex: none;
+  width: 46px;
+  height: 28px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ink) 16%, transparent);
+  transition: background-color 220ms var(--ease-settle);
+}
+.st-switch::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(15, 30, 51, 0.25);
+  transition: transform 260ms var(--ease-settle);
+}
+.st-switch[aria-checked="true"] {
+  background: var(--action);
+}
+.st-switch[aria-checked="true"]::after {
+  transform: translateX(18px);
+}
+
+/* Initials in drops, overlapping like ripples. */
+.st-faces {
+  display: flex;
+  align-items: center;
+}
+.st-faces > span {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--surface);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--bg) 80%, transparent);
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+.st-faces > span + span {
+  margin-left: -9px;
+}
+.st-faces > span:last-child[data-more] {
+  background: var(--ink);
+  color: var(--bg);
+  font-size: 0.8125rem;
+}
+
+/* The level: what's left of the pack, as one pill. */
+.st-level {
+  position: relative;
+  height: 12px;
+  margin-top: 26px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--ink) 9%, transparent);
+  overflow: hidden;
+}
+.st-level > i {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: 6px;
+  background: var(--accent);
+  transform-origin: 0 50%;
+}
+.st-level[data-low] > i {
+  background: var(--today-dot);
+}
+@media (prefers-reduced-motion: no-preference) {
+  /* The level drains in to where it is now: what you've used, then what's left. */
+  .st-level > i {
+    animation: st-drain 1400ms var(--ease-settle) 400ms both;
+  }
+}
+@keyframes st-drain {
+  from {
+    transform: scaleX(var(--from, 1));
+  }
+}
+.st-level-labels {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 10px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-2);
+}
+
+/* Phones: the rings take the top, the words end above the check-in bar and the tabs. What the
+   sheet repeats anyway leaves the hero, so the actions stay in reach. */
+@media (max-width: 767px) {
+  .st-hero {
+    padding-top: clamp(120px, 24svh, 260px);
+  }
+  .st-phone-hide {
+    display: none;
+  }
+}

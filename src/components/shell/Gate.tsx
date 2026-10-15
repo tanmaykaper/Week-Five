@@ -51,14 +51,3 @@ function NoPlan() {
     </section>
   );
 }
-
-/** Marks a screen or block that a later phase fills in, so the review build is honest about it. */
-export function Upcoming({ phase, children }: { phase: number; children: ReactNode }) {
-  return (
-    <div className="reveal mt-12 max-w-2xl border-t border-line pt-6" style={{ "--i": 4 } as React.CSSProperties}>
-      <p className="text-sm text-text-3">
-        Built in phase {phase}. {children}
-      </p>
-    </div>
-  );
-}

@@ -38,6 +38,18 @@ self.addEventListener("activate", (event) => {
   );
 });
 
+// A reminder tapped while the app is in the background opens the page it is about.
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  const href = (event.notification.data && event.notification.data.href) || BASE + "/home/";
+  event.waitUntil((async () => {
+    const all = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
+    const open = all.find((c) => new URL(c.url).origin === self.location.origin);
+    if (open) { await open.focus(); return open.navigate(href); }
+    return self.clients.openWindow(href);
+  })());
+});
+
 self.addEventListener("fetch", (event) => {
   const req = event.request;
   if (req.method !== "GET") return;

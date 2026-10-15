@@ -8,7 +8,10 @@ import { usePoolPose } from "@/components/pool/controller";
 import { frame, WELCOME_FRAME, WELCOME_STATE } from "@/components/pool/poses";
 import { Gate } from "@/components/shell/Gate";
 import { Button, ButtonLink, Pair } from "@/components/ui/primitives";
+import { LANG_SWITCH } from "@/content/hinglish";
 import { skuByCode } from "@/content/skus";
+import { SUPPLY } from "@/content/supply";
+import { addPack } from "@/lib/runway";
 import { setupInProgress } from "@/lib/onboarding";
 import { parseStartParams } from "@/lib/params";
 import { useApp } from "@/lib/storage/store";
@@ -17,6 +20,8 @@ import { parseISODate } from "@/lib/time/journey";
 const welcomePose = (aspect: number) => ({ ...frame(WELCOME_FRAME, aspect), ...WELCOME_STATE });
 
 const noop = () => () => {};
+/** A stable empty list, so the store selector never hands back a new array. */
+const NO_PACKS: never[] = [];
 /** Read once per page load: the head script marks a first visit before anything renders. */
 let firstVisitFlag: boolean | undefined;
 const readFirstVisit = () => (firstVisitFlag ??= document.documentElement.dataset.intro === "pending");
@@ -48,6 +53,10 @@ export function StartScreen({
   const enterDemo = useApp((s) => s.enterDemo);
   const midway = useApp((s) => s.mode === "real" && setupInProgress(s.data));
   const resumeAt = useApp((s) => s.data.onboarding.step);
+  const planReady = useApp((s) => s.mode === "real" && s.data.profile !== null && Boolean(s.data.onboarding.completedAt));
+  const packs = useApp((s) => s.data.profile?.packs ?? NO_PACKS);
+  const lang = useApp((s) => s.data.settings.lang);
+  const update = useApp((s) => s.update);
   const router = useRouter();
 
   const playing = introOpen || introRunning;
@@ -79,14 +88,18 @@ export function StartScreen({
           className="wrap grid min-h-[calc(100dvh-var(--header-h))] content-end pt-[34dvh] pb-[clamp(28px,6dvh,72px)] lg:content-center lg:pt-0 lg:pb-[calc(var(--header-h)+24px)]"
         >
           <div className="max-w-[640px]">
-            {parsed.kind === "ok" ? (
+            {planReady && parsed.kind === "ok" ? (
+              <Pair title={SUPPLY.welcomeBackTitle} turn={SUPPLY.welcomeBackTurn} className="reveal" style={{ fontSize: "var(--t-hero)", "--i": 0 } as React.CSSProperties} />
+            ) : parsed.kind === "ok" ? (
               <Pair title="Welcome." turn="Let's set up your plan." className="reveal" style={{ fontSize: "var(--t-hero)", "--i": 0 } as React.CSSProperties} />
             ) : (
               <Pair title="Let's set up" turn="your plan." className="reveal" style={{ fontSize: "var(--t-hero)", "--i": 0 } as React.CSSProperties} />
             )}
 
             <p className="reveal mt-6 max-w-[42ch] text-lead text-text-2" style={{ "--i": 1 } as React.CSSProperties}>
-              {parsed.kind === "ok"
+              {planReady && parsed.kind === "ok"
+                ? SUPPLY.welcomeBackLead
+                : parsed.kind === "ok"
                 ? "One question at a time, about two minutes. You can change anything later."
                 : parsed.kind === "bad"
                   ? "We couldn't read that code. Pick your products instead, it takes a minute."
@@ -112,6 +125,29 @@ export function StartScreen({
               </div>
             ) : null}
 
+            {planReady && parsed.kind === "ok" ? (
+              <div className="reveal mt-8 flex flex-wrap items-center gap-3" style={{ "--i": 3 } as React.CSSProperties}>
+                {packs.some((p) => p.sku === parsed.params.sku && p.reg === parsed.params.reg && (p.batch ?? "") === (parsed.params.batch ?? "")) ? (
+                  <>
+                    <p className="w-full text-text-2">{SUPPLY.alreadyAdded}</p>
+                    <ButtonLink href="/reorder">{SUPPLY.kicker}</ButtonLink>
+                  </>
+                ) : (
+                  <Button
+                    onClick={() => {
+                      const { sku, reg, batch } = parsed.params;
+                      update((s) => ({ ...s, profile: addPack(s.profile!, { sku, reg, batch, scannedAt: new Date().toISOString() }) }));
+                      router.push("/reorder");
+                    }}
+                  >
+                    {SUPPLY.addThis}
+                  </Button>
+                )}
+                <ButtonLink variant="quiet" href="/home">
+                  Go to Today
+                </ButtonLink>
+              </div>
+            ) : (
             <div className="reveal mt-8 flex flex-wrap items-center gap-3" style={{ "--i": 3 } as React.CSSProperties}>
               <ButtonLink href={parsed.kind === "ok" ? `/onboarding/?${search.toString()}` : "/onboarding/"}>
                 {midway ? `Carry on from question ${Math.min(resumeAt + 1, 9)}` : "Start setup"}
@@ -126,8 +162,29 @@ export function StartScreen({
                 Try it with sample data
               </Button>
             </div>
+            )}
 
-            <p className="reveal mt-8 flex max-w-[46ch] items-start gap-3 text-sm text-text-2" style={{ "--i": 4 } as React.CSSProperties}>
+            {planReady ? null : (
+              <div className="reveal mt-6 flex items-center gap-3 text-sm text-text-2" style={{ "--i": 4 } as React.CSSProperties}>
+                <span id="lang-label">{LANG_SWITCH.label}</span>
+                <div role="radiogroup" aria-labelledby="lang-label" className="inline-flex rounded-full bg-ink/[0.06] p-[3px]">
+                  {(["en", "hinglish"] as const).map((l) => (
+                    <button
+                      key={l}
+                      type="button"
+                      role="radio"
+                      aria-checked={lang === l}
+                      onClick={() => update((s) => ({ ...s, settings: { ...s.settings, lang: l } }))}
+                      className="min-h-10 rounded-full px-4 font-medium transition-colors duration-200 ease-settle aria-checked:bg-surface aria-checked:text-ink aria-checked:shadow-sm"
+                    >
+                      {LANG_SWITCH[l]}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <p className="reveal mt-8 flex max-w-[46ch] items-start gap-3 text-sm text-text-2" style={{ "--i": 5 } as React.CSSProperties}>
               <LockSimple size={18} className="mt-px shrink-0 text-ink" aria-hidden="true" />
               <span>
                 <span className="font-medium text-ink">Your details and photos stay on this phone.</span> No account,

@@ -1,0 +1,410 @@
+/* Phone view: a side button on the right edge of the screen, and an empty white page with
+   the live app inside a phone at its centre. */
+
+/* ---------- the side button ---------- */
+.pv-tab {
+  position: fixed;
+  top: 50%;
+  right: 0;
+  z-index: 70;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 11px 18px 13px;
+  border-radius: 16px 0 0 16px;
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: var(--ink);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.005em;
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--ink) 7%, transparent),
+    var(--float-shadow);
+  transform: translate(3px, -50%);
+  transition:
+    transform 320ms var(--ease-settle),
+    background-color 200ms var(--ease-settle);
+}
+.pv-tab span {
+  writing-mode: vertical-rl;
+  white-space: nowrap;
+}
+/* Pressed in like a real side button, it slides out a little on hover. */
+.pv-tab:hover {
+  transform: translate(0, -50%);
+  background: var(--surface);
+}
+.pv-tab:active {
+  transform: translate(1px, -50%) scale(0.97);
+}
+.pv-tab:focus-visible {
+  outline-offset: -4px;
+}
+@media (min-width: 768px) {
+  .pv-tab {
+    display: flex;
+  }
+}
+@media print {
+  .pv-tab {
+    display: none !important;
+  }
+}
+
+/* ---------- the white page ---------- */
+.pv {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  max-width: none;
+  height: 100dvh;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: #ffffff;
+  color: #0f1e33;
+  overflow: hidden;
+  /* The page around the phone is always daylight white, whatever the app's theme. */
+  --ink: #0f1e33;
+  --text-2: #45546a;
+  --text-3: #536074;
+  --accent: #22548a;
+  --action: #22548a;
+  --surface: #ffffff;
+  --sunk: #eef2f6;
+  color-scheme: light;
+}
+.pv::backdrop {
+  background: transparent;
+}
+.pv[open] {
+  display: block;
+}
+
+/* Caption: top left on wide screens, a bar along the top otherwise. */
+.pv-caption {
+  position: absolute;
+  top: 32px;
+  left: clamp(24px, 3vw, 48px);
+  width: 252px;
+}
+.pv-pair {
+  font-size: 1.625rem;
+}
+.pv-pair > span + span {
+  font-size: 1.12em;
+  margin-top: 0.08em;
+}
+.pv-note {
+  margin-top: 16px;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: var(--text-2);
+}
+.pv-tools {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 22px;
+}
+.pv-sizes {
+  display: inline-flex;
+  padding: 3px;
+  border-radius: 999px;
+  background: var(--sunk);
+}
+.pv-sizes > button {
+  min-width: 52px;
+  height: 38px;
+  padding: 0 12px;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-2);
+  transition:
+    background-color 200ms var(--ease-settle),
+    color 200ms var(--ease-settle);
+}
+.pv-sizes > button[aria-checked="true"] {
+  background: var(--ink);
+  color: #fff;
+}
+.pv-icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  background: var(--sunk);
+  color: var(--ink);
+  transition: background-color 200ms var(--ease-settle);
+}
+.pv-icon:hover {
+  background: #e3e9ef;
+}
+.pv-size {
+  margin-top: 12px;
+  font-size: 0.8125rem;
+  color: var(--text-3);
+}
+
+.pv-close {
+  position: absolute;
+  top: 28px;
+  right: clamp(24px, 3vw, 48px);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 18px 0 15px;
+  border-radius: 999px;
+  background: var(--sunk);
+  color: var(--ink);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  transition:
+    background-color 200ms var(--ease-settle),
+    transform 140ms var(--ease-settle);
+}
+.pv-close:hover {
+  background: #e3e9ef;
+}
+.pv-close:active {
+  transform: scale(0.97);
+}
+
+/* Under 1100 px the caption becomes one row along the top and the phone sits below it. */
+.pv:not([data-wide]) .pv-caption {
+  top: 20px;
+  left: 16px;
+  right: 220px;
+  width: auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+}
+.pv:not([data-wide]) .pv-pair {
+  font-size: 1.25rem;
+}
+.pv:not([data-wide]) .pv-pair > span {
+  display: inline;
+}
+.pv:not([data-wide]) .pv-note,
+.pv:not([data-wide]) .pv-size {
+  display: none;
+}
+.pv:not([data-wide]) .pv-tools {
+  margin-top: 0;
+}
+.pv:not([data-wide]) .pv-close {
+  top: 20px;
+  right: 16px;
+}
+
+/* ---------- the phone ---------- */
+.pv-stage {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+.pv:not([data-wide]) .pv-stage {
+  inset: 112px 0 24px;
+}
+.pv-fit {
+  position: relative;
+  pointer-events: auto;
+}
+.pv-device {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 12px;
+  border-radius: 58px;
+  background: linear-gradient(145deg, #1c2129 0%, #0b0e13 48%, #161a21 100%);
+  box-shadow:
+    inset 0 0 0 1.5px #343a45,
+    inset 0 0 0 4px #0b0e13,
+    0 60px 90px -40px rgba(15, 30, 51, 0.45),
+    0 24px 40px -24px rgba(15, 30, 51, 0.35);
+  transform-origin: 0 0;
+}
+/* Side buttons: power on the right, volume on the left. */
+.pv-device::before,
+.pv-device::after {
+  content: "";
+  position: absolute;
+  width: 4px;
+  border-radius: 2px;
+  background: #23282f;
+}
+.pv-device::before {
+  right: -3px;
+  top: 190px;
+  height: 96px;
+}
+.pv-device::after {
+  left: -3px;
+  top: 214px;
+  height: 52px;
+  box-shadow: 0 -66px 0 0 #23282f;
+}
+.pv-screen {
+  position: relative;
+  display: grid;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 46px;
+  background: #f1f4f7;
+  isolation: isolate;
+}
+.pv-status {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 30px 0 38px;
+  color: #0f1e33;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  transition: background-color 300ms var(--ease-settle);
+}
+.pv-status[data-dark] {
+  color: #f4f7fb;
+}
+.pv-glyphs {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.pv-glyphs svg {
+  fill: currentColor;
+}
+.pv-island {
+  position: absolute;
+  top: 11px;
+  left: 50%;
+  width: 118px;
+  height: 33px;
+  margin-left: -59px;
+  border-radius: 20px;
+  background: #050608;
+}
+.pv-view {
+  position: relative;
+  overflow: hidden;
+  background: #f1f4f7;
+}
+.pv-view iframe {
+  display: block;
+  border: 0;
+  background: transparent;
+  opacity: 0;
+  transition: opacity 420ms var(--ease-settle);
+}
+.pv-view iframe[data-loaded] {
+  opacity: 1;
+}
+.pv-loading {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: #f1f4f7;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .pv-loading svg {
+    animation: pv-breathe 1.6s var(--ease-swell) infinite alternate;
+  }
+}
+@keyframes pv-breathe {
+  from {
+    opacity: 0.35;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+}
+.pv-home {
+  display: grid;
+  place-items: center;
+  transition: background-color 300ms var(--ease-settle);
+}
+.pv-home i {
+  width: 134px;
+  height: 5px;
+  border-radius: 3px;
+  background: #0f1e33;
+  opacity: 0.85;
+}
+.pv-home[data-dark] i {
+  background: #f4f7fb;
+}
+
+/* ---------- entrance and exit ---------- */
+/* The white page fades up, then the phone rises into the middle like something set down on a
+   table; the caption follows. Closing is quicker than opening. */
+@media (prefers-reduced-motion: no-preference) {
+  .pv[open] {
+    animation: pv-page 380ms var(--ease-settle) both;
+  }
+  .pv[open] .pv-fit {
+    animation: pv-rise 820ms var(--ease-settle) 70ms both;
+  }
+  .pv[open] .pv-caption,
+  .pv[open] .pv-close {
+    animation: pv-fade 620ms var(--ease-settle) 220ms both;
+  }
+  .pv[data-closing] {
+    animation: pv-page-out 260ms var(--ease-settle) both;
+  }
+  .pv[data-closing] .pv-fit {
+    animation: pv-drop 260ms var(--ease-settle) both;
+  }
+}
+@keyframes pv-page {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes pv-rise {
+  from {
+    opacity: 0;
+    transform: translateY(36px) scale(0.965);
+  }
+}
+@keyframes pv-fade {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+@keyframes pv-page-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes pv-drop {
+  to {
+    transform: translateY(14px) scale(0.985);
+  }
+}
+
+/* ---------- inside the phone ---------- */
+/* A phone shows no scrollbars. */
+html[data-framed] {
+  scrollbar-width: none;
+}
+html[data-framed]::-webkit-scrollbar {
+  display: none;
+}

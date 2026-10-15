@@ -1,37 +1,13 @@
-import { CITIES } from "@/content/cities";
+import { simulatedCohort, startWeekOf, type Mate } from "@/lib/providers/cohort";
 import { hashString, mulberry32 } from "@/lib/rng";
 import { photoWeekDue, weekOf, type ISODate } from "@/lib/time/journey";
 
 /**
- * A simulated cohort for the demo community: 40 fictional people who started within two
- * weeks of the user, seeded from the start date so they are the same on every visit.
- * Nobody here is real. Phase 9 wraps this in the CohortProvider with the full feed.
+ * Today's glance at the demo community. The people come from the cohort provider
+ * (src/lib/providers/cohort), so Today and the Mates page always show the same names.
  */
-
-const FIRST_NAMES = [
-  "Aarav", "Dev", "Kabir", "Rohan", "Vikram", "Ishaan", "Arnav", "Siddharth", "Karan", "Nikhil",
-  "Aditya", "Pranav", "Yash", "Harsh", "Manav", "Varun", "Neel", "Tushar", "Omkar", "Farhan",
-  "Imran", "Joel", "Gurpreet", "Anand", "Sameer", "Tanvir", "Zubin", "Akash", "Ritesh", "Vivek",
-];
-
-export interface Mate {
-  id: string;
-  firstName: string;
-  city: string;
-  /** Days between the user's start and theirs: positive means they started later. */
-  offset: number;
-}
-
-export function cohort(startDate: ISODate, size = 40): Mate[] {
-  const rnd = mulberry32(hashString(startDate));
-  const cities = CITIES.slice(0, 20);
-  return Array.from({ length: size }, (_, i) => ({
-    id: `mate-${i}`,
-    firstName: FIRST_NAMES[Math.floor(rnd() * FIRST_NAMES.length)]!,
-    city: cities[Math.floor(rnd() * cities.length)]!.name,
-    offset: Math.round(rnd() * 28) - 14,
-  }));
-}
+export type { Mate } from "@/lib/providers/cohort";
+export { simulatedCohort as cohort } from "@/lib/providers/cohort";
 
 export interface CohortGlance {
   /** People who started within three days of the user. */
@@ -43,8 +19,8 @@ export interface CohortGlance {
 }
 
 export function cohortGlance(startDate: ISODate, day: number): CohortGlance {
-  const people = cohort(startDate);
-  const startWeek = people.filter((m) => Math.abs(m.offset) <= 3);
+  const people = simulatedCohort(startDate);
+  const startWeek = startWeekOf(people);
   const week = Math.max(1, weekOf(day));
   const rnd = mulberry32(hashString(`${startDate}:${day}`));
   const pick = startWeek[Math.floor(rnd() * startWeek.length)] ?? people[0]!;

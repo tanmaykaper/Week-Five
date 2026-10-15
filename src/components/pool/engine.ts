@@ -655,7 +655,8 @@ export class PoolEngine {
   private loop(now: number) {
     if (this.disposed) return;
     this.raf = requestAnimationFrame(this.loop);
-    if (document.visibilityState === "hidden" || this.paused) return;
+    // Covered by the phone view (which runs its own copy of the page), nothing to draw.
+    if (document.visibilityState === "hidden" || this.paused || document.documentElement.hasAttribute("data-phone-view")) return;
 
     if (this.tween) {
       const t = Math.min(1, (now - this.tween.start) / this.tween.ms);

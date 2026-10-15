@@ -24,8 +24,8 @@ export function SiteHeader({ minimal = false, id }: { minimal?: boolean; id?: st
           : "sticky top-0 z-30 h-[var(--header-h)] bg-bg"
       }
     >
-      <div className={`flex h-full items-center gap-8 ${minimal ? "px-[var(--gutter)]" : "wrap"}`}>
-        <Link href={minimal ? "/" : "/home"} className="inline-flex items-center gap-2.5 text-[1.0625rem] font-semibold tracking-[-0.02em]">
+      <div className={`flex h-full items-center gap-3 sm:gap-8 ${minimal ? "px-[var(--gutter)]" : "wrap"}`}>
+        <Link href={minimal ? "/" : "/home"} className="inline-flex shrink-0 items-center gap-2.5 text-[1.0625rem] font-semibold tracking-[-0.02em] whitespace-nowrap">
           <Mark />
           Week Five
         </Link>

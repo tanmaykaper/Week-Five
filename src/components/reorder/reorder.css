@@ -1,0 +1,88 @@
+/* Supply: the page-specific bits on top of the shared stage grammar. */
+.sp-reorder {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 48px;
+  padding: 0 22px;
+  border-radius: 999px;
+  background: var(--action);
+  color: var(--on-action);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  transition:
+    background-color 200ms var(--ease-settle),
+    transform 140ms var(--ease-settle);
+}
+.sp-reorder:hover {
+  background: var(--action-hover);
+}
+.sp-reorder:active {
+  transform: scale(0.97);
+}
+
+/* Add a pack: two fields and a button, side by side when there is room. */
+.sp-add {
+  display: grid;
+  gap: 12px;
+  max-width: 640px;
+}
+@media (min-width: 640px) {
+  .sp-add {
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) auto;
+    align-items: end;
+  }
+  .sp-add-status {
+    grid-column: 1 / -1;
+  }
+}
+.sp-add-go {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 52px;
+  padding: 0 22px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--bg);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: transform 140ms var(--ease-settle);
+}
+.sp-add-go:active {
+  transform: scale(0.97);
+}
+.sp-hero-form {
+  margin-top: 26px;
+  padding: 18px;
+  border-radius: 24px;
+  background: color-mix(in srgb, var(--surface) 84%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.sp-hero-form .sp-add {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+/* Coming up: each row ends in the dot its kind wears on the rings. */
+.sp-up {
+  min-height: 60px;
+}
+.sp-up-dot {
+  width: 12px;
+  height: 12px;
+  margin-right: 6px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 2.5px var(--accent);
+}
+.sp-up[data-kind="photos"] .sp-up-dot,
+.sp-up[data-kind="reorder"] .sp-up-dot {
+  background: var(--today-dot);
+  box-shadow: none;
+}
+.sp-up[data-kind="letter"] .sp-up-dot {
+  background: var(--accent);
+  box-shadow: none;
+}

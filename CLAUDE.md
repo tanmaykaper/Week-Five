@@ -24,7 +24,7 @@
 Next.js 16.4 (App Router, `output: "export"`, `basePath` from `NEXT_PUBLIC_BASE_PATH`, `/week-five` on GitHub Pages), TypeScript 6.0, Tailwind v4 with CSS-variable tokens, `motion`, GSAP + ScrollTrigger (intro only), Three.js (the pool, flow screens only, lazy), Zustand (explicit save, real and demo namespaces), `idb`, `zod/mini`, `qrcode` (dev page), `@phosphor-icons/react`, a hand-written service worker (`scripts/build-sw.mjs`, run after export). No date-fns. Fonts: Geist + Instrument Serif via `next/font`. Vitest + Playwright. pnpm 12, Node 26 via Homebrew.
 
 ## Design in one breath
-v3: light, 3D, cinematic, after Turion Space and Morpho. One drop, twenty four rings: a light Three.js pool sits behind every flow screen; the dropper's drop falls, its ripple freezes into the 24 week rings, and setup draws your map on them (rain on monsoon weeks, your week lit). Headlines in two voices: Geist 500 for what happens, Instrument Serif italic for how it feels. Pill buttons, tone-filled controls, one blue accent, amber for photo days, rain blue for monsoon, coral only for see-a-doctor. Light by default. Day-one photos go through a round lens set at the centre of the rings; a kept photo drops into the water. Today is the map from above (the rings are the progress ring) with a sheet rising over the water; dark theme gets night water. The map travels ring by ring; the mirror holds day one in a lens at the centre and a later photo behind a divider, and choosing a later week raises the camera so the weeks in between pass under the lens; "Before you stop" puts the day-one photo back at the centre of the rings. Spec: `docs/DESIGN_SYSTEM.md`. App pages move to v3 phase by phase.
+v3: light, 3D, cinematic, after Turion Space and Morpho. One drop, twenty four rings: a light Three.js pool sits behind every flow screen; the dropper's drop falls, its ripple freezes into the 24 week rings, and setup draws your map on them (rain on monsoon weeks, your week lit). Headlines in two voices: Geist 500 for what happens, Instrument Serif italic for how it feels. Pill buttons, tone-filled controls, one blue accent, amber for photo days, rain blue for monsoon, coral only for see-a-doctor. Light by default. Day-one photos go through a round lens set at the centre of the rings; a kept photo drops into the water. Today is the map from above (the rings are the progress ring) with a sheet rising over the water; dark theme gets night water. The map travels ring by ring; the mirror holds day one in a lens at the centre and a later photo behind a divider, and choosing a later week raises the camera so the weeks in between pass under the lens; "Before you stop" puts the day-one photo back at the centre of the rings. Supply, Mates and You use the same hero-and-sheet grammar on the pool (`components/ui/stage.css`). A Phone view button on the right edge of wide screens shows the live app inside a phone on a white page. Spec: `docs/DESIGN_SYSTEM.md`.
 
 ## Phases
 | # | Phase | Status |
@@ -36,12 +36,12 @@ v3: light, 3D, cinematic, after Turion Space and Morpho. One drop, twenty four r
 | 4 | Baseline capture | Done |
 | 5 | Home dashboard | Done |
 | 6 | Journey map and reassurance engine | Done |
-| 7 | Mirror and projection | Done, awaiting review |
-| 8 | Routine, reorder and reminders | Not started |
-| 9 | Journey mates | Not started |
-| 10 | Profile, data and About | Not started |
-| 11 | Polish and hardening | Not started |
-| 12 | GitHub readiness | Not started |
+| 7 | Mirror and projection | Done |
+| 8 | Routine, reorder and reminders | Done |
+| 9 | Journey mates | Done |
+| 10 | Profile, data and About | Done |
+| 11 | Polish and hardening | Done (one run with 8 to 12, plus the phone view) |
+| 12 | GitHub readiness | Done, not pushed |
 
 ## Commands
 `pnpm dev` (localhost:3000), `pnpm check` (lint, types, unit tests, copy check, build), `pnpm e2e`, `PHASE=n pnpm screens` (after a build; writes `artifacts/screens/phase-n/`), `pnpm serve` (serves `out/` like GitHub Pages), `pnpm build:pages` (under `/week-five`).

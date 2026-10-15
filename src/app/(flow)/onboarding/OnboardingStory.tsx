@@ -15,10 +15,8 @@ import {
   FINISH,
   LETTER,
   PRODUCT_OPTIONS,
-  PRODUCTS_WITH_PACK,
   REMINDERS,
   SOMEWHERE_ELSE,
-  STEP_COPY,
   STEP_IDS,
   WORRY_OPTIONS,
   type StepId,
@@ -28,6 +26,7 @@ import { canContinue, defaultTimes, draftFromPack, finishPlan, startDateProblem,
 import { parseStartParams } from "@/lib/params";
 import { seasonFor, type Season } from "@/lib/season";
 import type { Draft } from "@/lib/storage/schema";
+import { stepCopy } from "@/content/hinglish";
 import { useApp } from "@/lib/storage/store";
 import { addDays, dateOfDay, journeyDay, parseISODate, SHED_WINDOW, toISODate, weekOf } from "@/lib/time/journey";
 import { Briefing } from "./Briefing";
@@ -155,8 +154,7 @@ export function OnboardingStory() {
 
   if (briefing && done) return <Briefing />;
 
-  const copy =
-    stepId === "products" && draft.pack ? { ...STEP_COPY.products, ...PRODUCTS_WITH_PACK } : stepId !== "finish" ? STEP_COPY[stepId] : null;
+  const copy = stepId !== "finish" ? stepCopy(stepId, data.settings.lang, Boolean(draft.pack)) : null;
   const ok = stepId === "finish" ? true : canContinue(stepId, draft, now);
 
   return (

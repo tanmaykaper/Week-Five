@@ -1,10 +1,12 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Gate } from "@/components/shell/Gate";
 import { Button, PageHead } from "@/components/ui/primitives";
 import { buildExport, exportFileName, saveBlob } from "@/lib/storage/export";
+import { safeLocal } from "@/lib/storage/keys";
+import { photoBytes } from "@/lib/storage/photos";
 import { useApp } from "@/lib/storage/store";
 
 export function DataScreen() {
@@ -14,6 +16,23 @@ export function DataScreen() {
   const router = useRouter();
   const [confirming, setConfirming] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
+  const [used, setUsed] = useState<string | null>(null);
+
+  // What this device is holding: the photos in IndexedDB plus the plan in localStorage.
+  useEffect(() => {
+    let live = true;
+    const local = safeLocal.keys().filter((k) => k.startsWith("weekfive")).reduce((n, k) => n + (safeLocal.get(k)?.length ?? 0) * 2, 0);
+    photoBytes(mode)
+      .catch(() => 0)
+      .then((photos) => {
+        if (!live) return;
+        const mb = (photos + local) / 1_048_576;
+        setUsed(mb < 0.1 ? "Under 0.1 MB" : `${mb.toFixed(1)} MB`);
+      });
+    return () => {
+      live = false;
+    };
+  }, [mode, data]);
 
   async function onExport() {
     try {
@@ -45,6 +64,7 @@ export function DataScreen() {
             <Button className="mt-5" onClick={onExport}>
               Export a copy
             </Button>
+            <p className="num mt-4 text-sm text-text-2">Storage used on this device: {used ?? "counting"}</p>
           </div>
 
           <div className="border-t border-line pt-6">

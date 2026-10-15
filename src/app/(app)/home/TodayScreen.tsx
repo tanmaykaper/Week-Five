@@ -82,8 +82,9 @@ function Today() {
         intercepts: data.intercepts,
         insightLog: data.insightLog,
         rollerNights: data.routine.rollerNights,
+        lang: data.settings.lang,
       }),
-    [day, now, profile, season, data.checkins, data.letter, data.intercepts, data.insightLog, data.routine.rollerNights, hasBaseline, seen, shots],
+    [day, now, profile, season, data.checkins, data.letter, data.intercepts, data.insightLog, data.routine.rollerNights, data.settings.lang, hasBaseline, seen, shots],
   );
 
   // Remember what was shown today, so ambient notes rest for a week (once the photos are known).

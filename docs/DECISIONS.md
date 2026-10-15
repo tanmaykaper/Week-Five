@@ -173,3 +173,26 @@ One line each: the decision, then why. Newest at the bottom.
 150. **"Change the marked area" opens the existing painter** (`/baseline/?step=paint&then=projection`) and comes back, rather than embedding it in an app page, where its always-light controls would break the dark theme.
 151. **Demo plans carry a painted area for each sample person**, so the illustration works in the demo without painting first.
 152. **The mirror and the illustration share one pool** (`mirror/layout.tsx`), like the map and its weeks.
+
+## Phases 8 to 12, in one run (2026-10-15)
+Tanmay asked to finish the app in one run instead of stopping after each phase, and to add a phone view.
+153. **Routine suggestions are a rule table** (`src/content/routines.ts`, 13 rules) filtered by products, age band, the city's rains this month and the gap between the two times. Wording and default times change; amounts never appear (a unit test scans every rule for units).
+154. **The "about twelve hours" tip gives way to an even-gap tip** when the two times are 4 or more hours off twelve, rather than showing both.
+155. **Roller nights are picked on a Monday-first week strip** in You and stored as `getDay()` values, which the insight engine already used.
+156. **One reminder schedule feeds three outputs** (`src/lib/reminders.ts`): the calendar file, the in-app banner and notifications. Weekly check-ins at the evening time, photo days at the hour of the day-one photos, the note on day 22, reorder at 10 and 3 days, the restart date.
+157. **Daily times are a separate, opt-in calendar file** with repeat rules (`RRULE`), so the main file stays a handful of meaningful dates.
+158. **The banner shows one thing at a time**, in this order: restart day, reorder at 3 days or less, photos due, the note, reorder at 10 days, a missed weekly check-in. It is hidden on the screen its action leads to and on check-in, pause and the illustration; dismissing it hides it until tomorrow.
+159. **The banner sits on the page under the header and scrolls away** rather than floating fixed, so it never covers section titles.
+160. **Notifications only while the app is open** (the due item once per id, and the next application of the day if it is within six hours), through the service worker when there is one so a tap opens the right page. Real mode only: the demo clock is synthetic.
+161. **Supply lights the weeks the pack still covers** on the rings, with "Pack runs out, week n" on the last one. The reorder link appears at 10 days or fewer, never within 24 hours of an uneasy check-in (it says so), and not while snoozed.
+162. **A pack can be added by hand or by scanning its QR after setup.** The newest pack sets the runway; products on a new pack join the routine. Duplicates (same code, date and batch) are ignored.
+163. **Journey mates go through a `CohortProvider`** (`src/lib/providers/cohort/`): `LocalSimCohort` (seeded 40 fictional people, events from each person's own day over the last two weeks) and a `RemoteCohort` stub that documents the contract and ships switched off. Today's glance reads the same people.
+164. **Names appear on the water as their drops land**, and sending a nudge sends your own ripple across the rings. Nudges are logged locally, one per person per day.
+165. **Nudges on phones are a round button** so the sentence keeps the width.
+166. **You edits every setup answer in place** (one row opens at a time, explicit Save), plus routine times, roller nights, reminders, theme and language.
+167. **Hinglish covers the setup questions and the daily notes**, as the kickoff allowed. The card chosen never changes with the language, only its line. The switch is on the welcome screen and in You.
+168. **App pages on the pool share one grammar** (`components/ui/stage.css`, `StagePool`): hero on the water, words left and rings right, then the sheet. Your data and About stay plain reading pages.
+169. **Phone view is a side button on the right edge of wide screens** (shaped like a phone's side button), not a header control, because every corner is already used by the intro's HUD, the check-in bar or the demo chip.
+170. **Phone view runs the real app in a same-origin iframe** at 360, 390 or 430 wide, so every phone rule applies and the data is shared. The big screen's pool stops drawing while it is open, and closing it navigates the big screen to wherever the phone was.
+171. **The page around the phone is always white**, whatever the theme, as asked; the status bar and home strip take the colours of the page inside.
+172. **MIT licence and a Pages workflow** that runs lint, types, unit tests and the copy check before building under `/week-five`. Not pushed.

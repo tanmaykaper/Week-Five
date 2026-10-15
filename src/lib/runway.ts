@@ -1,8 +1,8 @@
 import { skuByCode, type Sku } from "@/content/skus";
-import type { CheckIn, PackScan } from "@/lib/storage/schema";
+import type { CheckIn, PackScan, Profile } from "@/lib/storage/schema";
 import { addDays, differenceInCalendarDays, parseISODate, type ISODate } from "@/lib/time/journey";
 
-/** Below this many days, the supply block offers the reorder link (and Phase 8 adds banners). */
+/** At this many days or fewer, Supply offers the reorder link and the banner appears. */
 export const REORDER_PROMPT_DAYS = 10;
 
 export interface Runway {
@@ -42,4 +42,20 @@ export function reorderAllowed(checkins: CheckIn[], now: Date, snoozedUntil?: IS
     const at = Date.parse(c.at);
     return at <= t && t - at < 24 * HOUR && isUneasy(c);
   });
+}
+
+/**
+ * A pack scanned or entered after setup (BUILD_DOC F1): it joins the list without restarting
+ * anything, the runway moves to it, and anything new on it joins the routine.
+ */
+export function addPack(profile: Profile, pack: PackScan): Profile {
+  const same = profile.packs.some((p) => p.sku === pack.sku && p.reg === pack.reg && (p.batch ?? "") === (pack.batch ?? ""));
+  if (same) return profile;
+  const sku = skuByCode(pack.sku);
+  const products = sku ? [...new Set([...profile.products, ...sku.products])] : profile.products;
+  return { ...profile, packs: [...profile.packs, { ...pack, sku: pack.sku.toUpperCase() }], products };
+}
+
+export function removePack(profile: Profile, index: number): Profile {
+  return { ...profile, packs: profile.packs.filter((_, i) => i !== index) };
 }

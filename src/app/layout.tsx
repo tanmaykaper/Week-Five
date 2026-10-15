@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Instrument_Serif } from "next/font/google";
 import { AppRuntime } from "@/components/shell/AppRuntime";
+import { PhoneView } from "@/components/shell/PhoneView";
 import { SITE_URL } from "@/lib/paths";
 import { THEME_SCRIPT } from "@/lib/theme-script";
 import "./globals.css";
@@ -50,6 +51,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <AppRuntime />
         {children}
+        <PhoneView />
       </body>
     </html>
   );

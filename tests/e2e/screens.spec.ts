@@ -17,6 +17,8 @@ const ROUTES: { slug: string; path: string; demo: boolean; intro?: boolean; plan
   { slug: "monthly", path: "/baseline/?week=8", demo: true },
   { slug: "pause", path: "/pause/", demo: true },
   { slug: "doctor", path: "/pause/?step=doctor", demo: true },
+  { slug: "reorder", path: "/reorder/", demo: true },
+  { slug: "mates", path: "/mates/", demo: true },
   { slug: "profile", path: "/profile/", demo: true },
   { slug: "data", path: "/profile/data/", demo: true },
   { slug: "about", path: "/about/", demo: true },
