@@ -3,7 +3,7 @@
   position: fixed;
   inset: 0;
   z-index: 0;
-  background: #f1f4f7;
+  background: var(--pool-ground, #f1f4f7);
   pointer-events: none;
   overflow: hidden;
 }
@@ -25,7 +25,7 @@
   width: 100%;
   height: 100%;
   fill: none;
-  stroke: rgba(15, 30, 51, 0.09);
+  stroke: color-mix(in srgb, var(--pool-ink, #0f1e33) 9%, transparent);
   stroke-width: 1;
   transition: opacity 700ms var(--ease-settle);
 }
@@ -60,17 +60,17 @@
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: #f1f4f7;
+  background: var(--pool-ground, #f1f4f7);
   box-shadow: inset 0 0 0 2px currentColor;
 }
 .pool-label[data-tone="accent"] {
   color: var(--accent);
 }
 .pool-label[data-tone="amber"]::before {
-  box-shadow: inset 0 0 0 2px #c98a12;
+  box-shadow: inset 0 0 0 2px var(--pool-amber, #c98a12);
 }
 .pool-label[data-tone="rain"]::before {
-  box-shadow: inset 0 0 0 2px #3f7fc7;
+  box-shadow: inset 0 0 0 2px var(--pool-rain, #3f7fc7);
 }
 @media (max-width: 1180px) {
   .pool-label {
@@ -83,7 +83,7 @@
 .pool-label span {
   padding: 3px 8px 4px;
   border-radius: 999px;
-  background: rgba(241, 244, 247, 0.92);
+  background: color-mix(in srgb, var(--pool-ground, #f1f4f7) 92%, transparent);
 }
 .pool-label em {
   font-family: var(--font-serif);

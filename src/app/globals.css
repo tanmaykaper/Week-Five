@@ -36,6 +36,15 @@
   --rain: #3f7fc7;
   --float-shadow: 0 1px 2px rgba(15, 30, 51, 0.05), 0 16px 40px -14px rgba(15, 30, 51, 0.16);
   --selection: rgba(34, 84, 138, 0.18);
+  /* The pool, in daylight. The engine reads these, so the water follows the theme. */
+  --pool-ground: #f1f4f7;
+  --pool-water: #e3e9ef;
+  --pool-sky-low: #fbfcfd;
+  --pool-sky-high: #d6e0ea;
+  --pool-ink: #0f1e33;
+  --pool-accent: #22548a;
+  --pool-amber: #c98a12;
+  --pool-rain: #3f7fc7;
   color-scheme: light;
 }
 
@@ -85,6 +94,15 @@
   --rain: #7db0ee;
   --float-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 16px 40px -16px rgba(0, 0, 0, 0.6);
   --selection: rgba(125, 176, 238, 0.28);
+  /* The pool at night: deep water under a dark sky, the rings drawn in light. */
+  --pool-ground: #0b121c;
+  --pool-water: #0f1a28;
+  --pool-sky-low: #1c2a3e;
+  --pool-sky-high: #0c1420;
+  --pool-ink: #a9b8cb;
+  --pool-accent: #7db0ee;
+  --pool-amber: #f2b661;
+  --pool-rain: #6fa6e6;
   color-scheme: dark;
 }
 
@@ -254,3 +272,94 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* The 24 weeks as ticks (components/ui/WeekTicks.tsx). */
+.week-ticks {
+  display: grid;
+  grid-template-columns: repeat(24, minmax(0, 1fr));
+  align-items: end;
+  gap: 3px;
+  height: 18px;
+}
+.week-ticks > i {
+  position: relative;
+  height: 6px;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--ink) 14%, transparent);
+}
+.week-ticks > i[data-shed] {
+  height: 9px;
+}
+.week-ticks > i[data-done] {
+  background: var(--ink);
+}
+.week-ticks > i[data-now] {
+  height: 14px;
+  background: var(--accent);
+}
+.week-ticks > i[data-photo]::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -8px;
+  width: 4px;
+  height: 4px;
+  margin-left: -2px;
+  border-radius: 50%;
+  background: var(--today-dot);
+}
+
+/* The check-in bar pulses once when nobody has checked in yet: a ring leaves it like a ripple. */
+@media (prefers-reduced-motion: no-preference) {
+  .checkin-bar[data-fresh]::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: 0 0 0 2px var(--accent);
+    opacity: 0;
+    pointer-events: none;
+    animation: bar-pulse 1400ms var(--ease-settle) 1200ms 1;
+  }
+}
+@keyframes bar-pulse {
+  from {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.08, 1.4);
+  }
+}
+
+/* The ghost outline: white over the camera with a dark edge so it reads on any picture;
+   ink on its own. Guides (the eyebrow line) are dashed. */
+.head-ghost path {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.head-ghost-line path {
+  stroke: var(--ink);
+  stroke-opacity: 0.5;
+  stroke-width: 1.4;
+}
+.head-ghost-guide path {
+  stroke: var(--accent);
+  stroke-width: 1.4;
+  stroke-dasharray: 5 6;
+}
+.head-ghost[data-tone="video"] .head-ghost-under path {
+  stroke: rgba(15, 30, 51, 0.4);
+  stroke-width: 3.6;
+}
+.head-ghost[data-tone="video"] .head-ghost-line path {
+  stroke: #fff;
+  stroke-opacity: 0.92;
+  stroke-width: 1.8;
+}
+.head-ghost[data-tone="video"] .head-ghost-guide path {
+  stroke: #fff;
+  stroke-width: 1.8;
+}
+

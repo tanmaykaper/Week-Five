@@ -158,3 +158,13 @@ export function lensRig(cx: number, cy: number, radius: number, width: number, h
     shiftY: cy / height - 0.5,
   };
 }
+
+/** Today: the plan seen from above and a little in front, the rings spread on the right. */
+export const TODAY_FRAME: Framing = {
+  cam: [-0.3, 9.2, 6.4],
+  at: [0.45, 0, -0.55],
+  fov: 34,
+  shift: [0.24, 0.03],
+  phoneShift: [0, -0.33],
+  phoneZoom: 1.95,
+};

@@ -113,3 +113,23 @@ One line each: the decision, then why. Newest at the bottom.
 96. **The baseline screens reuse setup's HUD, field styles and transitions** (`onboarding.css`), so the flow reads as one story from the first question to the last photo.
 97. **Demo mode can use /baseline on its own photo database**, so a reviewer can try the camera without touching real data. Demo head drawings for Today and the mirror come in Phase 5.
 98. **Capture screenshots use an abstract drawn head as Chrome's fake camera** (`artifacts/tools/fake-head-video.mjs`). It is not a person and never ships.
+
+## Phase 5 (2026-10-14 to 15)
+99. **Today sits on the pool, and the rings are the progress ring.** Weeks behind you are drawn firmer, your week is lit, and a line of 24 ticks says the same thing in numbers. One object for the map everywhere, instead of a separate dial (kickoff 3.5's ring, done the v3 way).
+100. **A sheet rises over the water for the rest of Today.** The hero stays an open scene; the routine, photos, supply and mates sit on a full-width surface with open sections, not a grid of identical cards.
+101. **The pool follows the theme on app pages.** Its colours are CSS tokens; dark gets night water (light rings on deep blue). Flow screens stay daylight.
+102. **The pool pauses when the sheet covers it** (`setPaused`), so a scrolled Today costs no GPU time.
+103. **Today's note is a compact rule list in Phase 5** (`src/lib/today-note.ts`: the content bank's ids, variant A, red flags first). Phase 6 replaces it with insights.json, both variants, the seven-day cooldown and "Why am I seeing this?".
+104. **Check-in answers ship with the check-in (Phase 5), not with the engine (Phase 6).** A check-in that saves without answering would be a dead end, and a red flag must never get a cheerful "Saved".
+105. **Hair fall and worry are five word pills with nothing preselected**, not sliders. A slider has to start somewhere, and wherever it starts anchors the answer. Native radios underneath, so arrow keys work.
+106. **The check-in is a native `<dialog>`**: focus trap, Escape and focus return come with the platform. Bottom sheet on phones, a right-hand panel from 768 px.
+107. **Doubt means hair fall or worry at 3 or more, or any red flag.** It drives the answer, the note, and the reorder hold.
+108. **The reorder link shows only at 10 days or less, and never within 24 hours of an uneasy check-in or while snoozed.** Above 10 days Supply just shows the level. The link opens manmatters.com in a new tab.
+109. **Slots come from the products, without amounts:** solution or foam morning and evening, serum mornings, gummies evenings "with food". Routine rules and roller nights come in Phase 8.
+110. **The streak counts days with every active slot done**, and an unfinished today doesn't break it; it shows nothing at zero.
+111. **Demo photos are drawings made on the device** the first time demo mode needs them: three views for day one and each photo week, density dipping in the shed window and coming back modestly. They are labelled "Sample drawings for the demo, not photos of anyone."
+112. **Anything in a demo plan dated after the demo clock is invisible** (doses, check-ins, photos), since the persona's 24 weeks are generated up front.
+113. **The journey clock moves on whenever saved data changes**, not just once a minute, so a check-in saved a second ago is never treated as being in the future.
+114. **The cohort is seeded from the start date** (40 fictional people within two weeks, first names and cities only). Phase 9 wraps it in the CohortProvider; Today shows the count in your start week and one event.
+115. **Other people's drops land once on Today, on their own clock** (`landCohort`), after the rings spread. Nothing under reduced motion.
+116. **The night card says "breathe slowly"** until Phase 6 brings the breathing circle the content bank describes.

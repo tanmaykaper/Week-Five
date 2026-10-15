@@ -24,7 +24,7 @@
 Next.js 16.4 (App Router, `output: "export"`, `basePath` from `NEXT_PUBLIC_BASE_PATH`, `/week-five` on GitHub Pages), TypeScript 6.0, Tailwind v4 with CSS-variable tokens, `motion`, GSAP + ScrollTrigger (intro only), Three.js (the pool, flow screens only, lazy), Zustand (explicit save, real and demo namespaces), `idb`, `zod/mini`, `qrcode` (dev page), `@phosphor-icons/react`, a hand-written service worker (`scripts/build-sw.mjs`, run after export). No date-fns. Fonts: Geist + Instrument Serif via `next/font`. Vitest + Playwright. pnpm 12, Node 26 via Homebrew.
 
 ## Design in one breath
-v3: light, 3D, cinematic, after Turion Space and Morpho. One drop, twenty four rings: a light Three.js pool sits behind every flow screen; the dropper's drop falls, its ripple freezes into the 24 week rings, and setup draws your map on them (rain on monsoon weeks, your week lit). Headlines in two voices: Geist 500 for what happens, Instrument Serif italic for how it feels. Pill buttons, tone-filled controls, one blue accent, amber for photo days, rain blue for monsoon, coral only for see-a-doctor. Light by default. Day-one photos go through a round lens set at the centre of the rings; a kept photo drops into the water. Spec: `docs/DESIGN_SYSTEM.md`. App pages move to v3 phase by phase.
+v3: light, 3D, cinematic, after Turion Space and Morpho. One drop, twenty four rings: a light Three.js pool sits behind every flow screen; the dropper's drop falls, its ripple freezes into the 24 week rings, and setup draws your map on them (rain on monsoon weeks, your week lit). Headlines in two voices: Geist 500 for what happens, Instrument Serif italic for how it feels. Pill buttons, tone-filled controls, one blue accent, amber for photo days, rain blue for monsoon, coral only for see-a-doctor. Light by default. Day-one photos go through a round lens set at the centre of the rings; a kept photo drops into the water. Today is the map from above (the rings are the progress ring) with a sheet rising over the water; dark theme gets night water. Spec: `docs/DESIGN_SYSTEM.md`. App pages move to v3 phase by phase.
 
 ## Phases
 | # | Phase | Status |
@@ -33,8 +33,8 @@ v3: light, 3D, cinematic, after Turion Space and Morpho. One drop, twenty four r
 | 1 | Foundation | Done |
 | 2 | Scroll intro | Done (rebuilt in 3D for design v3) |
 | 3 | QR entry and onboarding story | Done (with design v3) |
-| 4 | Baseline capture | Done, awaiting review |
-| 5 | Home dashboard | Not started |
+| 4 | Baseline capture | Done |
+| 5 | Home dashboard | Done, awaiting review |
 | 6 | Journey map and reassurance engine | Not started |
 | 7 | Mirror and projection | Not started |
 | 8 | Routine, reorder and reminders | Not started |

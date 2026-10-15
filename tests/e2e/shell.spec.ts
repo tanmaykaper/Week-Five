@@ -24,11 +24,13 @@ test.describe("demo mode", () => {
   test("shows day 35 with the jumper, and never touches real data", async ({ page }) => {
     await seedDemo(page);
     await page.goto("/home/");
-    await expect(page.getByText("Day 35 of 168. Week 5, the part everyone finds hardest.")).toBeVisible();
+    await expect(page.locator("#td-greeting")).toContainText("Week 5, the part everyone finds hardest.");
+    await expect(page.getByRole("img", { name: /^Day 35 of 168\./ })).toBeVisible();
 
     await page.getByRole("button", { name: /Demo, day 35/ }).click();
     await page.getByRole("button", { name: "110", exact: true }).click();
-    await expect(page.getByText(/Day 110 of 168\. Week 16/)).toBeVisible();
+    await expect(page.locator("#td-greeting")).toContainText("Week 16, when fine hairs often show up.");
+    await expect(page.getByRole("img", { name: /^Day 110 of 168\./ })).toBeVisible();
     expect(await page.evaluate(() => localStorage.getItem("weekfive:v1"))).toBeNull();
   });
 

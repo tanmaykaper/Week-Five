@@ -1,6 +1,6 @@
 # Design system (v3, 14 October 2026)
 
-v1 drew the app as a phone mockup with glow and glass; Tanmay rejected it. v2 was a calm document of hairlines and serif greetings; he found it plain and asked for an Awwwards-style, 3D, light design that flows like two references he picked: Turion Space (awwwards.com/sites/turion-space) and Morpho (morphowater.com). v3 is that direction, built and running for the intro, the welcome screen and setup. Today and the rest of the app move to v3 in their own phases (5 onward); until then they wear the v3 tokens, type and buttons on the v2 layouts.
+Phase 5 (Today) is the first app page on v3. v1 drew the app as a phone mockup with glow and glass; Tanmay rejected it. v2 was a calm document of hairlines and serif greetings; he found it plain and asked for an Awwwards-style, 3D, light design that flows like two references he picked: Turion Space (awwwards.com/sites/turion-space) and Morpho (morphowater.com). v3 is that direction, built and running for the intro, the welcome screen and setup. Today and the rest of the app move to v3 in their own phases (5 onward); until then they wear the v3 tokens, type and buttons on the v2 layouts.
 
 ## What the references taught
 
@@ -21,6 +21,7 @@ Treatment is one small drop a day, and nothing visible happens for a while. In v
 - **The rings.** The camera climbs and the ripple freezes into 24 rings, one per week: the map. The shed window (weeks 3 to 8) is a dashed, tinted band. Photo weeks carry an amber dot. "You are here" is the one accent ring. Weeks that fall in the user's monsoon have rain falling on them.
 - **Other drops** land around yours: the people who started the same week.
 - **Setup is the map being drawn.** Each answer changes the water: the city puts rain on the right weeks, the start date lights your week, the briefing lights the weeks each card is about.
+- **Today is the map from above.** The progress ring is the rings themselves: weeks behind you firmer, your week lit, the shed window, rains and photo days on the water, and other people's drops landing once. A sheet rises over the water, like paper floating on it, with the day's routine and everything else.
 - **Day one is the middle of the map.** The camera for the baseline photos is a round lens set exactly at the centre of the rings, seen from straight above; weeks 5 to 24 spread out around it. Keeping a photo drops it into the water and its ripple runs out across all 24 weeks.
 
 ## Principles
@@ -34,7 +35,17 @@ Treatment is one small drop a day, and nothing visible happens for a while. In v
 
 ## Colour
 
-Light is the designed default. Dark remains a choice in You for the app pages; the flow screens wear `.theme-light` whatever the setting, because the pool is daylight (as the v2 intro was always navy).
+Light is the designed default. Dark remains a choice in You for the app pages; the flow screens wear `.theme-light` whatever the setting, because the pool is daylight (as the v2 intro was always navy). Today follows the theme: in dark, the pool is night water.
+
+The pool's colours are tokens too (`--pool-ground`, `--pool-water`, `--pool-sky-low`, `--pool-sky-high`, `--pool-ink`, `--pool-accent`, `--pool-amber`, `--pool-rain`). PoolStage reads them from the page and repaints when the theme changes.
+
+| Pool token | Day | Night |
+|---|---|---|
+| ground | `#F1F4F7` | `#0B121C` |
+| water | `#E3E9EF` | `#0F1A28` |
+| sky low, high | `#FBFCFD`, `#D6E0EA` | `#1C2A3E`, `#0C1420` |
+| ink (rings) | `#0F1E33` | `#A9B8CB` |
+| accent, amber, rain | `#22548A`, `#C98A12`, `#3F7FC7` | `#7DB0EE`, `#F2B661`, `#6FA6E6` |
 
 | Token | Light | Use |
 |---|---|---|
@@ -109,6 +120,12 @@ The sans line fits one line on desktop (copy is written to about 24 characters);
 | Light meter | 88 by 6 px track; the 70 to 190 stretch tinted amber; a 14 px amber marker that fills when the light is good. The sentence beside it does the telling |
 | Photo disc | 64 px on the intro (drawing or photo, "Saved" under the name); 84 to 128 px on the close, as rows with Retake and Delete beside them on phones |
 | Brush size | 44 px circles with a dot sized to the brush; selected fills ink |
+| Week ticks | 24 bars, 3 px gaps: behind you in ink, this week taller in the accent, shed weeks a touch taller, amber dots under photo weeks. The flat twin of the rings (`WeekTicks`) |
+| Today sheet | Full width, `--surface`, 32 px top corners, one soft upward shadow; open sections on a 12-column grid (routine 7 + mirror 5, then three of 4, then the stopping band) |
+| Slot row | Tone-stepped rows in `--sunk` (18 px outer corners); "Mark done" is a white pill that fills action blue with a tick and sends one ring out |
+| Photo pair | Two round photos overlapping by 14 px with a 5 px surface ring between them, like two ripples |
+| Supply level | 8 px pill: what is left in the accent, amber at 10 days or less |
+| Check-in sheet | Native `<dialog>`: bottom sheet (28 px corners) on phones, a 500 px panel from the right on wide screens. Answers are pills; the scale deepens from ink to accent as it goes; red flags fill alert when ticked |
 
 ## The pool (3D)
 
@@ -118,6 +135,7 @@ The sans line fits one line on desktop (copy is written to about 24 characters);
 - **Dropper and drop:** lathe geometry. Glass and drop use transmission; liquid is clipped by a world-space plane so its surface stays level whichever way the dropper points.
 - **State:** two plain objects, `rig` (camera) and `state` (dropper, drop, ripple, map, week, rain, focus, labels). GSAP scrubs them in the intro; pages glide between named poses with `usePoolPose`; the engine draws only when something changed or the water is meant to move.
 - **Budget:** pixel ratio capped at 1.5; transforms and one draw per frame; measured 60 fps average and a 16.8 ms p95 frame with the CPU slowed 4x, on phone and desktop sizes. The live lens (camera, light meter and pool together) measured 60 fps and a 16.7 ms p95 the same way.
+- **Today:** measured 60 fps and a 16.7 ms p95 frame with the CPU slowed 4x, on phone and desktop. `setPaused()` stops drawing whenever the sheet covers the water (zero draws once scrolled past the hero). `landCohort()` runs the cohort's drops on their own clock. `setPalette()` swaps day and night water.
 - **Helpers added in Phase 4:** `lensRig()` aims the camera straight down with the rings' centre under an element on the page; `setOffset()` keeps it there while the page scrolls; `splash()` drops a ripple from the centre on its own clock; `reframe()` changes the framing on resize without stopping a glide.
 
 ## Motion
@@ -138,7 +156,10 @@ The sans line fits one line on desktop (copy is written to about 24 characters);
 | Into the lens | Camera glides to straight above the rings, 1.3 s; lens fades and scales in from 0.94, 900 ms | You look down into the middle of your own map |
 | Timer | Each second: the numeral in the serif scales in from 1.18, a ring closes on the lens from 1.12 | The count is felt without reading it |
 | Shutter | A white flash, 420 ms | The photo was taken |
-| Keep | The still sinks (to 0.82, fading, 680 ms, `--ease-swell`) while `splash()` sends a ripple across the rings (about 2.5 s) | The photo lands like a drop on day one |
+| Today entrance | Rings spread from the centre (1.9 s), then six other drops land one after another (9 s, once) | The plan, then the people on it |
+| Check-in sheet | Rises 40 percent (420 ms) on phones, slides in from the right on wide screens | It comes from the bar you tapped |
+| Mark done | One ring leaves the button (560 ms) | The drop landed |
+| Keep (to 0.82, fading, 680 ms, `--ease-swell`) while `splash()` sends a ripple across the rings (about 2.5 s) | The photo lands like a drop on day one |
 
 Reduced motion: the intro becomes a calm sequence that cuts between the same 3D poses every 4 s with Pause, Next and Skip; the water stops moving; setup cuts between questions; everything renders at rest.
 

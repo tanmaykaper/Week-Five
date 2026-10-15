@@ -91,7 +91,28 @@ export interface Label {
   weight?: () => number;
 }
 
-const GROUND = "#f1f4f7";
+/** The water's colours. Read from CSS tokens (--pool-*) by PoolStage, so the pool follows the theme. */
+export interface PoolPalette {
+  ground: string;
+  water: string;
+  skyLow: string;
+  skyHigh: string;
+  ink: string;
+  accent: string;
+  amber: string;
+  rain: string;
+}
+
+export const DAY_PALETTE: PoolPalette = {
+  ground: "#f1f4f7",
+  water: "#e3e9ef",
+  skyLow: "#fbfcfd",
+  skyHigh: "#d6e0ea",
+  ink: "#0f1e33",
+  accent: "#22548a",
+  amber: "#c98a12",
+  rain: "#3f7fc7",
+};
 
 const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 /** For things that spread and slow down, like a ripple. */
@@ -303,13 +324,22 @@ export class PoolEngine {
   private offY = 0;
   /** When a free-running ripple from the centre started (0 for none). See splash(). */
   private splashAt = 0;
+  /** A free-running run of the cohort's drops (0 for none) and how long it lasts. See landCohort(). */
+  private cohortAt = 0;
+  private cohortMs = 8000;
   private width = 1;
   private height = 1;
   private reduced: boolean;
   private onFirstFrame?: () => void;
   private disposed = false;
+  /** While paused (nothing of the pool on screen) the loop draws nothing. */
+  private paused = false;
 
-  constructor(canvas: HTMLCanvasElement, opts: { reduced: boolean; rig: Rig; state: PoolState; onFirstFrame?: () => void }) {
+  constructor(
+    canvas: HTMLCanvasElement,
+    opts: { reduced: boolean; rig: Rig; state: PoolState; palette?: PoolPalette; onFirstFrame?: () => void },
+  ) {
+    const palette = opts.palette ?? DAY_PALETTE;
     this.reduced = opts.reduced;
     this.rig = { ...opts.rig };
     this.state = { ...opts.state };
@@ -321,13 +351,13 @@ export class PoolEngine {
     renderer.toneMapping = NeutralToneMapping;
     renderer.toneMappingExposure = 1.05;
     renderer.localClippingEnabled = true;
-    renderer.setClearColor(new Color(GROUND), 1);
+    renderer.setClearColor(new Color(palette.ground), 1);
     this.renderer = renderer;
 
     const pmrem = new PMREMGenerator(renderer);
     this.scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.03).texture;
     pmrem.dispose();
-    this.scene.background = new Color(GROUND);
+    this.scene.background = new Color(palette.ground);
 
     // The water.
     const uniforms = {
@@ -345,14 +375,14 @@ export class PoolEngine {
       uFocus: { value: 0 },
       uSrc: { value: Array.from({ length: 6 }, () => new Vector3()) },
       uShadow: { value: new Vector3() },
-      uBg: { value: new Color(GROUND) },
-      uWater: { value: new Color("#e3e9ef") },
-      uSkyLow: { value: new Color("#fbfcfd") },
-      uSkyHigh: { value: new Color("#d6e0ea") },
-      uInk: { value: new Color("#0f1e33") },
-      uAccent: { value: new Color("#22548a") },
-      uAmber: { value: new Color("#c98a12") },
-      uRain: { value: new Color("#3f7fc7") },
+      uBg: { value: new Color(palette.ground) },
+      uWater: { value: new Color(palette.water) },
+      uSkyLow: { value: new Color(palette.skyLow) },
+      uSkyHigh: { value: new Color(palette.skyHigh) },
+      uInk: { value: new Color(palette.ink) },
+      uAccent: { value: new Color(palette.accent) },
+      uAmber: { value: new Color(palette.amber) },
+      uRain: { value: new Color(palette.rain) },
     };
     this.water = new Mesh(
       new PlaneGeometry(240, 240),
@@ -565,6 +595,39 @@ export class PoolEngine {
     this.splashAt = performance.now();
   }
 
+  /**
+   * Other people's drops land, one after another, on their own clock (like splash()), so a
+   * camera glide can't freeze them halfway. Nothing under reduced motion.
+   */
+  landCohort(ms = 8000) {
+    if (this.reduced) return;
+    this.cohortMs = ms;
+    this.cohortAt = performance.now();
+  }
+
+  /** Repaint the water in another palette (the theme changed). */
+  setPalette(palette: PoolPalette) {
+    const u = this.water.material.uniforms;
+    (u.uBg!.value as Color).set(palette.ground);
+    (u.uWater!.value as Color).set(palette.water);
+    (u.uSkyLow!.value as Color).set(palette.skyLow);
+    (u.uSkyHigh!.value as Color).set(palette.skyHigh);
+    (u.uInk!.value as Color).set(palette.ink);
+    (u.uAccent!.value as Color).set(palette.accent);
+    (u.uAmber!.value as Color).set(palette.amber);
+    (u.uRain!.value as Color).set(palette.rain);
+    this.renderer.setClearColor(new Color(palette.ground), 1);
+    (this.scene.background as Color).set(palette.ground);
+    this.lastSig = "";
+  }
+
+  /** Stop drawing while nothing of the pool is visible (a page has scrolled over it). */
+  setPaused(paused: boolean) {
+    if (this.paused === paused) return;
+    this.paused = paused;
+    this.lastSig = "";
+  }
+
   /** Lay HTML labels over points on the water. They are positioned every frame. */
   setLabels(labels: Label[]) {
     this.labels.splice(0, this.labels.length, ...labels);
@@ -586,7 +649,7 @@ export class PoolEngine {
   private loop(now: number) {
     if (this.disposed) return;
     this.raf = requestAnimationFrame(this.loop);
-    if (document.visibilityState === "hidden") return;
+    if (document.visibilityState === "hidden" || this.paused) return;
 
     if (this.tween) {
       const t = Math.min(1, (now - this.tween.start) / this.tween.ms);
@@ -602,7 +665,7 @@ export class PoolEngine {
     }
 
     const s = this.state;
-    const moving = !this.reduced && (s.idle > 0 || (s.seasonTo > 0 && s.map > 0) || this.splashAt > 0);
+    const moving = !this.reduced && (s.idle > 0 || (s.seasonTo > 0 && s.map > 0) || this.splashAt > 0 || this.cohortAt > 0);
     const sig = `${Object.values(this.rig).join()}|${Object.values(s).join()}|${this.width}x${this.height}|${this.offX},${this.offY}`;
     if (!moving && sig === this.lastSig) return;
     this.lastSig = sig;
@@ -653,16 +716,22 @@ export class PoolEngine {
     d.position.set(this.tip.x, startY + (0.0 - startY) * s.fall, this.tip.z);
 
     // Cohort drops: each falls from above its spot, then rings out.
+    let cohort = s.cohort;
+    if (this.cohortAt) {
+      const t = (now - this.cohortAt) / this.cohortMs;
+      if (t >= 1) this.cohortAt = 0;
+      else cohort = Math.max(cohort, t);
+    }
     const sources = this.water.material.uniforms.uSrc!.value as Vector3[];
     COHORT_SPOTS.forEach((spot, i) => {
       const start = i / COHORT_SPOTS.length;
-      const local = (s.cohort - start) * COHORT_SPOTS.length;
+      const local = (cohort - start) * COHORT_SPOTS.length;
       const m = this.cohortDrops[i]!;
       const falling = local > 0 && local < 0.45;
-      m.visible = falling && s.cohort > 0;
+      m.visible = falling && cohort > 0;
       if (falling) m.position.set(spot[0], 2.4 * (1 - local / 0.45), spot[2]);
       const age = local > 0.45 ? (local - 0.45) * 2.2 : 0;
-      sources[i]!.set(spot[0], spot[2], s.cohort > 0 ? age : 0);
+      sources[i]!.set(spot[0], spot[2], cohort > 0 ? age : 0);
     });
 
     const u = this.water.material.uniforms;

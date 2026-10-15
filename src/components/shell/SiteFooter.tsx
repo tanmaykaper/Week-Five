@@ -4,7 +4,7 @@ import Link from "next/link";
 /** The close of every app page: the three promises, then the name at full width. */
 export function SiteFooter() {
   return (
-    <footer className="mt-[var(--section)] overflow-hidden bg-sunk pb-40 md:pb-32">
+    <footer className="relative mt-[var(--section)] overflow-hidden bg-sunk pb-40 md:pb-32">
       <div className="wrap grid gap-2 pt-14 text-sm text-text-2">
         <p className="flex items-center gap-2 text-ink">
           <LockSimple size={16} aria-hidden="true" />

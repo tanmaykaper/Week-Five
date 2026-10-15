@@ -115,3 +115,24 @@
 - The week-4 reminder itself (banner, .ics, notification) is Phase 8; the close already says when.
 
 **Next step:** Tanmay reviews Phase 4. On "go", Phase 5: Today (the home dashboard) moves to v3.
+
+## 2026-10-14 to 15, Phase 5: Today
+
+**Done**
+- Today on the pool: the camera looks down on the user's 24 rings (weeks behind firmer, this week lit, shed window, rains, photo days), with labels on the rings, and six other drops landing once. The greeting in two voices, a line of 24 ticks with "Day 35 of 168" and the percentage, and today's note, with the day-one photo beside it when the note is about it.
+- A sheet over the water: Today (slots from the products, one-tap done with a ring, streak), Day one and now (baseline next to the latest photo of the worry area, empty and loading states), Supply (runway level, reorder link at 10 days or less, held for 24 hours after an uneasy check-in, snooze), People who started when you did (seeded demo community), the week-24 teaser, and Thinking of stopping.
+- Check-in: the capsule opens a native modal sheet (bottom on phones, right panel from 768 px); five word pills for hair fall and worry, missed applications, red flags, note. The answer replaces the form: the response matrix, the day-one photo and the ticks when doubt meets the shed window, a doctor card for any red flag. `/checkin` has the same form as a page. The bar pulses once until the first check-in.
+- Night pool for the dark theme (pool colours are now CSS tokens), pool pause when covered, free-running cohort drops.
+- Demo mode draws sample heads on the device (three views, day one and every photo week), labelled as drawings.
+- Fixed: Today's clock now moves on when data is saved, so a fresh check-in counts at once. Head drawing styles moved to the global stylesheet (they were only loaded on /baseline).
+
+**Checks:** `pnpm check` passes (lint, types, 93 unit tests, copy check, build). End-to-end: 7 new Today tests (demo day 35 reframe, fresh plan and doses, check-in sheet, red flag and Escape, reorder hold, check-in page, dark) plus the existing suites, across phone, tablet and desktop. Today holds 60 fps, p95 16.7 ms, with the CPU slowed 4x on phone and desktop, and draws nothing once scrolled past the hero. Frames looked at in light, dark and a fresh plan at 1440, 1024 and 390 (`artifacts/v3/today-final/`).
+
+**Decisions:** 99 to 116.
+
+**Known issues**
+- Today's note is the compact Phase 5 rule list; the full engine, "Why am I seeing this?", the letter reveal and the breathing circle are Phase 6.
+- Links from Today to Mirror, Projection, Mates, Reorder and Pause land on their placeholder pages until their phases.
+- Phone hero copy is tight when the note is long and the day-one photo sits beside it (checked at 390 by 844).
+
+**Next step:** Tanmay reviews Phase 5. On "go", Phase 6: the map, week pages, the reassurance engine, the stop flow and the letter.

@@ -1,0 +1,515 @@
+/* Today: the plan from above on the pool, then a sheet that rises over the water like paper.
+   Inside the sheet: open sections, tone-filled controls, no boxes round everything. */
+
+.td {
+  position: relative;
+}
+
+/* ---------- hero, on the water ---------- */
+.td-hero {
+  position: relative;
+  display: grid;
+  align-content: end;
+  min-height: calc(100svh - var(--header-h) - var(--tabs-h) - 48px);
+  padding: clamp(170px, 40svh, 380px) 0 40px;
+}
+@media (min-width: 768px) {
+  .td-hero {
+    min-height: calc(100svh - var(--header-h) - 64px);
+  }
+}
+@media (min-width: 960px) {
+  .td-hero {
+    align-content: center;
+    padding: 24px 0 88px;
+  }
+}
+.td-hero-words {
+  max-width: 580px;
+}
+@media (min-width: 960px) and (max-width: 1199px) {
+  .td-hero-words {
+    max-width: 470px;
+  }
+}
+/* Phones: the rings take the top, the words end above the check-in bar and the tabs. */
+@media (max-width: 767px) {
+  .td-hero {
+    min-height: calc(100svh - var(--header-h));
+    padding: clamp(88px, 16svh, 220px) 0 calc(var(--tabs-h) + 92px + env(safe-area-inset-bottom));
+  }
+  .td-progress {
+    margin-top: 20px;
+  }
+  .td-note {
+    gap: 14px;
+    margin-top: 20px;
+  }
+  .td-note-text {
+    font-size: 1.0625rem;
+  }
+  .td-note-disc img {
+    width: 56px;
+    height: 56px;
+  }
+  .td-note-actions {
+    margin-top: 12px;
+  }
+}
+.td-date {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-2);
+}
+.td-pair {
+  margin-top: 12px;
+  font-size: clamp(2.375rem, 1.5rem + 2.7vw, 3.75rem);
+}
+/* The turn is the longer voice here (the phase of the plan), so it steps down a size. */
+.td-pair > span + span {
+  font-size: 0.86em;
+  max-width: 17em;
+}
+
+.td-progress {
+  display: grid;
+  grid-template-columns: auto minmax(120px, 1fr);
+  align-items: center;
+  gap: 8px 14px;
+  margin-top: 26px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-2);
+  max-width: 520px;
+}
+.td-progress > p:last-child {
+  grid-column: 1 / -1;
+}
+@media (min-width: 640px) {
+  .td-progress {
+    grid-template-columns: auto minmax(140px, 1fr) auto;
+  }
+  .td-progress > p:last-child {
+    grid-column: auto;
+  }
+}
+.td-ticks {
+  padding-bottom: 8px;
+}
+
+.td-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+  margin-top: 28px;
+}
+.td-note-text {
+  font-size: var(--t-statement);
+  line-height: 1.45;
+  letter-spacing: -0.01em;
+  max-width: 34ch;
+}
+.td-note-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+/* Red flags: no cheer, no motion, the alert tone. */
+.td-note[data-tone="serious"] {
+  padding: 18px 20px;
+  border-radius: 20px;
+  background: var(--alert-bg);
+  color: var(--alert);
+}
+.td-note-disc {
+  position: relative;
+  flex: none;
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-2);
+}
+.td-note-disc img {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--surface) 70%, transparent);
+  transition: transform 200ms var(--ease-settle);
+}
+.td-note-disc:hover img {
+  transform: scale(1.04);
+}
+
+/* ---------- the sheet ---------- */
+.td-sheet {
+  position: relative;
+  z-index: 3;
+  margin-inline: calc(50% - 50vw);
+  /* The footer's top margin would open a gap onto the water; the sheet runs under it instead. */
+  margin-bottom: calc(var(--section) * -1);
+  padding-block: clamp(44px, 6vw, 80px) calc(var(--section) + 32px);
+  border-radius: 32px 32px 0 0;
+  background: var(--surface);
+  box-shadow:
+    0 -1px 0 color-mix(in srgb, var(--ink) 6%, transparent),
+    0 -40px 80px -56px rgba(10, 18, 30, 0.45);
+}
+.td-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: clamp(52px, 6vw, 88px) clamp(24px, 4vw, 64px);
+}
+.td-grid > * {
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+@media (min-width: 960px) {
+  .td-routine {
+    grid-column: 1 / span 7;
+  }
+  .td-mirror {
+    grid-column: 8 / span 5;
+  }
+  .td-supply,
+  .td-mates,
+  .td-projection {
+    grid-column: span 4;
+  }
+}
+@media (min-width: 640px) and (max-width: 959px) {
+  .td-supply,
+  .td-mates {
+    grid-column: span 6;
+  }
+}
+
+.td-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.td-h {
+  font-size: 1.125rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+}
+.td-supply .td-h,
+.td-projection .td-h {
+  margin-bottom: 12px;
+}
+.td-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-2);
+  white-space: nowrap;
+}
+.td-body {
+  max-width: 44ch;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: var(--text-2);
+}
+.td-fine {
+  margin-top: 12px;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--text-3);
+}
+.td-big {
+  font-size: 1.75rem;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+.td-link {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--text-2);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--ink) 25%, transparent);
+  text-underline-offset: 4px;
+  min-height: 44px;
+  align-items: center;
+}
+.td-link:hover {
+  color: var(--ink);
+  text-decoration-color: currentColor;
+}
+.td-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+/* Routine: tone-stepped rows, one per slot. */
+.td-slots {
+  display: grid;
+  gap: 3px;
+}
+.td-slot {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas: "when done" "what done";
+  align-items: center;
+  gap: 2px 16px;
+  padding: 14px 14px 14px 18px;
+  background: var(--sunk);
+  border-radius: 6px;
+}
+.td-slot:first-child {
+  border-top-left-radius: 18px;
+  border-top-right-radius: 18px;
+}
+.td-slot:last-child {
+  border-bottom-left-radius: 18px;
+  border-bottom-right-radius: 18px;
+}
+@media (min-width: 640px) {
+  .td-slot {
+    grid-template-columns: 9.5rem minmax(0, 1fr) auto;
+    grid-template-areas: "when what done";
+  }
+}
+.td-slot-when {
+  grid-area: when;
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+}
+.td-slot-what {
+  grid-area: what;
+  font-size: 0.9375rem;
+  color: var(--text-2);
+}
+.td-done {
+  grid-area: done;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 0.875rem;
+  font-weight: 500;
+  white-space: nowrap;
+  transition:
+    background-color 220ms var(--ease-settle),
+    color 220ms var(--ease-settle),
+    transform 140ms var(--ease-settle);
+}
+.td-done:active {
+  transform: scale(0.96);
+}
+.td-done[aria-pressed="true"] {
+  background: var(--action);
+  color: var(--on-action);
+}
+/* Marking a slot done lands like a drop: one ring leaves the button. */
+.td-done[aria-pressed="true"]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: 0 0 0 2px var(--action);
+  opacity: 0;
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .td-done[aria-pressed="true"]::after {
+    animation: td-ring 560ms var(--ease-settle);
+  }
+}
+@keyframes td-ring {
+  from {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.25, 1.6);
+  }
+}
+.td-slot[data-done] .td-slot-what {
+  color: var(--text-3);
+}
+
+/* Day one and now: two round photos, overlapping like ripples. */
+.td-pairs {
+  display: flex;
+  align-items: flex-start;
+}
+.td-disc-fig {
+  display: grid;
+  justify-items: start;
+  gap: 10px;
+}
+.td-disc-fig + .td-disc-fig {
+  margin-left: -14px;
+}
+.td-disc-fig figcaption {
+  display: grid;
+  font-size: 0.875rem;
+  line-height: 1.35;
+  padding-left: 14px;
+}
+.td-disc-fig:first-child figcaption {
+  padding-left: 0;
+}
+.td-disc {
+  position: relative;
+  display: block;
+  width: clamp(124px, 32vw, 176px);
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 50%;
+  background: var(--sunk);
+  box-shadow: 0 0 0 5px var(--surface);
+}
+.td-disc img,
+.td-disc svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.td-disc-fig[data-empty] .td-disc {
+  background: transparent;
+  outline: 1.5px dashed color-mix(in srgb, var(--ink) 28%, transparent);
+  outline-offset: -1.5px;
+}
+.td-disc-fig[data-empty] .td-disc svg {
+  opacity: 0.55;
+}
+.td-skel {
+  box-shadow: none;
+}
+.td-skel + .td-skel {
+  margin-left: -14px;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .td-skel {
+    animation: td-pulse 1.4s var(--ease-swell) infinite alternate;
+  }
+}
+@keyframes td-pulse {
+  to {
+    opacity: 0.55;
+  }
+}
+.td-mirror-empty {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+.td-mirror-empty .td-disc {
+  width: 104px;
+}
+
+/* Supply: the pack as a level. */
+.td-bar {
+  height: 8px;
+  margin: 14px 0 12px;
+  border-radius: 4px;
+  background: var(--sunk);
+  overflow: hidden;
+}
+.td-bar > i {
+  display: block;
+  height: 100%;
+  border-radius: 4px;
+  background: var(--accent);
+}
+.td-bar[data-low] > i {
+  background: var(--today-dot);
+}
+.td-reorder {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 48px;
+  padding: 0 22px;
+  border-radius: 999px;
+  background: var(--action);
+  color: var(--on-action);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  transition: background-color 200ms var(--ease-settle);
+}
+.td-reorder:hover {
+  background: var(--action-hover);
+}
+
+/* Mates: initials in drops. */
+.td-mates .td-head {
+  margin-bottom: 10px;
+}
+.td-faces {
+  display: flex;
+  margin: 18px 0 14px;
+}
+.td-faces > span {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--sunk);
+  box-shadow: 0 0 0 3px var(--surface);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+.td-faces > span + span {
+  margin-left: -8px;
+}
+.td-faces > span:last-child {
+  font-size: 0.8125rem;
+  color: var(--text-2);
+}
+
+/* Projection teaser. */
+.td-proj-disc {
+  position: relative;
+  display: block;
+  width: 64px;
+  height: 64px;
+  margin-bottom: 16px;
+  border-radius: 50%;
+  outline: 1.5px dashed var(--accent);
+  outline-offset: 3px;
+}
+.td-proj-disc svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* The way out, kept calm. */
+.td-stop {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px 32px;
+  padding: 26px 28px;
+  border-radius: 22px;
+  background: var(--sunk);
+}
+.td-stop .td-body {
+  margin-top: 6px;
+}

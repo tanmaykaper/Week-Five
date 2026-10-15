@@ -202,36 +202,6 @@
   }
 }
 
-/* The ghost outline: white over the camera with a dark edge so it reads on any picture;
-   ink on its own. Guides (the eyebrow line) are dashed. */
-.head-ghost path {
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-.head-ghost-line path {
-  stroke: var(--ink);
-  stroke-opacity: 0.5;
-  stroke-width: 1.4;
-}
-.head-ghost-guide path {
-  stroke: var(--accent);
-  stroke-width: 1.4;
-  stroke-dasharray: 5 6;
-}
-.head-ghost[data-tone="video"] .head-ghost-under path {
-  stroke: rgba(15, 30, 51, 0.4);
-  stroke-width: 3.6;
-}
-.head-ghost[data-tone="video"] .head-ghost-line path {
-  stroke: #fff;
-  stroke-opacity: 0.92;
-  stroke-width: 1.8;
-}
-.head-ghost[data-tone="video"] .head-ghost-guide path {
-  stroke: #fff;
-  stroke-width: 1.8;
-}
-
 /* The timer: a numeral in the serif, and a ring closing on the lens each second. */
 .bl-count {
   position: absolute;

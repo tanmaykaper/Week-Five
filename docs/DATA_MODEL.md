@@ -56,7 +56,7 @@ interface Routine {
   rollerNights: number[];       // 0 to 6 (Sun to Sat), only if roller in products
 }
 
-interface DoseLog { date: ISODate; slot: "am" | "pm"; done: boolean; at: ISODateTime }
+interface DoseLog { date: ISODate; slot: "am" | "pm"; done: boolean; at: ISODateTime }  // one entry per date and slot; toggling replaces it. Counts only if `at` is at or before now (demo plans carry future entries)
 
 interface CheckIn {
   id: string;

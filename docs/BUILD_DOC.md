@@ -71,20 +71,16 @@ Idea: loss aversion makes the pillow vivid and growth invisible; a photo makes t
 - Optional area painter: soft brush on any of the three photos (opens on the one matching the setup worry), saved as a 512 px PNG mask. Undo, clear, brush size, and "Mark the middle for me" as the keyboard path.
 - After all three: `navigator.storage.persist()` and an install nudge.
 
-### F6. Home dashboard (`/home`)
+### F6. Home dashboard (`/home`, nav label Today)
 Idea: goal-gradient (Kivetz et al. 2006). Show the distance covered, not just the distance left.
-- Greeting with name, time of day, journey day and week, plus a phase phrase ("Day 34, week 5, the part everyone finds hardest").
-- Progress ring toward day 168 with milestone dots at weeks 4, 8, 12, 16, 20, 24 and the shed window drawn as a hatched band.
-- Today card: the day's slots from the routine, one-tap done, streak.
-- Mirror card: baseline next to latest, link to `/mirror`.
-- Projection card: entry to `/mirror/projection`.
-- Insight card: from the reassurance engine, with "Why am I seeing this?".
-- Reorder card: runway bar, hidden when the sequencing rule says so (F12).
-- Mates strip: avatar initials, one live line, "Demo community" pill.
-- Bottom capsule "How is your scalp today?" opens the quick check-in sheet.
-- Skeletons for every card while IndexedDB loads. Empty states for no photos, no check-ins, no pack scanned.
-- Demo, day 35: the screen visibly reframes the shed using their baseline, the map and their letter (definition of done).
-- Layout: a document, not a card grid. One column on phones; from 960 px a 7 + 5 hero (greeting and insight beside the ring), then the 24-week strip, a three-up row (routine, day one and now, supply) divided by hairlines, then mates and the projection teaser. See `design-preview.html`.
+- Design v3: the page opens on the pool, looking down on the user's 24 rings. Weeks behind them are drawn firmer, their week is lit, the shed window, rains and photo days are on the water, and other people's drops land once. The rings are the progress ring; a line of 24 ticks says the same thing precisely ("Day 35 of 168", "21% of the way to a fair verdict").
+- Greeting in two voices: "Evening, Arjun." then the phase ("Week 5, the part everyone finds hardest."). "Still up, Arjun?" at night.
+- Today's note: one sentence picked by priority from the insight rules (red flags first). Phase 5 ships a compact version (`src/lib/today-note.ts`); Phase 6 replaces it with the full engine and "Why am I seeing this?". When the note is about the day-one photo, the photo sits beside it.
+- A sheet rises over the water with: Today (the day's slots from the products, one-tap done, streak), Day one and now (the baseline next to the latest photo of the worry area), Supply (runway, reorder only at 10 days or less and never within 24 hours of an uneasy check-in), the people who started when you did (Demo community), the week-24 illustration teaser, and Thinking of stopping.
+- Bottom capsule "How is your scalp today?" opens the quick check-in sheet (F9).
+- Skeletons while photos load. Empty states for no photos (take them), no check-ins (the bar pulses once, a note after a week), no pack scanned (add one).
+- Demo, day 35: the note reframes the shed with the day-one drawing beside it and the map behind it (the letter reveal comes in Phase 6).
+- The pool pauses whenever the sheet covers it. Dark theme gets a night pool.
 
 ### F7. The map (`/map`, `/map/week/[n]`)
 Idea: expectation confirmation (Oliver 1980). Tell them what normal looks like before it happens.
@@ -100,11 +96,12 @@ Idea: the right sentence on the right day, like a cycle tracker.
 - Red-flag cards have no cheerful framing, no bounce, coral accent, and a direct "Talk to a doctor" action.
 - Night (22:00 to 05:00) with worry 3+: calm card with a breathing circle (4 s in, 6 s out), no numbers.
 
-### F9. Weekly check-in (`/checkin` and the capsule sheet)
+### F9. Check-in (`/checkin` and the capsule sheet)
 Idea: give the feeling somewhere to go, and answer it with evidence.
-- Shed level and worry level as five-step sliders with words, not numbers. Missed doses stepper. Red-flag checklist. Optional note. Under 30 seconds.
-- Response screen picks copy from the check-in response matrix (phase by shed by worry) and shows the baseline photo when shed or worry is 3+ during the shed window.
-- Any red flag replaces the response with the doctor card.
+- Hair fall and worry as five pills each, in words, with nothing chosen until the person chooses (no default to anchor on). Missed applications stepper (0 to 14). Red-flag checklist. Optional note (280 characters). Under 30 seconds.
+- A native modal sheet: bottom sheet on phones, panel from the right from 768 px. Escape and tapping outside close it; focus returns to the bar.
+- The answer replaces the form in place: copy from the response matrix (phase by doubt, doubt meaning hair fall or worry at 3 or more). Doubt in the shed window brings the day-one photo and the 24 ticks. Any red flag replaces all of it with the doctor card and the list of what was ticked.
+- Saving updates Today at once (its note, its reorder rule).
 
 ### F10. Letter to week-five me
 Idea: pre-commitment against present bias (O'Donoghue and Rabin 1999).

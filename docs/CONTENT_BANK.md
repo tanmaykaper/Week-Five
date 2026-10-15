@@ -134,6 +134,17 @@ Every screen is a headline in two voices, as in setup: what to do in the sans, w
 - Stopping section: **Thinking of stopping?** "Look at three things first: your day-one photo, where you are on the map, and the note you wrote." Button: **Before you stop**
 - Navigation: **Today**, **Map**, **Mirror**, **Mates**, **You**
 
+Today in v3 (Phase 5, source `src/content/today.ts`):
+- Greeting pair: "{Greeting}, {name}." (night: "Still up, {name}?") with the turn "Week {w}, {phrase}." Before the start: "Your plan starts in {n} days." After day 168: "Past six months."
+- Progress: "Day {d} of 168" and "{pct}% of the way to a fair verdict". Screen reader: "Day {d} of 168. {pct} percent of the way to week 24. The shed window is days 15 to 56."
+- Today's note: the insight copy below, variant A; actions **Compare with day one**, **Take day-one photos**, **Week {w} photos**, **Check in**. Fallback: "One day at a time. The map is drawn; you just have to keep walking it." Not started: "Your plan hasn't started yet. Take your day-one photos before the first application, then let the clock run."
+- Routine: **Today**, slots "Morning" and "Evening" with times and products ("Regrowth solution", "Hair gummies, with food"), buttons **Mark done** and **Done**, "{n} days in a row", "General guidance. Follow your pack leaflet or your doctor." No slots: "Nothing on a schedule today. Your products are on the You page."
+- Mirror: **Day one and now**, **Open the mirror**, "Week {w} photos around {date}.", demo: "Sample drawings for the demo, not photos of anyone."
+- Supply: **Supply**, "About {n} days left." (or "Probably finished."), "Your {product} runs out around {date}.", "Your {product} has probably run out. Bought a new pack? Scan its code." **Reorder on Man Matters** (opens in a new tab), **Remind me in 3 days**. No pack: "How big is your pack, and when did you buy it?" **Add a pack**.
+- Mates: **People who started when you did**, pill **Demo community**, "{n} people in your start week are on week {w} today.", one event line, **See them**.
+- Projection teaser and stopping section as above.
+- Ring labels: "You are here, week {w}", "Week {w}, next photos", "Rains, weeks {a} to {b}", "Shed window".
+
 ## Insight cards (48)
 
 Format: `id` | when | priority | tone | ref. Then variant A and variant B. Day is journey day. Priority 100 beats everything. Night is 22:00 to 05:00.
@@ -314,13 +325,15 @@ Shed words: 0 barely any, 1 a few, 2 normal for me, 3 more than usual, 4 handful
 
 ## Check-in
 
-- Title: **How is your scalp today?**
+- Title: **How is your scalp today?** Turn: *Thirty seconds. We'll tell you what's normal.*
 - Shed slider label: "Hair fall this week" (barely any, a few, normal for me, more than usual, handfuls)
 - Worry slider label: "How worried are you" (calm, a little, some, a lot, very)
 - Missed doses: "Missed applications in the last 7 days"
 - Red flags: "Anything like this?" Pain on the scalp, Burning, Rash or flaking, Swelling in face, hands or feet, Dizzy or racing heart, Something else unusual
 - Note: "Anything else? (optional)"
-- Submit: **Save check-in**. Toast: **Check-in saved.**
+- Submit: **Save check-in**. Under it: "Saved on this phone only." Answer opens with **Check-in saved.**
+- Answer titles: calm answers "Thanks." *That's on schedule.*; doubt "Heard." *Here's where you are.*; red flag "Please see a doctor." (alert tone, no turn, then the list of what was ticked). Day-one photo caption: "Day 1. Compare it with today in daylight, not with the drain." Without one: "No day-one photo yet. Take one tonight; it makes next month easier." Button **Done**.
+- Night card in Phase 5 says "Breathe slowly for a minute"; the breathing circle comes with Phase 6.
 
 ### Response matrix
 | Phase | Shed 0 to 2, worry 0 to 2 | Shed 3 to 4 or worry 3 to 4 |

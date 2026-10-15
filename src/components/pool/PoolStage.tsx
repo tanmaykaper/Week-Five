@@ -2,8 +2,25 @@
 
 import { useEffect, useRef, useState } from "react";
 import { poolController } from "./controller";
+import type { PoolPalette } from "./engine";
 import { BASE_STATE, frame, WELCOME_FRAME } from "./poses";
 import "./pool.css";
+
+/** The water's colours come from the --pool-* tokens around it, so it follows the theme. */
+function readPalette(el: Element): PoolPalette {
+  const css = getComputedStyle(el);
+  const v = (name: string, fallback: string) => css.getPropertyValue(name).trim() || fallback;
+  return {
+    ground: v("--pool-ground", "#f1f4f7"),
+    water: v("--pool-water", "#e3e9ef"),
+    skyLow: v("--pool-sky-low", "#fbfcfd"),
+    skyHigh: v("--pool-sky-high", "#d6e0ea"),
+    ink: v("--pool-ink", "#0f1e33"),
+    accent: v("--pool-accent", "#22548a"),
+    amber: v("--pool-amber", "#c98a12"),
+    rain: v("--pool-rain", "#3f7fc7"),
+  };
+}
 
 function webglAvailable() {
   try {
@@ -15,8 +32,8 @@ function webglAvailable() {
 }
 
 /**
- * The light 3D pool that sits behind the intro, the welcome screen and setup. It stays
- * mounted while people move between those screens, so the camera can travel instead of
+ * The 3D pool behind the intro, the welcome screen, setup, the day-one photos and Today.
+ * In the flow it stays mounted between screens, so the camera can travel instead of
  * cutting. Before WebGL is ready (or without it) a static drawing of the rings stands in.
  */
 export function PoolStage() {
@@ -38,8 +55,12 @@ export function PoolStage() {
           reduced,
           rig: frame(WELCOME_FRAME, aspect),
           state: { ...BASE_STATE, dY: 14, map: 0 },
+          palette: readPalette(canvas),
           onFirstFrame: () => setLive(true),
         });
+        // App pages can switch between light and dark; the flow screens are always light.
+        const themeWatch = new MutationObserver(() => engine.setPalette(readPalette(canvas)));
+        themeWatch.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
         const ro = new ResizeObserver(() => {
           engine.resize();
           poolController.resized();
@@ -53,6 +74,7 @@ export function PoolStage() {
         poolController.attach(engine);
         dispose = () => {
           ro.disconnect();
+          themeWatch.disconnect();
           canvas.removeEventListener("webglcontextlost", lost);
           poolController.detach(engine);
           engine.dispose();

@@ -23,9 +23,17 @@ export interface JourneyNow {
   phase: Phase | null;
 }
 
-/** Where the user is in their 24 weeks, honouring the demo clock. */
+/**
+ * Where the user is in their 24 weeks, honouring the demo clock. The clock also moves on
+ * whenever saved data changes, so something just saved (a check-in, a dose) is never
+ * "in the future" for up to a minute.
+ */
 export function useJourney(): JourneyNow {
-  const real = useNow();
+  const ticked = useNow();
+  const data = useApp((s) => s.data);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const touched = useMemo(() => new Date(), [data]);
+  const real = touched > ticked ? touched : ticked;
   const mode = useApp((s) => s.mode);
   const startDate = useApp((s) => s.data.profile?.startDate ?? null);
   const demoDay = useApp((s) => s.data.demo?.day ?? null);

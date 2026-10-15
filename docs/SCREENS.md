@@ -108,87 +108,33 @@ Next photos around 4 November, at about 9 pm. Same spot, same light.
                                 o Week 4, next photos      (label on its ring, lit)
 ```
 
-## `/home` (nav label: Today)
-Rendered in full in `docs/design-preview.html`. Order is the same at every width; only the columns change.
+## `/home` (nav label: Today), v3
+Captures: `artifacts/v3/today-final/` (run `node artifacts/tools/v3-today.mjs <dir> <base> <desk|tab|phone>`).
 
-Desktop (1440)
+Wide screens: the hero on the pool (words left, the rings right with labels), then the sheet.
 ```
-  Tuesday, 14 October
-  Evening, Arjun.                                   .---------.  ) ) )
-  Day 34 of 168. Week 5, the part                  /   20%     \   ripple
-  everyone finds hardest.                          |  week 5    |  hairlines
-  ---------------------------------------          \ o~~~~     /
-  This is the shed window. If more hair              '-------'
-  is coming out right now, that is the       of the way to a fair verdict
-  pattern most people describe.
-  [ Compare with day one ]  Why am I seeing this?
-
-  Your 24 weeks                                              Open the map
-  Quiet | Shed window       | Settling | First fine hairs | Long middle |Judge
-  [#][#][~][~][o][~][~][~][ ][ ][ ][ ][ ][ ][ ][ ][ ][ ][ ][ ][ ][ ][ ][ ]
-            *           *           *           *           *           *
-  ------------------------------------------------------------------------
-  Routine        6 days | Day one and now     Mirror | Supply   Solution 60
-  Morning 8:00     [x]  | [ photo ]  [ photo ]       | 9 days left
-  Evening 21:30    [ ]  | Day 1      Day 34          | ======------
-  General guidance...   |                            | ( Reorder on Man Matters )
-  ------------------------------------------------------------------------
-  People who started when you did   Demo   { What week 24 can look like    }
-  (D)(K)(R)(S)(+8)                         { ...                           }
-  Dev from Pune took their week 4...  Nudge{ ( See the illustration )      }
-  12 people in your start week...          { An illustration, not a promise}
-  ------------------------------------------------------------------------
-  Thinking of stopping?                                   ( Before you stop )
-  ------------------------------------------------------------------------
-  Your details and photos stay on this device. Not medical advice. ...
+Wednesday 14 October
+Evening, Arjun.                                     o Shed window   o Week 8, next photos
+Week 5, the part everyone                              ( ( ( (o) ) ) )   o Rains, weeks 1 to 3
+finds hardest.               (serif)                               o You are here, week 5
+Day 35 of 168  ::::|::::::::::::::::::  21% of the way to a fair verdict
+(day 1) This is the shed window. If more hair is coming out
+        right now, that is the pattern most people describe...
+        ( Compare with day one )
+.------------------------------------------------------------------------------.  the sheet
+| Today                         2 days in a row | Day one and now   Open the mirror |
+| { Morning 08:00  Regrowth solution  [Done] }  |  (day 1)(week 4)                  |
+| { Evening 21:30  Solution, gummies  [Mark done] }  Day 1    Week 4               |
+| General guidance...                           |  Sample drawings for the demo...  |
+| Supply            | People who started...   | (dashed disc)                     |
+| About 22 days left| Demo community          | What week 24 can look like.       |
+| [=========----]   | (R)(S)(P)(A)(+7)        | An illustration...                |
+| Runs out 5 Nov    | 11 people in your start | ( See the illustration )          |
+| { Thinking of stopping?  Look at three things first...  ( Before you stop ) }     |
+'------------------------------------------------------------------------------'
+                  ( drop  How is your scalp today?          [^] )
 ```
-The reorder block is replaced by "Supply is fine for now" when the sequencing rule hides it.
-
-Phone (old v1 sketch below kept only for card order)
-```
-+------------------------------+
-| Evening, Arjun.        (av)  |
-| Day 34, week 5, the part     |
-| everyone finds hardest.      |
-| {  .-~~~~-.                } |  hero ring card
-| { /  orb   \  *   *   *    } |
-| {|   20%    |              } |
-| { \        /  of the way   } |
-| {  '-o----'   to a fair    } |
-| {             verdict      } |
-| { Today              6 days} |  amber dot
-| { Morning 8:00     [done] } |
-| { Evening 21:30    [ ]    } |
-| { This is the shed window. } |  insight
-| { More hair right now is.. } |
-| { [day-one photo] Why? }     |
-| { Day one | now   (Mirror) } |
-| { What week 24 can look.. }  |
-| { 12 people in your start }  |
-| { week are on week 5  Demo}  |
-| I'm thinking of stopping     |
-| ( How is your scalp today? ) |  capsule
-| |Home|Mirror|Journey|Mates|Me|
-+------------------------------+
-```
-Reorder card is absent here because a high-shed check-in is under 24 hours old.
-
-Desktop (1440)
-```
-+----+-------------------------------------------------------------+
-| R  | Evening, Arjun.  Day 34, week 5, the part everyone ...      |
-|    | +---------------------+ +------------------+ +------------+ |
-|    | |  ring + orb          | | Insight card     | | Today      | |
-|    | |  20%                 | | + day-one photo  | | slots      | |
-|    | |  (spans 2 rows)      | +------------------+ +------------+ |
-|    | |                      | | Day one and now  | | Reorder    | |
-|    | +---------------------+ +------------------+ +------------+ |
-|    | | Projection           | | Mates strip (spans 2 columns) | |
-|    | +---------------------+ +-------------------------------+ |
-|    |            ( How is your scalp today?  )   capsule, centred |
-+----+-------------------------------------------------------------+
-```
-Tablet: two columns, ring card full width on top.
+Phones: the rings fill the top, the words end above the check-in bar and the tabs; the sheet stacks the sections in one column. Dark theme: the same on night water.
 
 ## `/mirror`
 Phone
@@ -281,26 +227,21 @@ Phone
 ```
 Desktop: reading column max 640 with a sticky mini track on the left.
 
-## `/checkin` (also the capsule sheet)
-Phone
+## `/checkin` (also the capsule sheet), v3
 ```
-+------------------------------+
-| How is your scalp today?     |
-| Hair fall this week          |
-| o----o----o----O----o        |
-| barely ... more than usual   |
-| How worried are you          |
-| o----o----O----o----o        |
-| Missed applications  (-) 0 (+)|
-| Anything like this?          |
-| [ ] Pain  [ ] Burning        |
-| [ ] Rash  [ ] Swelling       |
-| [ ] Dizzy [ ] Something else |
-| Anything else? ______        |
-| [      Save check-in      ]  |
-+------------------------------+
+How is your scalp today?
+Thirty seconds. We'll tell you what's normal.      (serif)
+Hair fall this week
+( Barely any ) ( A few ) ( Normal for me ) ( More than usual ) ( Handfuls )
+How worried are you
+( Calm ) ( A little ) ( Some ) ( A lot ) ( Very )
+Missed applications in the last 7 days        (-) 0 (+)
+Anything like this?
+( Pain on the scalp ) ( Burning ) ( Rash or flaking ) ( Swelling... ) ( Dizzy... ) ( Something else unusual )
+Anything else? (optional)  { ...... }
+[ Save check-in ]   Saved on this phone only.
 ```
-Response view replaces the form in place. Desktop: sheet becomes a right side panel 480 wide.
+The answer replaces the form: "Check-in saved.", the two-voice title, the sentence, then the day-one photo and the 24 ticks when they help, or the doctor card with the ticked list. Sheet: bottom on phones, right panel from 768 px. `/checkin` shows the same form as a page.
 
 ## `/pause`
 Phone, one step per screen, vertical progress dots

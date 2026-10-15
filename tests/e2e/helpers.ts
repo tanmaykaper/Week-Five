@@ -30,16 +30,20 @@ export async function horizontalOverflow(page: Page) {
 }
 
 /** A finished setup (plan saved, briefing read), started `daysAgo` days before today, no photos yet. */
-export async function seedPlan(page: Page, opts: { daysAgo?: number; worries?: string[] } = {}) {
+export async function seedPlan(page: Page, opts: { daysAgo?: number; worries?: string[]; packDaysAgo?: number } = {}) {
   await page.addInitScript(
-    ({ daysAgo, worries }) => {
+    ({ daysAgo, worries, packDaysAgo }) => {
       if (sessionStorage.getItem("seeded")) return;
       sessionStorage.setItem("seeded", "1");
       localStorage.clear();
       const d = new Date();
       d.setDate(d.getDate() - daysAgo);
-      const start = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+      const iso = (x: Date) => `${x.getFullYear()}-${String(x.getMonth() + 1).padStart(2, "0")}-${String(x.getDate()).padStart(2, "0")}`;
+      const start = iso(d);
       const now = new Date().toISOString();
+      const bought = new Date();
+      bought.setDate(bought.getDate() - (packDaysAgo ?? 0));
+      const packs = packDaysAgo === undefined ? [] : [{ sku: "WF-SOL-60", reg: iso(bought), scannedAt: now }];
       localStorage.setItem("weekfive:intro", "seen");
       localStorage.setItem(
         "weekfive:v1",
@@ -50,7 +54,7 @@ export async function seedPlan(page: Page, opts: { daysAgo?: number; worries?: s
             ageBand: "25-34",
             cityId: "pune",
             products: ["solution"],
-            packs: [],
+            packs,
             channel: "quick-commerce",
             startDate: start,
             worries,
@@ -69,7 +73,7 @@ export async function seedPlan(page: Page, opts: { daysAgo?: number; worries?: s
         }),
       );
     },
-    { daysAgo: opts.daysAgo ?? 3, worries: opts.worries ?? ["crown"] },
+    { daysAgo: opts.daysAgo ?? 3, worries: opts.worries ?? ["crown"], packDaysAgo: opts.packDaysAgo },
   );
 }
 
