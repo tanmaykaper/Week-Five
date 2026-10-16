@@ -1,5 +1,5 @@
 {
-  "name": "week-five",
+  "name": "Week-Five",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -8,7 +8,7 @@
     "dev": "next dev",
     "dev:https": "next dev --experimental-https",
     "build": "next build && node scripts/build-sw.mjs",
-    "build:pages": "NEXT_PUBLIC_BASE_PATH=/week-five pnpm build",
+    "build:pages": "NEXT_PUBLIC_BASE_PATH=/Week-Five pnpm build",
     "serve": "node scripts/serve-out.mjs",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
